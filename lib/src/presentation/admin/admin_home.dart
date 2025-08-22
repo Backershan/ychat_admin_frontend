@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:y_chat_admin/src/presentation/dashboard/dashboard_screen.dart';
 import 'package:y_chat_admin/src/presentation/settings/settings_screen.dart';
+import 'package:y_chat_admin/src/presentation/ticketing_screen/ticketing_screen.dart';
 import 'package:y_chat_admin/src/presentation/user_management/user_management.dart';
 
 import '../app_management/app_management.dart';
@@ -19,6 +20,7 @@ class _AdminHomeState extends State<AdminHome> {
     DashboardScreen(),
     UserManagement(),
     AppManagement(),
+    TicketingScreen(),
     SettingsScreen(),
     ProfileScreen(),
   ];
@@ -27,7 +29,9 @@ class _AdminHomeState extends State<AdminHome> {
     "Dashboard",
     "User Management",
     "App Management",
-    "Settings",
+
+    "Ticketing",
+    "Privacy",
     "Profile",
   ];
   void _onItemTapped(int index) {
@@ -72,9 +76,14 @@ class _AdminHomeState extends State<AdminHome> {
                       label: Text("App Mgmt"),
                     ),
                     NavigationRailDestination(
+                      icon: Icon(Icons.sticky_note_2),
+                      selectedIcon: Icon(Icons.sticky_note_2),
+                      label: Text("Ticketing"),
+                    ),
+                    NavigationRailDestination(
                       icon: Icon(Icons.settings_outlined),
                       selectedIcon: Icon(Icons.settings),
-                      label: Text("Settings"),
+                      label: Text("Privacy"),
                     ),NavigationRailDestination(
                       icon: Icon(Icons.person),
                       selectedIcon: Icon(Icons.person),
@@ -105,6 +114,10 @@ class _AdminHomeState extends State<AdminHome> {
                   icon: Icon(Icons.apps_outlined),
                   selectedIcon: Icon(Icons.apps),
                   label: "App Mgmt",
+                ),  NavigationDestination(
+                  icon: Icon(Icons.sticky_note_2),
+                  selectedIcon: Icon(Icons.sticky_note_2),
+                  label: "Ticketing",
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.settings_outlined),
