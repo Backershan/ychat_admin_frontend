@@ -15,3 +15,6 @@ export PATH="$PATH:`pwd`/flutter/bin"
 # Enable web support & pre-cache
 flutter doctor
 flutter config --enable-web
+
+# 🚀 Build web here (so PATH stays active)
+flutter build web --release
