@@ -16,5 +16,5 @@ export PATH="$PATH:`pwd`/flutter/bin"
 flutter doctor
 flutter config --enable-web
 
-# 🚀 Build web here (so PATH stays active)
+# 🚀 Build Flutter web release
 flutter build web --release
