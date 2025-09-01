@@ -1,0 +1,24 @@
+
+
+flutter_native_splash:
+  color: "#584FBC"
+  image: assets/splash/splash_image.png
+  branding: assets/splash/brand_images.png
+  branding_bottom_padding_ios: 24
+  branding_bottom_padding_android: 24
+  #  color_dark: "#121212"
+  #  image_dark: assets/logo-development.png
+  #  branding_dark: assets/branding-development.png
+
+  android_12:
+    image: assets/splash/splash_image.png
+    icon_background_color: "#584FBC"
+    branding: assets/splash/brand_images.png
+    branding_bottom_padding_ios: 24
+    branding_bottom_padding_android: 24
+
+
+  #    image_dark: assets/splash-development.png
+  #    icon_background_color_dark: "#121212"
+
+  web: false

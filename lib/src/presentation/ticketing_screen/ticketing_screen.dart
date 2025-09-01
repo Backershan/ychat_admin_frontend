@@ -58,7 +58,7 @@ class _TicketingScreenState extends State<TicketingScreen> {
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.9,
+              childAspectRatio: 2,
             ),
             itemCount: tickets.length,
             itemBuilder: (context, index) {
