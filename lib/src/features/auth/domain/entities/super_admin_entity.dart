@@ -8,10 +8,12 @@ class SuperAdminEntity with _$SuperAdminEntity {
   const factory SuperAdminEntity({
     required int id,
     required String name,
-    required String phone,
     required String email,
-    required String role,
-    required String location,
+    required bool role,
+    required String token,
+    required String refreshToken,
+    required DateTime expiresAt,
+    required DateTime refreshTokenExpiry,
   }) = _SuperAdminEntity;
 
   factory SuperAdminEntity.fromJson(Map<String, dynamic> json) =>

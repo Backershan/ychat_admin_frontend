@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../core/constants/constants.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
@@ -27,7 +27,7 @@ class LoadingWidget extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 3.0,
               valueColor: AlwaysStoppedAnimation<Color>(
-                color ?? AppColors.lightPrimary,
+                color ?? AppColors.primaryLight,
               ),
             ),
           ),
@@ -37,7 +37,7 @@ class LoadingWidget extends StatelessWidget {
               message!,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: AppColors.lightOnBackground.withOpacity(0.7),
+                color: AppColors.onBackground.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
             ),

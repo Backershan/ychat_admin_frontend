@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/constants.dart';
+
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -9,7 +10,7 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: EdgeInsets.all(24.w),
         child: Column(
@@ -20,7 +21,7 @@ class DashboardPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 32.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.lightOnBackground,
+                color: AppColors.onBackground,
               ),
             ),
             SizedBox(height: 24.h),
@@ -34,25 +35,25 @@ class DashboardPage extends StatelessWidget {
                     title: 'Total Users',
                     value: '1,234',
                     icon: Icons.people,
-                    color: AppColors.lightPrimary,
+                    color: AppColors.primary,
                   ),
                   _buildStatCard(
                     title: 'Active Tickets',
                     value: '56',
                     icon: Icons.support_agent,
-                    color: AppColors.lightSecondary,
+                    color: AppColors.secondary,
                   ),
                   _buildStatCard(
                     title: 'Total Apps',
                     value: '12',
                     icon: Icons.apps,
-                    color: AppColors.lightTertiary,
+                    color: AppColors.primaryLight,
                   ),
                   _buildStatCard(
                     title: 'Revenue',
                     value: '\$12,345',
                     icon: Icons.attach_money,
-                    color: AppColors.lightError,
+                    color: AppColors.error,
                   ),
                 ],
               ),
@@ -72,7 +73,7 @@ class DashboardPage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
@@ -111,7 +112,7 @@ class DashboardPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 28.sp,
               fontWeight: FontWeight.bold,
-              color: AppColors.lightOnBackground,
+              color: AppColors.onBackground,
             ),
           ),
           SizedBox(height: 4.h),
@@ -119,7 +120,7 @@ class DashboardPage extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.lightOnBackground.withValues(alpha: 0.7),
+              color: AppColors.onBackground.withValues(alpha: 0.7),
             ),
           ),
         ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/foundation.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../core/constants/constants.dart';
+
 
 enum TextFieldType {
   text,
@@ -99,14 +101,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,
-          color: AppColors.lightOnBackground,
+          color: AppColors.onBackground,
         ),
         children: [
           if (widget.isRequired)
             TextSpan(
               text: ' *',
               style: TextStyle(
-                color: AppColors.lightError,
+                color: AppColors.error,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -125,12 +127,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType ?? _getKeyboardType(),
       validator: widget.validator,
       onChanged: widget.onChanged,
-      onTap: widget.onTap,
+      onTap: () {
+        // Web-specific focus fix
+        if (kIsWeb) {
+          Future.delayed(Duration.zero, () {
+            _focusNode.requestFocus();
+          });
+        }
+        widget.onTap?.call();
+      },
       maxLines: widget.maxLines ?? _getMaxLines(),
       maxLength: widget.maxLength,
       style: TextStyle(
         fontSize: 14.sp,
-        color: AppColors.lightOnBackground,
+        color: AppColors.onBackground,
       ),
       decoration: InputDecoration(
         hintText: widget.hint,
@@ -138,45 +148,45 @@ class _CustomTextFieldState extends State<CustomTextField> {
         suffixIcon: _buildSuffixIcon(),
         filled: true,
         fillColor: widget.enabled
-            ? AppColors.lightSurface
-            : AppColors.lightOnBackground.withOpacity(0.1),
+            ? AppColors.surface
+            : AppColors.onBackground.withOpacity(0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightOnBackground.withOpacity(0.2),
+            color: AppColors.onBackground.withOpacity(0.2),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightOnBackground.withOpacity(0.2),
+            color: AppColors.onBackground.withOpacity(0.2),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightPrimary,
+            color: AppColors.primaryLight,
             width: 2,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightError,
+            color: AppColors.error,
             width: 2,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightError,
+            color: AppColors.error,
             width: 2,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.lightOnBackground.withOpacity(0.1),
+            color: AppColors.onBackground.withOpacity(0.1),
           ),
         ),
         contentPadding: EdgeInsets.symmetric(
@@ -185,7 +195,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         hintStyle: TextStyle(
           fontSize: 14.sp,
-          color: AppColors.lightOnBackground.withOpacity(0.5),
+          color: AppColors.onBackground.withOpacity(0.5),
         ),
       ),
     );
@@ -200,7 +210,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       return IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.lightOnBackground.withOpacity(0.6),
+          color: AppColors.onBackground.withOpacity(0.6),
         ),
         onPressed: () {
           setState(() {
@@ -218,7 +228,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       widget.errorText!,
       style: TextStyle(
         fontSize: 12.sp,
-        color: AppColors.lightError,
+        color: AppColors.error,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/user_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/auth_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/super_admin_response_entity.dart';
+import 'package:y_chat_admin/src/features/auth/domain/entities/login_response_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:y_chat_admin/src/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
@@ -13,13 +14,13 @@ class AuthRepositoryImpl implements AuthRepository {
       : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, AuthEntity>> login({
-    required String username,
+  Future<Either<Failure, LoginResponseEntity>> login({
+    required String email,
     required String password,
   }) async {
     try {
       final result = await _remoteDataSource.login(
-        username: username,
+        email: email,
         password: password,
       );
       return Right(result);
@@ -31,26 +32,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, AuthEntity>> register({
-    required String username,
+  Future<Either<Failure, LoginResponseEntity>> register({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+    bool role = false,
   }) async {
     try {
       final result = await _remoteDataSource.register(
-        username: username,
         email: email,
         password: password,
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: phoneNumber,
-        department: department,
-        position: position,
+        role: role,
       );
       return Right(result);
     } on Failure catch (e) {
@@ -61,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, AuthEntity>> createAdminUser({
+  Future<Either<Failure, LoginResponseEntity>> createAdminUser({
     required String username,
     required String email,
     required String password,
@@ -73,14 +68,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final result = await _remoteDataSource.createAdminUser(
-        username: username,
         email: email,
         password: password,
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: phoneNumber,
-        department: department,
-        position: position,
       );
       return Right(result);
     } on Failure catch (e) {
@@ -108,9 +99,14 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.isAuthenticated();
       return Right(result);
     } on Failure catch (e) {
+      // If it's a network error, assume user is not authenticated
+      if (e is NetworkFailure) {
+        return const Right(false);
+      }
       return Left(e);
     } catch (e) {
-      return Left(UnknownFailure(message: 'Unexpected error: $e'));
+      // For any other error, assume user is not authenticated
+      return const Right(false);
     }
   }
 
@@ -120,6 +116,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.getCurrentUser();
       return Right(result);
     } on Failure catch (e) {
+      // If it's a network error, return a failure
+      if (e is NetworkFailure) {
+        return Left(NetworkFailure(message: 'Unable to connect to server. Please check your internet connection.'));
+      }
       return Left(e);
     } catch (e) {
       return Left(UnknownFailure(message: 'Unexpected error: $e'));
@@ -168,9 +168,6 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remoteDataSource.updateProfile(
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: phoneNumber,
-        department: department,
-        position: position,
       );
       return const Right(null);
     } on Failure catch (e) {
@@ -182,19 +179,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, SuperAdminResponseEntity>> registerSuperAdmin({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
-    required String phone,
     required String password,
-    String? location,
   }) async {
     try {
       final result = await _remoteDataSource.registerSuperAdmin(
-        name: name,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
-        phone: phone,
         password: password,
-        location: location,
       );
       return Right(result);
     } on Failure catch (e) {

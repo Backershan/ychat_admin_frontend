@@ -2,26 +2,24 @@ import 'package:dartz/dartz.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/user_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/auth_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/super_admin_response_entity.dart';
+import 'package:y_chat_admin/src/features/auth/domain/entities/login_response_entity.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 abstract class AuthRepository {
-  Future<Either<Failure, AuthEntity>> login({
-    required String username,
+  Future<Either<Failure, LoginResponseEntity>> login({
+    required String email,
     required String password,
   });
 
-  Future<Either<Failure, AuthEntity>> register({
-    required String username,
+  Future<Either<Failure, LoginResponseEntity>> register({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+    bool role = false,
   });
 
-  Future<Either<Failure, AuthEntity>> createAdminUser({
+  Future<Either<Failure, LoginResponseEntity>> createAdminUser({
     required String username,
     required String email,
     required String password,
@@ -54,10 +52,9 @@ abstract class AuthRepository {
   });
 
   Future<Either<Failure, SuperAdminResponseEntity>> registerSuperAdmin({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
-    required String phone,
     required String password,
-    String? location,
   });
 }

@@ -11,8 +11,10 @@ class AuthEntity with _$AuthEntity {
     required String refreshToken,
     required UserEntity user,
     required DateTime expiresAt,
+    required DateTime refreshTokenExpiry,
   }) = _AuthEntity;
 
   factory AuthEntity.fromJson(Map<String, dynamic> json) =>
       _$AuthEntityFromJson(json);
 }
+

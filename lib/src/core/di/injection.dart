@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:y_chat_admin/src/core/api/api_config.dart';
+import 'package:y_chat_admin/src/core/services/token_storage_service.dart';
+import 'package:y_chat_admin/src/core/services/auth_service.dart';
+import 'package:y_chat_admin/src/core/interceptors/auth_interceptor.dart';
 import 'package:y_chat_admin/src/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:y_chat_admin/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
@@ -12,13 +15,20 @@ import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart'
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
+  // Services - Initialize them first
+  final tokenStorage = await TokenStorageService.getInstance();
+  final authService = await AuthService.getInstance();
+  
+  getIt.registerSingleton<TokenStorageService>(tokenStorage);
+  getIt.registerSingleton<AuthService>(authService);
+
   // External dependencies
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio(BaseOptions(
       baseUrl: ApiConfig.baseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      sendTimeout: const Duration(seconds: 30),
+      connectTimeout: ApiConfig.connectTimeout,
+      receiveTimeout: ApiConfig.receiveTimeout,
+      sendTimeout: ApiConfig.sendTimeout,
       headers: ApiConfig.defaultHeaders,
     ));
 
@@ -27,6 +37,12 @@ Future<void> configureDependencies() async {
       requestBody: true,
       responseBody: true,
       error: true,
+    ));
+
+    // Add auth interceptor
+    dio.interceptors.add(AuthInterceptor(
+      tokenStorage: tokenStorage,
+      dio: dio,
     ));
 
     return dio;
@@ -62,6 +78,7 @@ Future<void> configureDependencies() async {
       registerUseCase: getIt<RegisterUseCase>(),
       registerSuperAdminUseCase: getIt<RegisterSuperAdminUseCase>(),
       authRepository: getIt<AuthRepository>(),
+      authService: getIt<AuthService>(),
     ),
   );
 }

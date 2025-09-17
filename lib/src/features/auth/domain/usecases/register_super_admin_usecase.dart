@@ -9,18 +9,16 @@ class RegisterSuperAdminUseCase {
   RegisterSuperAdminUseCase(this._authRepository);
 
   Future<Either<Failure, SuperAdminResponseEntity>> call({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
-    required String phone,
     required String password,
-    String? location,
   }) async {
     return await _authRepository.registerSuperAdmin(
-      name: name,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
-      phone: phone,
       password: password,
-      location: location,
     );
   }
 }

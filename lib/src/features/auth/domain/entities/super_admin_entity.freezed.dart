@@ -23,10 +23,12 @@ SuperAdminEntity _$SuperAdminEntityFromJson(Map<String, dynamic> json) {
 mixin _$SuperAdminEntity {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String get phone => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String get role => throw _privateConstructorUsedError;
-  String get location => throw _privateConstructorUsedError;
+  bool get role => throw _privateConstructorUsedError;
+  String get token => throw _privateConstructorUsedError;
+  String get refreshToken => throw _privateConstructorUsedError;
+  DateTime get expiresAt => throw _privateConstructorUsedError;
+  DateTime get refreshTokenExpiry => throw _privateConstructorUsedError;
 
   /// Serializes this SuperAdminEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,10 +50,12 @@ abstract class $SuperAdminEntityCopyWith<$Res> {
   $Res call({
     int id,
     String name,
-    String phone,
     String email,
-    String role,
-    String location,
+    bool role,
+    String token,
+    String refreshToken,
+    DateTime expiresAt,
+    DateTime refreshTokenExpiry,
   });
 }
 
@@ -72,10 +76,12 @@ class _$SuperAdminEntityCopyWithImpl<$Res, $Val extends SuperAdminEntity>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? phone = null,
     Object? email = null,
     Object? role = null,
-    Object? location = null,
+    Object? token = null,
+    Object? refreshToken = null,
+    Object? expiresAt = null,
+    Object? refreshTokenExpiry = null,
   }) {
     return _then(
       _value.copyWith(
@@ -87,10 +93,6 @@ class _$SuperAdminEntityCopyWithImpl<$Res, $Val extends SuperAdminEntity>
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
                       as String,
-            phone: null == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as String,
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
@@ -98,11 +100,23 @@ class _$SuperAdminEntityCopyWithImpl<$Res, $Val extends SuperAdminEntity>
             role: null == role
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            token: null == token
+                ? _value.token
+                : token // ignore: cast_nullable_to_non_nullable
                       as String,
-            location: null == location
-                ? _value.location
-                : location // ignore: cast_nullable_to_non_nullable
+            refreshToken: null == refreshToken
+                ? _value.refreshToken
+                : refreshToken // ignore: cast_nullable_to_non_nullable
                       as String,
+            expiresAt: null == expiresAt
+                ? _value.expiresAt
+                : expiresAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            refreshTokenExpiry: null == refreshTokenExpiry
+                ? _value.refreshTokenExpiry
+                : refreshTokenExpiry // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
           )
           as $Val,
     );
@@ -121,10 +135,12 @@ abstract class _$$SuperAdminEntityImplCopyWith<$Res>
   $Res call({
     int id,
     String name,
-    String phone,
     String email,
-    String role,
-    String location,
+    bool role,
+    String token,
+    String refreshToken,
+    DateTime expiresAt,
+    DateTime refreshTokenExpiry,
   });
 }
 
@@ -144,10 +160,12 @@ class __$$SuperAdminEntityImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? phone = null,
     Object? email = null,
     Object? role = null,
-    Object? location = null,
+    Object? token = null,
+    Object? refreshToken = null,
+    Object? expiresAt = null,
+    Object? refreshTokenExpiry = null,
   }) {
     return _then(
       _$SuperAdminEntityImpl(
@@ -159,10 +177,6 @@ class __$$SuperAdminEntityImplCopyWithImpl<$Res>
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
                   as String,
-        phone: null == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as String,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
@@ -170,11 +184,23 @@ class __$$SuperAdminEntityImplCopyWithImpl<$Res>
         role: null == role
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        token: null == token
+            ? _value.token
+            : token // ignore: cast_nullable_to_non_nullable
                   as String,
-        location: null == location
-            ? _value.location
-            : location // ignore: cast_nullable_to_non_nullable
+        refreshToken: null == refreshToken
+            ? _value.refreshToken
+            : refreshToken // ignore: cast_nullable_to_non_nullable
                   as String,
+        expiresAt: null == expiresAt
+            ? _value.expiresAt
+            : expiresAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        refreshTokenExpiry: null == refreshTokenExpiry
+            ? _value.refreshTokenExpiry
+            : refreshTokenExpiry // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
       ),
     );
   }
@@ -186,10 +212,12 @@ class _$SuperAdminEntityImpl implements _SuperAdminEntity {
   const _$SuperAdminEntityImpl({
     required this.id,
     required this.name,
-    required this.phone,
     required this.email,
     required this.role,
-    required this.location,
+    required this.token,
+    required this.refreshToken,
+    required this.expiresAt,
+    required this.refreshTokenExpiry,
   });
 
   factory _$SuperAdminEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -200,17 +228,21 @@ class _$SuperAdminEntityImpl implements _SuperAdminEntity {
   @override
   final String name;
   @override
-  final String phone;
-  @override
   final String email;
   @override
-  final String role;
+  final bool role;
   @override
-  final String location;
+  final String token;
+  @override
+  final String refreshToken;
+  @override
+  final DateTime expiresAt;
+  @override
+  final DateTime refreshTokenExpiry;
 
   @override
   String toString() {
-    return 'SuperAdminEntity(id: $id, name: $name, phone: $phone, email: $email, role: $role, location: $location)';
+    return 'SuperAdminEntity(id: $id, name: $name, email: $email, role: $role, token: $token, refreshToken: $refreshToken, expiresAt: $expiresAt, refreshTokenExpiry: $refreshTokenExpiry)';
   }
 
   @override
@@ -220,17 +252,30 @@ class _$SuperAdminEntityImpl implements _SuperAdminEntity {
             other is _$SuperAdminEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.role, role) || other.role == role) &&
-            (identical(other.location, location) ||
-                other.location == location));
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
+            (identical(other.expiresAt, expiresAt) ||
+                other.expiresAt == expiresAt) &&
+            (identical(other.refreshTokenExpiry, refreshTokenExpiry) ||
+                other.refreshTokenExpiry == refreshTokenExpiry));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, phone, email, role, location);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    name,
+    email,
+    role,
+    token,
+    refreshToken,
+    expiresAt,
+    refreshTokenExpiry,
+  );
 
   /// Create a copy of SuperAdminEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -253,10 +298,12 @@ abstract class _SuperAdminEntity implements SuperAdminEntity {
   const factory _SuperAdminEntity({
     required final int id,
     required final String name,
-    required final String phone,
     required final String email,
-    required final String role,
-    required final String location,
+    required final bool role,
+    required final String token,
+    required final String refreshToken,
+    required final DateTime expiresAt,
+    required final DateTime refreshTokenExpiry,
   }) = _$SuperAdminEntityImpl;
 
   factory _SuperAdminEntity.fromJson(Map<String, dynamic> json) =
@@ -267,13 +314,17 @@ abstract class _SuperAdminEntity implements SuperAdminEntity {
   @override
   String get name;
   @override
-  String get phone;
-  @override
   String get email;
   @override
-  String get role;
+  bool get role;
   @override
-  String get location;
+  String get token;
+  @override
+  String get refreshToken;
+  @override
+  DateTime get expiresAt;
+  @override
+  DateTime get refreshTokenExpiry;
 
   /// Create a copy of SuperAdminEntity
   /// with the given fields replaced by the non-null parameter values.

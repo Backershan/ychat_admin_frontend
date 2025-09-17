@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../core/constants/constants.dart';
 
 enum ButtonType {
   primary,
@@ -105,24 +105,24 @@ class CustomButton extends StatelessWidget {
     switch (type) {
       case ButtonType.primary:
         return ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.lightPrimary,
-          foregroundColor: textColor ?? AppColors.lightOnPrimary,
+          backgroundColor: backgroundColor ?? AppColors.primaryLight,
+          foregroundColor: textColor ?? AppColors.onPrimary,
           elevation: 2,
-          shadowColor: AppColors.lightPrimary.withOpacity(0.3),
+          shadowColor: AppColors.primaryLight.withOpacity(0.3),
         );
       case ButtonType.secondary:
         return ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.lightSecondary,
-          foregroundColor: textColor ?? AppColors.lightOnSecondary,
+          backgroundColor: backgroundColor ?? AppColors.secondaryLight,
+          foregroundColor: textColor ?? AppColors.onSecondary,
           elevation: 2,
-          shadowColor: AppColors.lightSecondary.withOpacity(0.3),
+          shadowColor: AppColors.secondaryLight.withOpacity(0.3),
         );
       case ButtonType.outline:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          foregroundColor: textColor ?? AppColors.lightPrimary,
+          foregroundColor: textColor ?? AppColors.primaryLight,
           side: BorderSide(
-            color: AppColors.lightPrimary,
+            color: AppColors.primaryLight,
             width: 1.5,
           ),
           elevation: 0,
@@ -130,16 +130,16 @@ class CustomButton extends StatelessWidget {
       case ButtonType.text:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          foregroundColor: textColor ?? AppColors.lightPrimary,
+          foregroundColor: textColor ?? AppColors.primary,
           elevation: 0,
           shadowColor: Colors.transparent,
         );
       case ButtonType.danger:
         return ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.lightError,
-          foregroundColor: textColor ?? AppColors.lightOnError,
+          backgroundColor: backgroundColor ?? AppColors.error,
+          foregroundColor: textColor ?? AppColors.error,
           elevation: 2,
-          shadowColor: AppColors.lightError.withOpacity(0.3),
+          shadowColor: AppColors.error.withOpacity(0.3),
         );
     }
   }
@@ -186,14 +186,14 @@ class CustomButton extends StatelessWidget {
 
     switch (type) {
       case ButtonType.primary:
-        return AppColors.lightOnPrimary;
+        return AppColors.onPrimary;
       case ButtonType.secondary:
-        return AppColors.lightOnSecondary;
+        return AppColors.onSecondary;
       case ButtonType.outline:
       case ButtonType.text:
-        return AppColors.lightPrimary;
+        return AppColors.primaryLight;
       case ButtonType.danger:
-        return AppColors.lightOnError;
+        return AppColors.error;
     }
   }
 

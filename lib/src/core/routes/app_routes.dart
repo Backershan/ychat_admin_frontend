@@ -2,6 +2,7 @@ class AppRoutes {
   // Authentication routes
   static const String login = '/login';
   static const String register = '/register';
+  static const String registerSuperAdmin = '/register-super-admin';
   
   // Main app routes
   static const String home = '/';
@@ -31,6 +32,7 @@ class AppRouteNames {
   // Authentication
   static const String login = 'login';
   static const String register = 'register';
+  static const String registerSuperAdmin = 'registerSuperAdmin';
   
   // Main app
   static const String home = 'home';

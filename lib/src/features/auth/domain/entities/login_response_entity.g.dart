@@ -27,10 +27,12 @@ _$LoginDataEntityImpl _$$LoginDataEntityImplFromJson(
 ) => _$LoginDataEntityImpl(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String,
-  phone: json['phone'] as String,
   email: json['email'] as String,
-  role: json['role'] as String,
+  role: json['role'] as bool,
   token: json['token'] as String,
+  refreshToken: json['refreshToken'] as String,
+  expiresAt: DateTime.parse(json['expiresAt'] as String),
+  refreshTokenExpiry: DateTime.parse(json['refreshTokenExpiry'] as String),
 );
 
 Map<String, dynamic> _$$LoginDataEntityImplToJson(
@@ -38,8 +40,10 @@ Map<String, dynamic> _$$LoginDataEntityImplToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'phone': instance.phone,
   'email': instance.email,
   'role': instance.role,
   'token': instance.token,
+  'refreshToken': instance.refreshToken,
+  'expiresAt': instance.expiresAt.toIso8601String(),
+  'refreshTokenExpiry': instance.refreshTokenExpiry.toIso8601String(),
 };

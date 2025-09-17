@@ -20,10 +20,12 @@ class LoginDataEntity with _$LoginDataEntity {
   const factory LoginDataEntity({
     required int id,
     required String name,
-    required String phone,
     required String email,
-    required String role,
+    required bool role,
     required String token,
+    required String refreshToken,
+    required DateTime expiresAt,
+    required DateTime refreshTokenExpiry,
   }) = _LoginDataEntity;
 
   factory LoginDataEntity.fromJson(Map<String, dynamic> json) =>

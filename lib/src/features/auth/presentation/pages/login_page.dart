@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/core/constants/constants.dart';
 import 'package:y_chat_admin/src/core/widgets/primary_button.dart';
 import 'package:y_chat_admin/src/core/widgets/input_field.dart';
+import 'package:y_chat_admin/src/core/widgets/debug_connection_widget.dart';
 import 'package:y_chat_admin/src/core/routes/app_routes.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
@@ -20,8 +21,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _showDebugWidget = false;
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -41,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       developer.log('🔐 Attempting login', name: 'LoginPage');
       context.read<AuthBloc>().add(
         LoginEvent(
-          username: _usernameController.text.trim(),
+          email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         ),
       );
@@ -49,8 +51,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigateToRegister() {
-    developer.log('🧭 Navigating to register page', name: 'LoginPage');
-    context.push(AppRoutes.register);
+    developer.log('🧭 Navigating to register page for admin user', name: 'LoginPage');
+    context.push('${AppRoutes.register}?isAdmin=true');
   }
 
   @override
@@ -70,10 +72,31 @@ class _LoginPageState extends State<LoginPage> {
               unauthenticated: () {},
               error: (message) {
                 developer.log('❌ Login error: $message', name: 'LoginPage');
+                
+                // Check if it's a connection error
+                if (message.contains('Cannot connect to backend server') || 
+                    message.contains('No internet connection')) {
+                  setState(() {
+                    _showDebugWidget = true;
+                  });
+                }
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(message),
                     backgroundColor: AppColors.error,
+                    action: message.contains('Cannot connect to backend server') || 
+                            message.contains('No internet connection')
+                        ? SnackBarAction(
+                            label: 'Debug',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              setState(() {
+                                _showDebugWidget = true;
+                              });
+                            },
+                          )
+                        : null,
                   ),
                 );
               },
@@ -99,6 +122,34 @@ class _LoginPageState extends State<LoginPage> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
+                  if (_showDebugWidget)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Connection Debug'),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showDebugWidget = false;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                            const DebugConnectionWidget(),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               );
             },
@@ -112,20 +163,34 @@ class _LoginPageState extends State<LoginPage> {
     return Center(
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(),
-              SizedBox(height: 48.h),
-              _buildFormFields(),
-              SizedBox(height: 32.h),
-              _buildLoginButton(),
-              SizedBox(height: 24.h),
-              _buildRegisterButton(),
-            ],
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 400.w, // Maximum width for desktop
+          ),
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(32.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeader(),
+                    SizedBox(height: 48.h),
+                    _buildFormFields(),
+                    SizedBox(height: 32.h),
+                    _buildLoginButton(),
+                    SizedBox(height: 24.h),
+                    _buildRegisterButton(),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -170,13 +235,16 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: [
         InputField(
-          controller: _usernameController,
-          label: 'Username',
-          hint: 'Enter your username',
+          controller: _emailController,
+          label: 'Email',
+          hint: 'Enter your email',
           textInputAction: TextInputAction.next,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Username is required';
+              return 'Email is required';
+            }
+            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              return 'Please enter a valid email address';
             }
             return null;
           },

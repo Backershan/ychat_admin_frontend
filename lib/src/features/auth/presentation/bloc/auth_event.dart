@@ -5,29 +5,25 @@ part 'auth_event.freezed.dart';
 @freezed
 class AuthEvent with _$AuthEvent {
   const factory AuthEvent.login({
-    required String username,
+    required String email,
     required String password,
   }) = LoginEvent;
 
   const factory AuthEvent.register({
-    required String username,
     required String email,
     required String password,
     required String confirmPassword,
-    required String firstName,
-    required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
-    @Default(false) bool isAdmin,
+    required String firstname,
+    required String lastname,
+    @Default(false) bool role,
   }) = RegisterEvent;
 
   const factory AuthEvent.registerSuperAdmin({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
     required String phone,
     required String password,
-    String? location,
   }) = RegisterSuperAdminEvent;
 
   const factory AuthEvent.logout() = LogoutEvent;
@@ -50,4 +46,6 @@ class AuthEvent with _$AuthEvent {
   }) = UpdateProfileEvent;
 
   const factory AuthEvent.clearError() = ClearErrorEvent;
+
+  const factory AuthEvent.initializeAuth() = InitializeAuthEvent;
 }

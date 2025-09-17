@@ -7,31 +7,24 @@ import 'package:y_chat_admin/src/features/auth/domain/entities/login_response_en
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthEntity> login({
-    required String username,
+  Future<LoginResponseEntity> login({
+    required String email,
     required String password,
   });
 
-  Future<AuthEntity> register({
-    required String username,
+  Future<LoginResponseEntity> register({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+    bool role = false,
   });
 
-  Future<AuthEntity> createAdminUser({
-    required String username,
+  Future<LoginResponseEntity> createAdminUser({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
   });
 
   Future<void> logout();
@@ -50,17 +43,13 @@ abstract class AuthRemoteDataSource {
   Future<void> updateProfile({
     String? firstName,
     String? lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
   });
 
   Future<SuperAdminResponseEntity> registerSuperAdmin({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
-    required String phone,
     required String password,
-    String? location,
   });
 }
 
@@ -70,15 +59,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required Dio dio}) : _dio = dio;
 
   @override
-  Future<AuthEntity> login({
-    required String username,
+  Future<LoginResponseEntity> login({
+    required String email,
     required String password,
   }) async {
     try {
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.loginEndpoint}',
         data: {
-          'email': username, // Use email for login
+          'email': email,
           'password': password,
         },
         options: Options(
@@ -87,35 +76,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        final loginResponse = LoginResponseEntity.fromJson(response.data);
-        
-        if (loginResponse.success) {
-          final data = loginResponse.data;
-          return AuthEntity(
-            token: data.token,
-            refreshToken: '', // Your API doesn't provide refresh token
-            user: UserEntity(
-              id: data.id.toString(),
-              username: data.name, // Using name as username
-              email: data.email,
-              firstName: data.name.split(' ').first,
-              lastName: data.name.split(' ').length > 1 
-                  ? data.name.split(' ').skip(1).join(' ') 
-                  : '',
-              role: data.role,
-              isActive: true,
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              phoneNumber: data.phone,
-            ),
-            expiresAt: DateTime.now().add(const Duration(hours: 24)), // Default 24 hours
-          );
-        } else {
-          throw ServerFailure(
-            message: loginResponse.message,
-            statusCode: 400,
-          );
-        }
+        // Parse response - backend returns boolean role, keep as is
+        final responseData = response.data;
+        return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
           message: response.data['message'] ?? 'Login failed',
@@ -130,56 +93,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthEntity> register({
-    required String username,
+  Future<LoginResponseEntity> register({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+    bool role = false,
   }) async {
     try {
+      final requestData = {
+        'email': email,
+        'password': password,
+        'firstname': firstName,   // Backend expects camelCase
+        'lastname': lastName,     // Backend expects camelCase
+        'role': role,             // Backend expects boolean role
+      };
+      
+      print('📤 Sending registration data: $requestData');
+      
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.registerEndpoint}',
-        data: {
-          'email': email,
-          'password': password,
-          'phone': phoneNumber ?? '+1234567890', // Required field for your backend
-          'username': username,
-          'firstName': firstName,
-          'lastName': lastName,
-          if (department != null) 'department': department,
-          if (position != null) 'position': position,
-        },
+        data: requestData,
         options: Options(
           headers: ApiConfig.defaultHeaders,
         ),
       );
 
-      if (response.statusCode == 201) {
-        final data = response.data;
-        return AuthEntity(
-          token: data['token'] ?? '',
-          refreshToken: data['refreshToken'] ?? '',
-          user: UserEntity(
-            id: data['user']['id'] ?? '',
-            username: data['user']['username'] ?? '',
-            email: data['user']['email'] ?? '',
-            firstName: data['user']['firstName'] ?? '',
-            lastName: data['user']['lastName'] ?? '',
-            role: data['user']['role'] ?? 'user',
-            isActive: data['user']['isActive'] ?? true,
-            createdAt: DateTime.parse(data['user']['createdAt'] ?? DateTime.now().toIso8601String()),
-            updatedAt: DateTime.parse(data['user']['updatedAt'] ?? DateTime.now().toIso8601String()),
-            avatar: data['user']['avatar'],
-            phoneNumber: data['user']['phoneNumber'],
-            department: data['user']['department'],
-            position: data['user']['position'],
-          ),
-          expiresAt: DateTime.parse(data['expiresAt'] ?? DateTime.now().add(const Duration(hours: 24)).toIso8601String()),
-        );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Parse response - backend returns boolean role, keep as is
+        final responseData = response.data;
+        return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
           message: response.data['message'] ?? 'Registration failed',
@@ -194,15 +137,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthEntity> createAdminUser({
-    required String username,
+  Future<LoginResponseEntity> createAdminUser({
     required String email,
     required String password,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+
   }) async {
     try {
       final response = await _dio.post(
@@ -210,13 +150,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {
           'email': email,
           'password': password,
-          'phone': phoneNumber ?? '+1234567890', // Required field for your backend
-          'username': username,
-          'firstName': firstName,
-          'lastName': lastName,
-          'role': 'admin',
-          if (department != null) 'department': department,
-          if (position != null) 'position': position,
+          'firstname': firstName,   // Backend expects camelCase
+          'lastname': lastName,     // Backend expects camelCase
+          'role': true,             // Backend expects boolean role
         },
         options: Options(
           headers: ApiConfig.defaultHeaders,
@@ -224,27 +160,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 201) {
-        final data = response.data;
-        return AuthEntity(
-          token: data['token'] ?? '',
-          refreshToken: data['refreshToken'] ?? '',
-          user: UserEntity(
-            id: data['user']['id'] ?? '',
-            username: data['user']['username'] ?? '',
-            email: data['user']['email'] ?? '',
-            firstName: data['user']['firstName'] ?? '',
-            lastName: data['user']['lastName'] ?? '',
-            role: data['user']['role'] ?? 'admin',
-            isActive: data['user']['isActive'] ?? true,
-            createdAt: DateTime.parse(data['user']['createdAt'] ?? DateTime.now().toIso8601String()),
-            updatedAt: DateTime.parse(data['user']['updatedAt'] ?? DateTime.now().toIso8601String()),
-            avatar: data['user']['avatar'],
-            phoneNumber: data['user']['phoneNumber'],
-            department: data['user']['department'],
-            position: data['user']['position'],
-          ),
-          expiresAt: DateTime.parse(data['expiresAt'] ?? DateTime.now().add(const Duration(hours: 24)).toIso8601String()),
-        );
+        // Parse response - backend returns boolean role, keep as is
+        final responseData = response.data;
+        return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
           message: response.data['message'] ?? 'Admin user creation failed',
@@ -288,7 +206,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<bool> isAuthenticated() async {
     try {
       final response = await _dio.get(
-        '${ApiConfig.baseUrl}/auth/me',
+        '${ApiConfig.baseUrl}${ApiConfig.profileEndpoint}',
         options: Options(
           headers: ApiConfig.defaultHeaders,
         ),
@@ -308,7 +226,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<UserEntity> getCurrentUser() async {
     try {
       final response = await _dio.get(
-        '${ApiConfig.baseUrl}/auth/me',
+        '${ApiConfig.baseUrl}${ApiConfig.profileEndpoint}',
         options: Options(
           headers: ApiConfig.defaultHeaders,
         ),
@@ -317,15 +235,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (response.statusCode == 200) {
         final data = response.data;
         return UserEntity(
-          id: data['id'] ?? '',
-          username: data['username'] ?? '',
+          id: data['id'] ?? 0,
+          name: data['name'] ?? data['username'] ?? '',
           email: data['email'] ?? '',
-          firstName: data['firstName'] ?? '',
-          lastName: data['lastName'] ?? '',
-          role: data['role'] ?? 'user',
-          isActive: data['isActive'] ?? true,
-          createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-          updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+          username: data['username'],
+          firstName: data['firstName'],
+          lastName: data['lastName'],
+          role: data['role'] ?? false,
+          isActive: data['isActive'],
+          createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
+          updatedAt: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
           avatar: data['avatar'],
           phoneNumber: data['phoneNumber'],
           department: data['department'],
@@ -351,7 +270,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthEntity> refreshToken() async {
     try {
       final response = await _dio.post(
-        '${ApiConfig.baseUrl}/auth/refresh',
+        '${ApiConfig.baseUrl}${ApiConfig.refreshTokenEndpoint}',
         options: Options(
           headers: ApiConfig.defaultHeaders,
         ),
@@ -363,24 +282,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           token: data['token'] ?? '',
           refreshToken: data['refreshToken'] ?? '',
           user: UserEntity(
-            id: data['user']['id'] ?? '',
-            username: data['user']['username'] ?? '',
+            id: data['user']['id'] ?? 0,
+            name: data['user']['name'] ?? '${data['user']['firstName'] ?? ''} ${data['user']['lastName'] ?? ''}'.trim(),
             email: data['user']['email'] ?? '',
-            firstName: data['user']['firstName'] ?? '',
-            lastName: data['user']['lastName'] ?? '',
-            role: data['user']['role'] ?? 'user',
-            isActive: data['user']['isActive'] ?? true,
-            createdAt: DateTime.parse(data['user']['createdAt'] ?? DateTime.now().toIso8601String()),
-            updatedAt: DateTime.parse(data['user']['updatedAt'] ?? DateTime.now().toIso8601String()),
+            role: data['user']['role'] ?? false,
+            firstName: data['user']['firstName'],
+            lastName: data['user']['lastName'],
+            isActive: data['user']['isActive'],
+            createdAt: data['user']['createdAt'] != null ? DateTime.parse(data['user']['createdAt']) : null,
+            updatedAt: data['user']['updatedAt'] != null ? DateTime.parse(data['user']['updatedAt']) : null,
             avatar: data['user']['avatar'],
-            phoneNumber: data['user']['phoneNumber'],
-            department: data['user']['department'],
-            position: data['user']['position'],
-            lastLoginAt: data['user']['lastLoginAt'] != null 
-                ? DateTime.parse(data['user']['lastLoginAt']) 
+            lastLoginAt: data['user']['lastLoginAt'] != null
+                ? DateTime.parse(data['user']['lastLoginAt'])
                 : null,
           ),
           expiresAt: DateTime.parse(data['expiresAt'] ?? DateTime.now().add(const Duration(hours: 24)).toIso8601String()),
+          refreshTokenExpiry: DateTime.parse(data['refreshTokenExpiry'] ?? DateTime.now().add(const Duration(days: 7)).toIso8601String()),
         );
       } else {
         throw ServerFailure(
@@ -429,19 +346,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> updateProfile({
     String? firstName,
     String? lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
+  
   }) async {
     try {
       final response = await _dio.put(
         '${ApiConfig.baseUrl}/auth/profile',
         data: {
-          if (firstName != null) 'firstName': firstName,
-          if (lastName != null) 'lastName': lastName,
-          if (phoneNumber != null) 'phoneNumber': phoneNumber,
-          if (department != null) 'department': department,
-          if (position != null) 'position': position,
+          if (firstName != null) 'firstname': firstName,
+          if (lastName != null) 'lastname': lastName,
+         
         },
         options: Options(
           headers: ApiConfig.defaultHeaders,
@@ -463,35 +376,44 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<SuperAdminResponseEntity> registerSuperAdmin({
-    required String name,
+    String? firstName,
+    String? lastName,
     required String email,
-    required String phone,
     required String password,
-    String? location,
   }) async {
     try {
       final response = await _dio.post(
-        '${ApiConfig.baseUrl}${ApiConfig.registerSuperAdminEndpoint}',
+        '${ApiConfig.baseUrl}${ApiConfig.registerEndpoint}',
         data: {
-          'name': name,
           'email': email,
-          'phone': phone,
           'password': password,
-          'location': location ?? 'Mountain View, United States',
+          'role': true,  // Super admin is always true
+          if (firstName != null) 'firstname': firstName,
+          if (lastName != null) 'lastname': lastName,
         },
         options: Options(
           headers: ApiConfig.defaultHeaders,
         ),
       );
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        return SuperAdminResponseEntity.fromJson(response.data);
-      } else {
-        throw ServerFailure(
-          message: response.data['message'] ?? 'SuperAdmin registration failed',
-          statusCode: response.statusCode,
-        );
-      }
+          if (response.statusCode == 201 || response.statusCode == 200) {
+            // Parse response and convert string role to boolean role
+            final responseData = response.data;
+            if (responseData is Map<String, dynamic> && responseData['data'] is Map<String, dynamic>) {
+              final data = responseData['data'] as Map<String, dynamic>;
+              data['role'] = data['role'] == 'admin' || data['role'] == 'super_admin';
+              // Add name field if it doesn't exist
+              if (!data.containsKey('name')) {
+                data['name'] = '${data['firstname'] ?? ''} ${data['lastname'] ?? ''}'.trim();
+              }
+            }
+            return SuperAdminResponseEntity.fromJson(responseData);
+          } else {
+            throw ServerFailure(
+              message: response.data['message'] ?? 'SuperAdmin registration failed',
+              statusCode: response.statusCode,
+            );
+          }
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (e) {
@@ -507,7 +429,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return TimeoutFailure(message: 'Request timeout');
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        final message = e.response?.data?['message'] ?? 'Server error';
+        final responseData = e.response?.data;
+        String message = 'Server error';
+        
+        // Try to extract error message from different possible response formats
+        if (responseData is Map<String, dynamic>) {
+          message = responseData['message'] ?? 
+                   responseData['error'] ?? 
+                   responseData['detail'] ?? 
+                   'Server error';
+        } else if (responseData is String) {
+          message = responseData;
+        }
+        
+        // Add status code to message for debugging
+        message = '$message (Status: $statusCode)';
+        
         switch (statusCode) {
           case 401:
             return UnauthorizedFailure(message: message);
@@ -515,6 +452,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             return ForbiddenFailure(message: message);
           case 404:
             return NotFoundFailure(message: message);
+          case 422:
+            return ValidationFailure(message: message);
+          case 500:
+            return ServerFailure(
+              message: 'Internal server error: $message',
+              statusCode: statusCode,
+            );
           default:
             return ServerFailure(
               message: message,
@@ -524,7 +468,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       case DioExceptionType.cancel:
         return UnknownFailure(message: 'Request cancelled');
       case DioExceptionType.connectionError:
-        return NetworkFailure(message: 'No internet connection');
+        return NetworkFailure(
+          message: 'Cannot connect to backend server. Please check:\n'
+              '1. Backend server is running\n'
+              '2. Correct port (trying: ${ApiConfig.baseUrl})\n'
+              '3. Network connection\n'
+              '4. Firewall settings'
+        );
       default:
         return UnknownFailure(message: 'Network error: ${e.message}');
     }

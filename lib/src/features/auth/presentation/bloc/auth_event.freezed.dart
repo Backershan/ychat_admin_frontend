@@ -19,18 +19,14 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AuthEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -55,21 +51,18 @@ mixin _$AuthEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -94,21 +87,18 @@ mixin _$AuthEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -133,6 +123,7 @@ mixin _$AuthEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -146,6 +137,7 @@ mixin _$AuthEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -158,6 +150,7 @@ mixin _$AuthEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -170,6 +163,7 @@ mixin _$AuthEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -201,7 +195,7 @@ abstract class _$$LoginEventImplCopyWith<$Res> {
     $Res Function(_$LoginEventImpl) then,
   ) = __$$LoginEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String username, String password});
+  $Res call({String email, String password});
 }
 
 /// @nodoc
@@ -217,12 +211,12 @@ class __$$LoginEventImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? username = null, Object? password = null}) {
+  $Res call({Object? email = null, Object? password = null}) {
     return _then(
       _$LoginEventImpl(
-        username: null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
+        email: null == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
                   as String,
         password: null == password
             ? _value.password
@@ -236,16 +230,16 @@ class __$$LoginEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoginEventImpl implements LoginEvent {
-  const _$LoginEventImpl({required this.username, required this.password});
+  const _$LoginEventImpl({required this.email, required this.password});
 
   @override
-  final String username;
+  final String email;
   @override
   final String password;
 
   @override
   String toString() {
-    return 'AuthEvent.login(username: $username, password: $password)';
+    return 'AuthEvent.login(email: $email, password: $password)';
   }
 
   @override
@@ -253,14 +247,13 @@ class _$LoginEventImpl implements LoginEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginEventImpl &&
-            (identical(other.username, username) ||
-                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, username, password);
+  int get hashCode => Object.hash(runtimeType, email, password);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -273,18 +266,14 @@ class _$LoginEventImpl implements LoginEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -309,25 +298,22 @@ class _$LoginEventImpl implements LoginEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
-    return login(username, password);
+    return login(email, password);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -352,25 +338,22 @@ class _$LoginEventImpl implements LoginEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
-    return login?.call(username, password);
+    return login?.call(email, password);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -395,10 +378,11 @@ class _$LoginEventImpl implements LoginEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (login != null) {
-      return login(username, password);
+      return login(email, password);
     }
     return orElse();
   }
@@ -415,6 +399,7 @@ class _$LoginEventImpl implements LoginEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return login(this);
   }
@@ -431,6 +416,7 @@ class _$LoginEventImpl implements LoginEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return login?.call(this);
   }
@@ -447,6 +433,7 @@ class _$LoginEventImpl implements LoginEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (login != null) {
@@ -458,11 +445,11 @@ class _$LoginEventImpl implements LoginEvent {
 
 abstract class LoginEvent implements AuthEvent {
   const factory LoginEvent({
-    required final String username,
+    required final String email,
     required final String password,
   }) = _$LoginEventImpl;
 
-  String get username;
+  String get email;
   String get password;
 
   /// Create a copy of AuthEvent
@@ -480,16 +467,12 @@ abstract class _$$RegisterEventImplCopyWith<$Res> {
   ) = __$$RegisterEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({
-    String username,
     String email,
     String password,
     String confirmPassword,
-    String firstName,
-    String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
-    bool isAdmin,
+    String firstname,
+    String lastname,
+    bool role,
   });
 }
 
@@ -507,23 +490,15 @@ class __$$RegisterEventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
     Object? email = null,
     Object? password = null,
     Object? confirmPassword = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? phoneNumber = freezed,
-    Object? department = freezed,
-    Object? position = freezed,
-    Object? isAdmin = null,
+    Object? firstname = null,
+    Object? lastname = null,
+    Object? role = null,
   }) {
     return _then(
       _$RegisterEventImpl(
-        username: null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
-                  as String,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
@@ -536,29 +511,17 @@ class __$$RegisterEventImplCopyWithImpl<$Res>
             ? _value.confirmPassword
             : confirmPassword // ignore: cast_nullable_to_non_nullable
                   as String,
-        firstName: null == firstName
-            ? _value.firstName
-            : firstName // ignore: cast_nullable_to_non_nullable
+        firstname: null == firstname
+            ? _value.firstname
+            : firstname // ignore: cast_nullable_to_non_nullable
                   as String,
-        lastName: null == lastName
-            ? _value.lastName
-            : lastName // ignore: cast_nullable_to_non_nullable
+        lastname: null == lastname
+            ? _value.lastname
+            : lastname // ignore: cast_nullable_to_non_nullable
                   as String,
-        phoneNumber: freezed == phoneNumber
-            ? _value.phoneNumber
-            : phoneNumber // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        department: freezed == department
-            ? _value.department
-            : department // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        position: freezed == position
-            ? _value.position
-            : position // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        isAdmin: null == isAdmin
-            ? _value.isAdmin
-            : isAdmin // ignore: cast_nullable_to_non_nullable
+        role: null == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
                   as bool,
       ),
     );
@@ -569,20 +532,14 @@ class __$$RegisterEventImplCopyWithImpl<$Res>
 
 class _$RegisterEventImpl implements RegisterEvent {
   const _$RegisterEventImpl({
-    required this.username,
     required this.email,
     required this.password,
     required this.confirmPassword,
-    required this.firstName,
-    required this.lastName,
-    this.phoneNumber,
-    this.department,
-    this.position,
-    this.isAdmin = false,
+    required this.firstname,
+    required this.lastname,
+    this.role = false,
   });
 
-  @override
-  final String username;
   @override
   final String email;
   @override
@@ -590,22 +547,16 @@ class _$RegisterEventImpl implements RegisterEvent {
   @override
   final String confirmPassword;
   @override
-  final String firstName;
+  final String firstname;
   @override
-  final String lastName;
-  @override
-  final String? phoneNumber;
-  @override
-  final String? department;
-  @override
-  final String? position;
+  final String lastname;
   @override
   @JsonKey()
-  final bool isAdmin;
+  final bool role;
 
   @override
   String toString() {
-    return 'AuthEvent.register(username: $username, email: $email, password: $password, confirmPassword: $confirmPassword, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, department: $department, position: $position, isAdmin: $isAdmin)';
+    return 'AuthEvent.register(email: $email, password: $password, confirmPassword: $confirmPassword, firstname: $firstname, lastname: $lastname, role: $role)';
   }
 
   @override
@@ -613,39 +564,27 @@ class _$RegisterEventImpl implements RegisterEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RegisterEventImpl &&
-            (identical(other.username, username) ||
-                other.username == username) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.confirmPassword, confirmPassword) ||
                 other.confirmPassword == confirmPassword) &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.phoneNumber, phoneNumber) ||
-                other.phoneNumber == phoneNumber) &&
-            (identical(other.department, department) ||
-                other.department == department) &&
-            (identical(other.position, position) ||
-                other.position == position) &&
-            (identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin));
+            (identical(other.firstname, firstname) ||
+                other.firstname == firstname) &&
+            (identical(other.lastname, lastname) ||
+                other.lastname == lastname) &&
+            (identical(other.role, role) || other.role == role));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    username,
     email,
     password,
     confirmPassword,
-    firstName,
-    lastName,
-    phoneNumber,
-    department,
-    position,
-    isAdmin,
+    firstname,
+    lastname,
+    role,
   );
 
   /// Create a copy of AuthEvent
@@ -659,18 +598,14 @@ class _$RegisterEventImpl implements RegisterEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -695,36 +630,29 @@ class _$RegisterEventImpl implements RegisterEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return register(
-      username,
       email,
       password,
       confirmPassword,
-      firstName,
-      lastName,
-      phoneNumber,
-      department,
-      position,
-      isAdmin,
+      firstname,
+      lastname,
+      role,
     );
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -749,36 +677,29 @@ class _$RegisterEventImpl implements RegisterEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return register?.call(
-      username,
       email,
       password,
       confirmPassword,
-      firstName,
-      lastName,
-      phoneNumber,
-      department,
-      position,
-      isAdmin,
+      firstname,
+      lastname,
+      role,
     );
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -803,20 +724,17 @@ class _$RegisterEventImpl implements RegisterEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (register != null) {
       return register(
-        username,
         email,
         password,
         confirmPassword,
-        firstName,
-        lastName,
-        phoneNumber,
-        department,
-        position,
-        isAdmin,
+        firstname,
+        lastname,
+        role,
       );
     }
     return orElse();
@@ -834,6 +752,7 @@ class _$RegisterEventImpl implements RegisterEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return register(this);
   }
@@ -850,6 +769,7 @@ class _$RegisterEventImpl implements RegisterEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return register?.call(this);
   }
@@ -866,6 +786,7 @@ class _$RegisterEventImpl implements RegisterEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (register != null) {
@@ -877,28 +798,20 @@ class _$RegisterEventImpl implements RegisterEvent {
 
 abstract class RegisterEvent implements AuthEvent {
   const factory RegisterEvent({
-    required final String username,
     required final String email,
     required final String password,
     required final String confirmPassword,
-    required final String firstName,
-    required final String lastName,
-    final String? phoneNumber,
-    final String? department,
-    final String? position,
-    final bool isAdmin,
+    required final String firstname,
+    required final String lastname,
+    final bool role,
   }) = _$RegisterEventImpl;
 
-  String get username;
   String get email;
   String get password;
   String get confirmPassword;
-  String get firstName;
-  String get lastName;
-  String? get phoneNumber;
-  String? get department;
-  String? get position;
-  bool get isAdmin;
+  String get firstname;
+  String get lastname;
+  bool get role;
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1029,18 +942,14 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -1065,6 +974,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return registerSuperAdmin(name, email, phone, password, location);
   }
@@ -1072,18 +982,14 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -1108,6 +1014,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return registerSuperAdmin?.call(name, email, phone, password, location);
   }
@@ -1115,18 +1022,14 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -1151,6 +1054,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (registerSuperAdmin != null) {
@@ -1171,6 +1075,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return registerSuperAdmin(this);
   }
@@ -1187,6 +1092,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return registerSuperAdmin?.call(this);
   }
@@ -1203,6 +1109,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (registerSuperAdmin != null) {
@@ -1277,18 +1184,14 @@ class _$LogoutEventImpl implements LogoutEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -1313,6 +1216,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return logout();
   }
@@ -1320,18 +1224,14 @@ class _$LogoutEventImpl implements LogoutEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -1356,6 +1256,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return logout?.call();
   }
@@ -1363,18 +1264,14 @@ class _$LogoutEventImpl implements LogoutEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -1399,6 +1296,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -1419,6 +1317,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return logout(this);
   }
@@ -1435,6 +1334,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return logout?.call(this);
   }
@@ -1451,6 +1351,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (logout != null) {
@@ -1508,18 +1409,14 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -1544,6 +1441,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return checkAuthStatus();
   }
@@ -1551,18 +1449,14 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -1587,6 +1481,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return checkAuthStatus?.call();
   }
@@ -1594,18 +1489,14 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -1630,6 +1521,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (checkAuthStatus != null) {
@@ -1650,6 +1542,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return checkAuthStatus(this);
   }
@@ -1666,6 +1559,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return checkAuthStatus?.call(this);
   }
@@ -1682,6 +1576,7 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (checkAuthStatus != null) {
@@ -1738,18 +1633,14 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -1774,6 +1665,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return refreshToken();
   }
@@ -1781,18 +1673,14 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -1817,6 +1705,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return refreshToken?.call();
   }
@@ -1824,18 +1713,14 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -1860,6 +1745,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (refreshToken != null) {
@@ -1880,6 +1766,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return refreshToken(this);
   }
@@ -1896,6 +1783,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return refreshToken?.call(this);
   }
@@ -1912,6 +1800,7 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (refreshToken != null) {
@@ -2010,18 +1899,14 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -2046,6 +1931,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return changePassword(currentPassword, newPassword);
   }
@@ -2053,18 +1939,14 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -2089,6 +1971,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return changePassword?.call(currentPassword, newPassword);
   }
@@ -2096,18 +1979,14 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -2132,6 +2011,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (changePassword != null) {
@@ -2152,6 +2032,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return changePassword(this);
   }
@@ -2168,6 +2049,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return changePassword?.call(this);
   }
@@ -2184,6 +2066,7 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (changePassword != null) {
@@ -2340,18 +2223,14 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -2376,6 +2255,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return updateProfile(
       firstName,
@@ -2389,18 +2269,14 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -2425,6 +2301,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return updateProfile?.call(
       firstName,
@@ -2438,18 +2315,14 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -2474,6 +2347,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (updateProfile != null) {
@@ -2500,6 +2374,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return updateProfile(this);
   }
@@ -2516,6 +2391,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return updateProfile?.call(this);
   }
@@ -2532,6 +2408,7 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (updateProfile != null) {
@@ -2606,18 +2483,14 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username, String password) login,
+    required TResult Function(String email, String password) login,
     required TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )
     register,
     required TResult Function(
@@ -2642,6 +2515,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )
     updateProfile,
     required TResult Function() clearError,
+    required TResult Function() initializeAuth,
   }) {
     return clearError();
   }
@@ -2649,18 +2523,14 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username, String password)? login,
+    TResult? Function(String email, String password)? login,
     TResult? Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult? Function(
@@ -2685,6 +2555,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )?
     updateProfile,
     TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
   }) {
     return clearError?.call();
   }
@@ -2692,18 +2563,14 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username, String password)? login,
+    TResult Function(String email, String password)? login,
     TResult Function(
-      String username,
       String email,
       String password,
       String confirmPassword,
-      String firstName,
-      String lastName,
-      String? phoneNumber,
-      String? department,
-      String? position,
-      bool isAdmin,
+      String firstname,
+      String lastname,
+      bool role,
     )?
     register,
     TResult Function(
@@ -2728,6 +2595,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )?
     updateProfile,
     TResult Function()? clearError,
+    TResult Function()? initializeAuth,
     required TResult orElse(),
   }) {
     if (clearError != null) {
@@ -2748,6 +2616,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     required TResult Function(ChangePasswordEvent value) changePassword,
     required TResult Function(UpdateProfileEvent value) updateProfile,
     required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
   }) {
     return clearError(this);
   }
@@ -2764,6 +2633,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     TResult? Function(ChangePasswordEvent value)? changePassword,
     TResult? Function(UpdateProfileEvent value)? updateProfile,
     TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
   }) {
     return clearError?.call(this);
   }
@@ -2780,6 +2650,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     TResult Function(ChangePasswordEvent value)? changePassword,
     TResult Function(UpdateProfileEvent value)? updateProfile,
     TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
     required TResult orElse(),
   }) {
     if (clearError != null) {
@@ -2791,4 +2662,229 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
 
 abstract class ClearErrorEvent implements AuthEvent {
   const factory ClearErrorEvent() = _$ClearErrorEventImpl;
+}
+
+/// @nodoc
+abstract class _$$InitializeAuthEventImplCopyWith<$Res> {
+  factory _$$InitializeAuthEventImplCopyWith(
+    _$InitializeAuthEventImpl value,
+    $Res Function(_$InitializeAuthEventImpl) then,
+  ) = __$$InitializeAuthEventImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$InitializeAuthEventImplCopyWithImpl<$Res>
+    extends _$AuthEventCopyWithImpl<$Res, _$InitializeAuthEventImpl>
+    implements _$$InitializeAuthEventImplCopyWith<$Res> {
+  __$$InitializeAuthEventImplCopyWithImpl(
+    _$InitializeAuthEventImpl _value,
+    $Res Function(_$InitializeAuthEventImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AuthEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$InitializeAuthEventImpl implements InitializeAuthEvent {
+  const _$InitializeAuthEventImpl();
+
+  @override
+  String toString() {
+    return 'AuthEvent.initializeAuth()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$InitializeAuthEventImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email, String password) login,
+    required TResult Function(
+      String email,
+      String password,
+      String confirmPassword,
+      String firstname,
+      String lastname,
+      bool role,
+    )
+    register,
+    required TResult Function(
+      String name,
+      String email,
+      String phone,
+      String password,
+      String? location,
+    )
+    registerSuperAdmin,
+    required TResult Function() logout,
+    required TResult Function() checkAuthStatus,
+    required TResult Function() refreshToken,
+    required TResult Function(String currentPassword, String newPassword)
+    changePassword,
+    required TResult Function(
+      String? firstName,
+      String? lastName,
+      String? phoneNumber,
+      String? department,
+      String? position,
+    )
+    updateProfile,
+    required TResult Function() clearError,
+    required TResult Function() initializeAuth,
+  }) {
+    return initializeAuth();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email, String password)? login,
+    TResult? Function(
+      String email,
+      String password,
+      String confirmPassword,
+      String firstname,
+      String lastname,
+      bool role,
+    )?
+    register,
+    TResult? Function(
+      String name,
+      String email,
+      String phone,
+      String password,
+      String? location,
+    )?
+    registerSuperAdmin,
+    TResult? Function()? logout,
+    TResult? Function()? checkAuthStatus,
+    TResult? Function()? refreshToken,
+    TResult? Function(String currentPassword, String newPassword)?
+    changePassword,
+    TResult? Function(
+      String? firstName,
+      String? lastName,
+      String? phoneNumber,
+      String? department,
+      String? position,
+    )?
+    updateProfile,
+    TResult? Function()? clearError,
+    TResult? Function()? initializeAuth,
+  }) {
+    return initializeAuth?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email, String password)? login,
+    TResult Function(
+      String email,
+      String password,
+      String confirmPassword,
+      String firstname,
+      String lastname,
+      bool role,
+    )?
+    register,
+    TResult Function(
+      String name,
+      String email,
+      String phone,
+      String password,
+      String? location,
+    )?
+    registerSuperAdmin,
+    TResult Function()? logout,
+    TResult Function()? checkAuthStatus,
+    TResult Function()? refreshToken,
+    TResult Function(String currentPassword, String newPassword)?
+    changePassword,
+    TResult Function(
+      String? firstName,
+      String? lastName,
+      String? phoneNumber,
+      String? department,
+      String? position,
+    )?
+    updateProfile,
+    TResult Function()? clearError,
+    TResult Function()? initializeAuth,
+    required TResult orElse(),
+  }) {
+    if (initializeAuth != null) {
+      return initializeAuth();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoginEvent value) login,
+    required TResult Function(RegisterEvent value) register,
+    required TResult Function(RegisterSuperAdminEvent value) registerSuperAdmin,
+    required TResult Function(LogoutEvent value) logout,
+    required TResult Function(CheckAuthStatusEvent value) checkAuthStatus,
+    required TResult Function(RefreshTokenEvent value) refreshToken,
+    required TResult Function(ChangePasswordEvent value) changePassword,
+    required TResult Function(UpdateProfileEvent value) updateProfile,
+    required TResult Function(ClearErrorEvent value) clearError,
+    required TResult Function(InitializeAuthEvent value) initializeAuth,
+  }) {
+    return initializeAuth(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoginEvent value)? login,
+    TResult? Function(RegisterEvent value)? register,
+    TResult? Function(RegisterSuperAdminEvent value)? registerSuperAdmin,
+    TResult? Function(LogoutEvent value)? logout,
+    TResult? Function(CheckAuthStatusEvent value)? checkAuthStatus,
+    TResult? Function(RefreshTokenEvent value)? refreshToken,
+    TResult? Function(ChangePasswordEvent value)? changePassword,
+    TResult? Function(UpdateProfileEvent value)? updateProfile,
+    TResult? Function(ClearErrorEvent value)? clearError,
+    TResult? Function(InitializeAuthEvent value)? initializeAuth,
+  }) {
+    return initializeAuth?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoginEvent value)? login,
+    TResult Function(RegisterEvent value)? register,
+    TResult Function(RegisterSuperAdminEvent value)? registerSuperAdmin,
+    TResult Function(LogoutEvent value)? logout,
+    TResult Function(CheckAuthStatusEvent value)? checkAuthStatus,
+    TResult Function(RefreshTokenEvent value)? refreshToken,
+    TResult Function(ChangePasswordEvent value)? changePassword,
+    TResult Function(UpdateProfileEvent value)? updateProfile,
+    TResult Function(ClearErrorEvent value)? clearError,
+    TResult Function(InitializeAuthEvent value)? initializeAuth,
+    required TResult orElse(),
+  }) {
+    if (initializeAuth != null) {
+      return initializeAuth(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class InitializeAuthEvent implements AuthEvent {
+  const factory InitializeAuthEvent() = _$InitializeAuthEventImpl;
 }

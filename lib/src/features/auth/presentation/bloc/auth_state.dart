@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/user_entity.dart';
-import 'package:y_chat_admin/src/features/auth/domain/entities/super_admin_response_entity.dart';an 
+import 'package:y_chat_admin/src/features/auth/domain/entities/super_admin_response_entity.dart';
+
 part 'auth_state.freezed.dart';
 
 @freezed

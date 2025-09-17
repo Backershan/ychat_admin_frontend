@@ -1,4 +1,4 @@
-import 'package:y_chat_admin/src/features/auth/domain/entities/auth_entity.dart';
+import 'package:y_chat_admin/src/features/auth/domain/entities/login_response_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 import 'package:dartz/dartz.dart';
@@ -8,17 +8,13 @@ class RegisterUseCase {
 
   RegisterUseCase(this._authRepository);
 
-  Future<Either<Failure, AuthEntity>> call({
-    required String username,
+  Future<Either<Failure, LoginResponseEntity>> call({
     required String email,
     required String password,
     required String confirmPassword,
     required String firstName,
     required String lastName,
-    String? phoneNumber,
-    String? department,
-    String? position,
-    bool isAdmin = false,
+    bool role = false,
   }) async {
     // Validate password confirmation
     if (password != confirmPassword) {
@@ -29,14 +25,11 @@ class RegisterUseCase {
     }
 
     return await _authRepository.register(
-      username: username,
       email: email,
       password: password,
       firstName: firstName,
       lastName: lastName,
-      phoneNumber: phoneNumber,
-      department: department,
-      position: position,
+      role: role,
     );
   }
 }

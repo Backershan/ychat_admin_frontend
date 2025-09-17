@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:y_chat_admin/src/features/auth/domain/usecases/login_usecase.dart';
 import 'package:y_chat_admin/src/features/auth/domain/usecases/register_usecase.dart';
 import 'package:y_chat_admin/src/features/auth/domain/usecases/register_super_admin_usecase.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:y_chat_admin/src/features/auth/domain/entities/auth_entity.dart';
+import 'package:y_chat_admin/src/features/auth/domain/entities/user_entity.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
+import 'package:y_chat_admin/src/core/services/auth_service.dart';
 import 'dart:developer' as developer;
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -13,16 +17,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUseCase _registerUseCase;
   final RegisterSuperAdminUseCase _registerSuperAdminUseCase;
   final AuthRepository _authRepository;
+  final AuthService _authService;
+  StreamSubscription<AuthServiceState>? _authStateSubscription;
 
   AuthBloc({
     required LoginUseCase loginUseCase,
     required RegisterUseCase registerUseCase,
     required RegisterSuperAdminUseCase registerSuperAdminUseCase,
     required AuthRepository authRepository,
+    required AuthService authService,
   })  : _loginUseCase = loginUseCase,
         _registerUseCase = registerUseCase,
         _registerSuperAdminUseCase = registerSuperAdminUseCase,
         _authRepository = authRepository,
+        _authService = authService,
         super(const AuthState.initial()) {
     on<LoginEvent>(_onLogin);
     on<RegisterEvent>(_onRegister);
@@ -33,6 +41,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ChangePasswordEvent>(_onChangePassword);
     on<UpdateProfileEvent>(_onUpdateProfile);
     on<ClearErrorEvent>(_onClearError);
+    on<InitializeAuthEvent>(_onInitializeAuth);
+    
+    // Listen to auth service state changes
+    _authStateSubscription = _authService.authStateStream.listen((authState) {
+      switch (authState) {
+        case AuthServiceState.unauthenticated:
+          add(const AuthEvent.logout());
+          break;
+        case AuthServiceState.authenticated:
+          final user = _authService.currentUser;
+          if (user != null) {
+            emit(AuthState.authenticated(user: user));
+          }
+          break;
+        case AuthServiceState.accessTokenExpired:
+          add(const AuthEvent.refreshToken());
+          break;
+        case AuthServiceState.refreshTokenExpired:
+          add(const AuthEvent.logout());
+          break;
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _authStateSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
@@ -40,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.loading());
 
     final result = await _loginUseCase(
-      username: event.username,
+      email: event.email,
       password: event.password,
     );
 
@@ -49,8 +85,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         developer.log('❌ Login failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
-      (authEntity) {
-        developer.log('✅ Login successful for user: ${authEntity.user.username}', name: 'AuthBloc');
+      (loginResponse) async {
+        developer.log('✅ Login successful for user: ${loginResponse.data.name}', name: 'AuthBloc');
+        
+        // Convert LoginResponseEntity to AuthEntity
+        final authEntity = AuthEntity(
+          token: loginResponse.data.token,
+          refreshToken: loginResponse.data.refreshToken,
+          expiresAt: loginResponse.data.expiresAt,
+          refreshTokenExpiry: loginResponse.data.refreshTokenExpiry,
+          user: UserEntity(
+            id: loginResponse.data.id,
+            name: loginResponse.data.name,
+            email: loginResponse.data.email,
+            role: loginResponse.data.role,
+          ),
+        );
+        
+        await _authService.saveAuthData(authEntity);
         emit(AuthState.authenticated(user: authEntity.user));
       },
     );
@@ -61,16 +113,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.loading());
 
     final result = await _registerUseCase(
-      username: event.username,
       email: event.email,
       password: event.password,
       confirmPassword: event.confirmPassword,
-      firstName: event.firstName,
-      lastName: event.lastName,
-      phoneNumber: event.phoneNumber,
-      department: event.department,
-      position: event.position,
-      isAdmin: event.isAdmin,
+      firstName: event.firstname,
+      lastName: event.lastname,
+      role: event.role,
     );
 
     result.fold(
@@ -78,8 +126,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         developer.log('❌ Registration failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
-      (authEntity) {
-        developer.log('✅ Registration successful for user: ${authEntity.user.username}', name: 'AuthBloc');
+      (loginResponse) async {
+        developer.log('✅ Registration successful for user: ${loginResponse.data.name}', name: 'AuthBloc');
+        
+        // Convert LoginResponseEntity to AuthEntity
+        final authEntity = AuthEntity(
+          token: loginResponse.data.token,
+          refreshToken: loginResponse.data.refreshToken,
+          expiresAt: loginResponse.data.expiresAt,
+          refreshTokenExpiry: loginResponse.data.refreshTokenExpiry,
+          user: UserEntity(
+            id: loginResponse.data.id,
+            name: loginResponse.data.name,
+            email: loginResponse.data.email,
+            role: loginResponse.data.role,
+          ),
+        );
+        
+        await _authService.saveAuthData(authEntity);
         emit(AuthState.authenticated(user: authEntity.user));
       },
     );
@@ -90,11 +154,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.loading());
 
     final result = await _registerSuperAdminUseCase(
-      name: event.name,
+      firstName: event.firstName,
+      lastName: event.lastName,
       email: event.email,
       phone: event.phone,
       password: event.password,
-      location: event.location,
     );
 
     result.fold(
@@ -102,9 +166,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         developer.log('❌ SuperAdmin registration failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
-      (superAdminResponse) {
+      (superAdminResponse) async {
         developer.log('✅ SuperAdmin registration successful: ${superAdminResponse.data.name}', name: 'AuthBloc');
-        emit(AuthState.superAdminRegistered(superAdminResponse: superAdminResponse));
+        
+        // Convert SuperAdminResponseEntity to AuthEntity
+        final authEntity = AuthEntity(
+          token: superAdminResponse.data.token,
+          refreshToken: superAdminResponse.data.refreshToken,
+          expiresAt: superAdminResponse.data.expiresAt,
+          refreshTokenExpiry: superAdminResponse.data.refreshTokenExpiry,
+          user: UserEntity(
+            id: superAdminResponse.data.id,
+            name: superAdminResponse.data.name,
+            email: superAdminResponse.data.email,
+            role: superAdminResponse.data.role,
+          ),
+        );
+        
+        await _authService.saveAuthData(authEntity);
+        emit(AuthState.authenticated(user: authEntity.user));
       },
     );
   }
@@ -113,18 +193,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     developer.log('🚪 Logout event received', name: 'AuthBloc');
     emit(const AuthState.loading());
 
-    final result = await _authRepository.logout();
+    try {
+      await _authRepository.logout();
+    } catch (e) {
+      developer.log('⚠️ Logout API call failed: $e', name: 'AuthBloc');
+    }
 
-    result.fold(
-      (failure) {
-        developer.log('❌ Logout failed: ${failure.message}', name: 'AuthBloc');
-        emit(AuthState.error(message: _getErrorMessage(failure)));
-      },
-      (_) {
-        developer.log('✅ Logout successful', name: 'AuthBloc');
-        emit(const AuthState.unauthenticated());
-      },
-    );
+    await _authService.logout();
+    developer.log('✅ Logout successful', name: 'AuthBloc');
+    emit(const AuthState.unauthenticated());
   }
 
   Future<void> _onCheckAuthStatus(CheckAuthStatusEvent event, Emitter<AuthState> emit) async {
@@ -167,13 +244,44 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (failure) {
         developer.log('❌ Token refresh failed: ${failure.message}', name: 'AuthBloc');
-        emit(AuthState.error(message: _getErrorMessage(failure)));
+        // If refresh fails, logout user
+        add(const AuthEvent.logout());
       },
-      (authEntity) {
+      (authEntity) async {
         developer.log('✅ Token refreshed successfully', name: 'AuthBloc');
+        await _authService.updateTokens(
+          authEntity.token,
+          authEntity.refreshToken,
+          authEntity.expiresAt,
+        );
         emit(AuthState.authenticated(user: authEntity.user));
       },
     );
+  }
+
+  Future<void> _onInitializeAuth(InitializeAuthEvent event, Emitter<AuthState> emit) async {
+    developer.log('🚀 Initializing auth', name: 'AuthBloc');
+    
+    final currentState = _authService.currentAuthState;
+    switch (currentState) {
+      case AuthServiceState.unauthenticated:
+        emit(const AuthState.unauthenticated());
+        break;
+      case AuthServiceState.authenticated:
+        final user = _authService.currentUser;
+        if (user != null) {
+          emit(AuthState.authenticated(user: user));
+        } else {
+          emit(const AuthState.unauthenticated());
+        }
+        break;
+      case AuthServiceState.accessTokenExpired:
+        add(const AuthEvent.refreshToken());
+        break;
+      case AuthServiceState.refreshTokenExpired:
+        add(const AuthEvent.logout());
+        break;
+    }
   }
 
   Future<void> _onChangePassword(ChangePasswordEvent event, Emitter<AuthState> emit) async {

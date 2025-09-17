@@ -21,15 +21,16 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserEntity {
-  String get id => throw _privateConstructorUsedError;
-  String get username => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String get firstName => throw _privateConstructorUsedError;
-  String get lastName => throw _privateConstructorUsedError;
-  String get role => throw _privateConstructorUsedError;
-  bool get isActive => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  bool get role => throw _privateConstructorUsedError;
+  String? get username => throw _privateConstructorUsedError;
+  String? get firstName => throw _privateConstructorUsedError;
+  String? get lastName => throw _privateConstructorUsedError;
+  bool? get isActive => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
   String? get phoneNumber => throw _privateConstructorUsedError;
   String? get department => throw _privateConstructorUsedError;
@@ -54,15 +55,16 @@ abstract class $UserEntityCopyWith<$Res> {
   ) = _$UserEntityCopyWithImpl<$Res, UserEntity>;
   @useResult
   $Res call({
-    String id,
-    String username,
+    int id,
+    String name,
     String email,
-    String firstName,
-    String lastName,
-    String role,
-    bool isActive,
-    DateTime createdAt,
-    DateTime updatedAt,
+    bool role,
+    String? username,
+    String? firstName,
+    String? lastName,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     String? avatar,
     String? phoneNumber,
     String? department,
@@ -87,14 +89,15 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
   @override
   $Res call({
     Object? id = null,
-    Object? username = null,
+    Object? name = null,
     Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
     Object? role = null,
-    Object? isActive = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? username = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? isActive = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? avatar = freezed,
     Object? phoneNumber = freezed,
     Object? department = freezed,
@@ -106,39 +109,43 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
             id: null == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            username: null == username
-                ? _value.username
-                : username // ignore: cast_nullable_to_non_nullable
+                      as int,
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
                       as String,
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
                       as String,
-            firstName: null == firstName
-                ? _value.firstName
-                : firstName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastName: null == lastName
-                ? _value.lastName
-                : lastName // ignore: cast_nullable_to_non_nullable
-                      as String,
             role: null == role
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
-                      as String,
-            isActive: null == isActive
+                      as bool,
+            username: freezed == username
+                ? _value.username
+                : username // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            firstName: freezed == firstName
+                ? _value.firstName
+                : firstName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            lastName: freezed == lastName
+                ? _value.lastName
+                : lastName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isActive: freezed == isActive
                 ? _value.isActive
                 : isActive // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            createdAt: null == createdAt
+                      as bool?,
+            createdAt: freezed == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            updatedAt: null == updatedAt
+                      as DateTime?,
+            updatedAt: freezed == updatedAt
                 ? _value.updatedAt
                 : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
+                      as DateTime?,
             avatar: freezed == avatar
                 ? _value.avatar
                 : avatar // ignore: cast_nullable_to_non_nullable
@@ -175,15 +182,16 @@ abstract class _$$UserEntityImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String id,
-    String username,
+    int id,
+    String name,
     String email,
-    String firstName,
-    String lastName,
-    String role,
-    bool isActive,
-    DateTime createdAt,
-    DateTime updatedAt,
+    bool role,
+    String? username,
+    String? firstName,
+    String? lastName,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     String? avatar,
     String? phoneNumber,
     String? department,
@@ -207,14 +215,15 @@ class __$$UserEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? username = null,
+    Object? name = null,
     Object? email = null,
-    Object? firstName = null,
-    Object? lastName = null,
     Object? role = null,
-    Object? isActive = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? username = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? isActive = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? avatar = freezed,
     Object? phoneNumber = freezed,
     Object? department = freezed,
@@ -226,39 +235,43 @@ class __$$UserEntityImplCopyWithImpl<$Res>
         id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        username: null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
+                  as int,
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
                   as String,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
                   as String,
-        firstName: null == firstName
-            ? _value.firstName
-            : firstName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastName: null == lastName
-            ? _value.lastName
-            : lastName // ignore: cast_nullable_to_non_nullable
-                  as String,
         role: null == role
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
-                  as String,
-        isActive: null == isActive
+                  as bool,
+        username: freezed == username
+            ? _value.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        firstName: freezed == firstName
+            ? _value.firstName
+            : firstName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastName: freezed == lastName
+            ? _value.lastName
+            : lastName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isActive: freezed == isActive
             ? _value.isActive
             : isActive // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        createdAt: null == createdAt
+                  as bool?,
+        createdAt: freezed == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        updatedAt: null == updatedAt
+                  as DateTime?,
+        updatedAt: freezed == updatedAt
             ? _value.updatedAt
             : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
+                  as DateTime?,
         avatar: freezed == avatar
             ? _value.avatar
             : avatar // ignore: cast_nullable_to_non_nullable
@@ -289,14 +302,15 @@ class __$$UserEntityImplCopyWithImpl<$Res>
 class _$UserEntityImpl implements _UserEntity {
   const _$UserEntityImpl({
     required this.id,
-    required this.username,
+    required this.name,
     required this.email,
-    required this.firstName,
-    required this.lastName,
     required this.role,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+    this.username,
+    this.firstName,
+    this.lastName,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
     this.avatar,
     this.phoneNumber,
     this.department,
@@ -308,23 +322,25 @@ class _$UserEntityImpl implements _UserEntity {
       _$$UserEntityImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
-  final String username;
+  final String name;
   @override
   final String email;
   @override
-  final String firstName;
+  final bool role;
   @override
-  final String lastName;
+  final String? username;
   @override
-  final String role;
+  final String? firstName;
   @override
-  final bool isActive;
+  final String? lastName;
   @override
-  final DateTime createdAt;
+  final bool? isActive;
   @override
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
   @override
   final String? avatar;
   @override
@@ -338,7 +354,7 @@ class _$UserEntityImpl implements _UserEntity {
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, username: $username, email: $email, firstName: $firstName, lastName: $lastName, role: $role, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, avatar: $avatar, phoneNumber: $phoneNumber, department: $department, position: $position, lastLoginAt: $lastLoginAt)';
+    return 'UserEntity(id: $id, name: $name, email: $email, role: $role, username: $username, firstName: $firstName, lastName: $lastName, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, avatar: $avatar, phoneNumber: $phoneNumber, department: $department, position: $position, lastLoginAt: $lastLoginAt)';
   }
 
   @override
@@ -347,14 +363,15 @@ class _$UserEntityImpl implements _UserEntity {
         (other.runtimeType == runtimeType &&
             other is _$UserEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.username, username) ||
                 other.username == username) &&
-            (identical(other.email, email) || other.email == email) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
-            (identical(other.role, role) || other.role == role) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.createdAt, createdAt) ||
@@ -377,11 +394,12 @@ class _$UserEntityImpl implements _UserEntity {
   int get hashCode => Object.hash(
     runtimeType,
     id,
-    username,
+    name,
     email,
+    role,
+    username,
     firstName,
     lastName,
-    role,
     isActive,
     createdAt,
     updatedAt,
@@ -408,15 +426,16 @@ class _$UserEntityImpl implements _UserEntity {
 
 abstract class _UserEntity implements UserEntity {
   const factory _UserEntity({
-    required final String id,
-    required final String username,
+    required final int id,
+    required final String name,
     required final String email,
-    required final String firstName,
-    required final String lastName,
-    required final String role,
-    required final bool isActive,
-    required final DateTime createdAt,
-    required final DateTime updatedAt,
+    required final bool role,
+    final String? username,
+    final String? firstName,
+    final String? lastName,
+    final bool? isActive,
+    final DateTime? createdAt,
+    final DateTime? updatedAt,
     final String? avatar,
     final String? phoneNumber,
     final String? department,
@@ -428,23 +447,25 @@ abstract class _UserEntity implements UserEntity {
       _$UserEntityImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
-  String get username;
+  String get name;
   @override
   String get email;
   @override
-  String get firstName;
+  bool get role;
   @override
-  String get lastName;
+  String? get username;
   @override
-  String get role;
+  String? get firstName;
   @override
-  bool get isActive;
+  String? get lastName;
   @override
-  DateTime get createdAt;
+  bool? get isActive;
   @override
-  DateTime get updatedAt;
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
   @override
   String? get avatar;
   @override

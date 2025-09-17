@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/core/routes/app_routes.dart';
 import 'package:y_chat_admin/src/core/di/injection.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/pages/login_page.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/pages/register_page.dart';
-import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:y_chat_admin/src/features/auth/presentation/pages/register_super_admin_page.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:y_chat_admin/src/shared/models/failure.dart';
 import 'package:y_chat_admin/src/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:y_chat_admin/src/features/user_management/presentation/pages/user_management_page.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/pages/ticketing_page.dart';
@@ -18,22 +18,30 @@ class AppRouter {
     initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
     redirect: (context, state) async {
-      // Check if user is authenticated
-      final authResult = await _authRepository.isAuthenticated();
       final isLoginRoute = state.matchedLocation == AppRoutes.login;
       final isRegisterRoute = state.matchedLocation == AppRoutes.register;
+      final isRegisterSuperAdminRoute = state.matchedLocation == AppRoutes.registerSuperAdmin;
+      
+      // Allow access to login and register pages without authentication check
+      if (isLoginRoute || isRegisterRoute || isRegisterSuperAdminRoute) {
+        return null; // No redirect needed
+      }
+      
+      // For other routes, check authentication
+      final authResult = await _authRepository.isAuthenticated();
       
       return authResult.fold(
-        (failure) => AppRoutes.login,
-        (isAuthenticated) {
-          // If not authenticated and not on login/register page, redirect to login
-          if (!isAuthenticated && !isLoginRoute && !isRegisterRoute) {
-            return AppRoutes.login;
+        (failure) {
+          // If there's a network error, allow access to auth pages
+          if (failure is NetworkFailure) {
+            return null; // Allow access to current page
           }
-          
-          // If authenticated and on login/register page, redirect to home
-          if (isAuthenticated && (isLoginRoute || isRegisterRoute)) {
-            return AppRoutes.home;
+          return AppRoutes.login;
+        },
+        (isAuthenticated) {
+          // If not authenticated, redirect to login
+          if (!isAuthenticated) {
+            return AppRoutes.login;
           }
           
           return null; // No redirect needed
@@ -45,18 +53,22 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.login,
         name: AppRouteNames.login,
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthBloc>(),
-          child: const LoginPage(),
-        ),
+        builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
         path: AppRoutes.register,
         name: AppRouteNames.register,
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthBloc>(),
-          child: const RegisterPage(),
-        ),
+        builder: (context, state) {
+          final isAdminParam = state.uri.queryParameters['isAdmin'];
+          final isAdminMode = isAdminParam == 'true';
+          
+          return RegisterPage(isAdminMode: isAdminMode);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.registerSuperAdmin,
+        name: AppRouteNames.registerSuperAdmin,
+        builder: (context, state) => const RegisterSuperAdminPage(),
       ),
       
       // Main app routes

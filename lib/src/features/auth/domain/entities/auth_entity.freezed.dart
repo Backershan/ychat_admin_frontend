@@ -25,6 +25,7 @@ mixin _$AuthEntity {
   String get refreshToken => throw _privateConstructorUsedError;
   UserEntity get user => throw _privateConstructorUsedError;
   DateTime get expiresAt => throw _privateConstructorUsedError;
+  DateTime get refreshTokenExpiry => throw _privateConstructorUsedError;
 
   /// Serializes this AuthEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $AuthEntityCopyWith<$Res> {
     String refreshToken,
     UserEntity user,
     DateTime expiresAt,
+    DateTime refreshTokenExpiry,
   });
 
   $UserEntityCopyWith<$Res> get user;
@@ -72,6 +74,7 @@ class _$AuthEntityCopyWithImpl<$Res, $Val extends AuthEntity>
     Object? refreshToken = null,
     Object? user = null,
     Object? expiresAt = null,
+    Object? refreshTokenExpiry = null,
   }) {
     return _then(
       _value.copyWith(
@@ -90,6 +93,10 @@ class _$AuthEntityCopyWithImpl<$Res, $Val extends AuthEntity>
             expiresAt: null == expiresAt
                 ? _value.expiresAt
                 : expiresAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            refreshTokenExpiry: null == refreshTokenExpiry
+                ? _value.refreshTokenExpiry
+                : refreshTokenExpiry // ignore: cast_nullable_to_non_nullable
                       as DateTime,
           )
           as $Val,
@@ -121,6 +128,7 @@ abstract class _$$AuthEntityImplCopyWith<$Res>
     String refreshToken,
     UserEntity user,
     DateTime expiresAt,
+    DateTime refreshTokenExpiry,
   });
 
   @override
@@ -145,6 +153,7 @@ class __$$AuthEntityImplCopyWithImpl<$Res>
     Object? refreshToken = null,
     Object? user = null,
     Object? expiresAt = null,
+    Object? refreshTokenExpiry = null,
   }) {
     return _then(
       _$AuthEntityImpl(
@@ -164,6 +173,10 @@ class __$$AuthEntityImplCopyWithImpl<$Res>
             ? _value.expiresAt
             : expiresAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        refreshTokenExpiry: null == refreshTokenExpiry
+            ? _value.refreshTokenExpiry
+            : refreshTokenExpiry // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
       ),
     );
   }
@@ -177,6 +190,7 @@ class _$AuthEntityImpl implements _AuthEntity {
     required this.refreshToken,
     required this.user,
     required this.expiresAt,
+    required this.refreshTokenExpiry,
   });
 
   factory _$AuthEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -190,10 +204,12 @@ class _$AuthEntityImpl implements _AuthEntity {
   final UserEntity user;
   @override
   final DateTime expiresAt;
+  @override
+  final DateTime refreshTokenExpiry;
 
   @override
   String toString() {
-    return 'AuthEntity(token: $token, refreshToken: $refreshToken, user: $user, expiresAt: $expiresAt)';
+    return 'AuthEntity(token: $token, refreshToken: $refreshToken, user: $user, expiresAt: $expiresAt, refreshTokenExpiry: $refreshTokenExpiry)';
   }
 
   @override
@@ -206,13 +222,21 @@ class _$AuthEntityImpl implements _AuthEntity {
                 other.refreshToken == refreshToken) &&
             (identical(other.user, user) || other.user == user) &&
             (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt));
+                other.expiresAt == expiresAt) &&
+            (identical(other.refreshTokenExpiry, refreshTokenExpiry) ||
+                other.refreshTokenExpiry == refreshTokenExpiry));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, token, refreshToken, user, expiresAt);
+  int get hashCode => Object.hash(
+    runtimeType,
+    token,
+    refreshToken,
+    user,
+    expiresAt,
+    refreshTokenExpiry,
+  );
 
   /// Create a copy of AuthEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -234,6 +258,7 @@ abstract class _AuthEntity implements AuthEntity {
     required final String refreshToken,
     required final UserEntity user,
     required final DateTime expiresAt,
+    required final DateTime refreshTokenExpiry,
   }) = _$AuthEntityImpl;
 
   factory _AuthEntity.fromJson(Map<String, dynamic> json) =
@@ -247,6 +272,8 @@ abstract class _AuthEntity implements AuthEntity {
   UserEntity get user;
   @override
   DateTime get expiresAt;
+  @override
+  DateTime get refreshTokenExpiry;
 
   /// Create a copy of AuthEntity
   /// with the given fields replaced by the non-null parameter values.

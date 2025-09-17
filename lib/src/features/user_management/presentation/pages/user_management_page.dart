@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
 import 'package:y_chat_admin/src/shared/widgets/error_widget.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/constants.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -81,7 +81,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: EdgeInsets.all(24.w),
         child: Column(
@@ -106,7 +106,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
           style: TextStyle(
             fontSize: 32.sp,
             fontWeight: FontWeight.bold,
-            color: AppColors.lightOnBackground,
+            color: AppColors.onBackground,
           ),
         ),
         const Spacer(),
@@ -117,8 +117,8 @@ class _UserManagementPageState extends State<UserManagementPage> {
           icon: const Icon(Icons.add),
           label: const Text('Add User'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.lightPrimary,
-            foregroundColor: AppColors.lightOnPrimary,
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.primaryLight,
           ),
         ),
       ],
@@ -169,7 +169,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
@@ -183,13 +183,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
         children: [
           CircleAvatar(
             radius: 24.w,
-            backgroundColor: AppColors.lightPrimary.withValues(alpha: 0.1),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             child: Text(
               user['firstName'][0] + user['lastName'][0],
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.lightPrimary,
+                color: AppColors.primaryLight,
               ),
             ),
           ),
@@ -203,7 +203,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightOnBackground,
+                    color: AppColors.onBackground,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -211,7 +211,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   user['email'],
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: AppColors.lightOnBackground.withValues(alpha: 0.7),
+                    color: AppColors.onBackground.withValues(alpha: 0.7),
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -221,8 +221,8 @@ class _UserManagementPageState extends State<UserManagementPage> {
                       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: user['role'] == 'admin' 
-                            ? AppColors.lightPrimary.withValues(alpha: 0.1)
-                            : AppColors.lightSecondary.withValues(alpha: 0.1),
+                            ? AppColors.primaryLight.withValues(alpha: 0.1)
+                            : AppColors.secondaryLight.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Text(
@@ -231,8 +231,8 @@ class _UserManagementPageState extends State<UserManagementPage> {
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           color: user['role'] == 'admin' 
-                              ? AppColors.lightPrimary
-                              : AppColors.lightSecondary,
+                              ? AppColors.primaryLight
+                              : AppColors.secondaryLight,
                         ),
                       ),
                     ),

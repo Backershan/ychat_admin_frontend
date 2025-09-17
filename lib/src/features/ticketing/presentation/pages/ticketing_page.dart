@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
 import 'package:y_chat_admin/src/shared/widgets/error_widget.dart';
 
-import '../../../../core/constants/app_colors.dart';
+
+import '../../../../core/constants/constants.dart';
 
 class TicketingPage extends StatefulWidget {
   const TicketingPage({super.key});
@@ -112,7 +113,7 @@ class _TicketingPageState extends State<TicketingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: EdgeInsets.all(24.w),
         child: Column(
@@ -139,7 +140,7 @@ class _TicketingPageState extends State<TicketingPage> {
           style: TextStyle(
             fontSize: 32.sp,
             fontWeight: FontWeight.bold,
-            color: AppColors.lightOnBackground,
+            color: AppColors.onBackground,
           ),
         ),
         const Spacer(),
@@ -150,8 +151,8 @@ class _TicketingPageState extends State<TicketingPage> {
           icon: const Icon(Icons.add),
           label: const Text('Create Ticket'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.lightPrimary,
-            foregroundColor: AppColors.lightOnPrimary,
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.onPrimary,
           ),
         ),
       ],
@@ -182,8 +183,8 @@ class _TicketingPageState extends State<TicketingPage> {
                   _selectedFilter = filter['key']!;
                 });
               },
-              selectedColor: AppColors.lightPrimary.withValues(alpha: 0.2),
-              checkmarkColor: AppColors.lightPrimary,
+              selectedColor: AppColors.primary.withValues(alpha: 0.2),
+              checkmarkColor: AppColors.primary,
             ),
           );
         }).toList(),
@@ -237,7 +238,7 @@ class _TicketingPageState extends State<TicketingPage> {
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
@@ -258,7 +259,7 @@ class _TicketingPageState extends State<TicketingPage> {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightOnBackground,
+                    color: AppColors.onBackground,
                   ),
                 ),
               ),
@@ -284,7 +285,7 @@ class _TicketingPageState extends State<TicketingPage> {
             ticket['description'],
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.lightOnBackground.withValues(alpha: 0.7),
+              color: AppColors.onBackground.withValues(alpha: 0.7),
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -311,7 +312,7 @@ class _TicketingPageState extends State<TicketingPage> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSecondary.withValues(alpha: 0.1),
+                  color: AppColors.secondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
@@ -319,7 +320,7 @@ class _TicketingPageState extends State<TicketingPage> {
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightSecondary,
+                    color: AppColors.secondary,
                   ),
                 ),
               ),
@@ -328,7 +329,7 @@ class _TicketingPageState extends State<TicketingPage> {
                 'By ${ticket['userName']}',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: AppColors.lightOnBackground.withValues(alpha: 0.6),
+                  color: AppColors.onBackground.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -339,14 +340,14 @@ class _TicketingPageState extends State<TicketingPage> {
               Icon(
                 Icons.person,
                 size: 14.w,
-                color: AppColors.lightOnBackground.withValues(alpha: 0.6),
+                color: AppColors.onBackground.withValues(alpha: 0.6),
               ),
               SizedBox(width: 4.w),
               Text(
                 'Assigned to ${ticket['assignedTo']}',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: AppColors.lightOnBackground.withValues(alpha: 0.6),
+                  color: AppColors.onBackground.withValues(alpha: 0.6),
                 ),
               ),
               const Spacer(),
@@ -354,7 +355,7 @@ class _TicketingPageState extends State<TicketingPage> {
                 ticket['createdAt'],
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: AppColors.lightOnBackground.withValues(alpha: 0.6),
+                  color: AppColors.onBackground.withValues(alpha: 0.6),
                 ),
               ),
             ],

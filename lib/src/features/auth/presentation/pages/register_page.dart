@@ -3,18 +3,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/core/routes/app_routes.dart';
+import 'package:y_chat_admin/src/core/widgets/debug_connection_widget.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_state.dart';
-import 'package:y_chat_admin/src/shared/widgets/custom_button.dart';
 import 'package:y_chat_admin/src/shared/widgets/custom_text_field.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
+import 'package:y_chat_admin/src/core/widgets/primary_button.dart';
 import 'dart:developer' as developer;
 
 import 'package:y_chat_admin/src/core/constants/constants.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final bool isAdminMode;
+  
+  const RegisterPage({
+    super.key,
+    this.isAdminMode = false,
+  });
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -22,15 +28,12 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _departmentController = TextEditingController();
-  final _positionController = TextEditingController();
+  bool _showDebugWidget = false;
   
   bool _isAdminRegistration = false;
 
@@ -38,19 +41,34 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     developer.log('🚀 RegisterPage initialized', name: 'RegisterPage');
+    
+    // Set admin mode from constructor parameter
+    _isAdminRegistration = widget.isAdminMode;
+    
+    // Check if this is for admin user creation via URL parameters
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        final state = GoRouterState.of(context);
+        final isAdminParam = state.uri.queryParameters['isAdmin'];
+        if (isAdminParam == 'true') {
+          setState(() {
+            _isAdminRegistration = true;
+          });
+        }
+      } catch (e) {
+        // If not in GoRouter context, use constructor parameter
+        developer.log('⚠️ Not in GoRouter context, using constructor parameter: ${widget.isAdminMode}', name: 'RegisterPage');
+      }
+    });
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _phoneController.dispose();
-    _departmentController.dispose();
-    _positionController.dispose();
     super.dispose();
   }
 
@@ -59,16 +77,12 @@ class _RegisterPageState extends State<RegisterPage> {
       developer.log('📝 Attempting registration', name: 'RegisterPage');
       context.read<AuthBloc>().add(
         RegisterEvent(
-          username: _usernameController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
           confirmPassword: _confirmPasswordController.text.trim(),
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          phoneNumber: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-          department: _departmentController.text.trim().isEmpty ? null : _departmentController.text.trim(),
-          position: _positionController.text.trim().isEmpty ? null : _positionController.text.trim(),
-          isAdmin: _isAdminRegistration,
+          firstname: _firstNameController.text.trim(),
+          lastname: _lastNameController.text.trim(),
+          role: _isAdminRegistration,
         ),
       );
     }
@@ -104,10 +118,31 @@ class _RegisterPageState extends State<RegisterPage> {
               unauthenticated: () {},
               error: (message) {
                 developer.log('❌ Registration error: $message', name: 'RegisterPage');
+                
+                // Check if it's a connection error
+                if (message.contains('Cannot connect to backend server') || 
+                    message.contains('No internet connection')) {
+                  setState(() {
+                    _showDebugWidget = true;
+                  });
+                }
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(message),
                     backgroundColor: AppColors.error,
+                    action: message.contains('Cannot connect to backend server') || 
+                            message.contains('No internet connection')
+                        ? SnackBarAction(
+                            label: 'Debug',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              setState(() {
+                                _showDebugWidget = true;
+                              });
+                            },
+                          )
+                        : null,
                   ),
                 );
               },
@@ -127,10 +162,42 @@ class _RegisterPageState extends State<RegisterPage> {
           },
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              return LoadingOverlay(
-                isLoading: state is AuthLoading,
-                loadingMessage: _isAdminRegistration ? 'Creating admin user...' : 'Creating account...',
-                child: _buildRegisterForm(),
+              return Stack(
+                children: [
+                  LoadingOverlay(
+                    isLoading: state is AuthLoading,
+                    loadingMessage: _isAdminRegistration ? 'Creating admin user...' : 'Creating account...',
+                    child: _buildRegisterForm(),
+                  ),
+                  if (_showDebugWidget)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Connection Debug'),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _showDebugWidget = false;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                            const DebugConnectionWidget(),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),
@@ -140,23 +207,39 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildRegisterForm() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            SizedBox(height: 32.h),
-            _buildAdminToggle(),
-            SizedBox(height: 24.h),
-            _buildFormFields(),
-            SizedBox(height: 32.h),
-            _buildRegisterButton(),
-            SizedBox(height: 24.h),
-            _buildBackButton(),
-          ],
+    return Center(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 500.w, // Slightly wider for registration form
+          ),
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(32.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeader(),
+                    SizedBox(height: 32.h),
+                    _buildAdminToggle(),
+                    SizedBox(height: 24.h),
+                    _buildFormFields(),
+                    SizedBox(height: 32.h),
+                    _buildRegisterButton(),
+                    SizedBox(height: 24.h),
+                    _buildBackButton(),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -290,24 +373,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         SizedBox(height: 16.h),
         
-        // Username and Email
-        CustomTextField(
-          label: 'Username',
-          controller: _usernameController,
-          hint: 'Enter username',
-          isRequired: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Username is required';
-            }
-            if (value.length < 3) {
-              return 'Username must be at least 3 characters';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 16.h),
-        
+        // Email
         CustomTextField(
           label: 'Email',
           controller: _emailController,
@@ -363,48 +429,42 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         SizedBox(height: 16.h),
         
-        // Optional fields
-        CustomTextField(
-          label: 'Phone Number',
-          controller: _phoneController,
-          hint: 'Enter phone number (optional)',
-          keyboardType: TextInputType.phone,
-        ),
-        SizedBox(height: 16.h),
         
-        CustomTextField(
-          label: 'Department',
-          controller: _departmentController,
-          hint: 'Enter department (optional)',
-        ),
-        SizedBox(height: 16.h),
-        
-        CustomTextField(
-          label: 'Position',
-          controller: _positionController,
-          hint: 'Enter position (optional)',
-        ),
       ],
     );
   }
 
   Widget _buildRegisterButton() {
-    return CustomButton(
+    return PrimaryButton(
       label: _isAdminRegistration ? 'Create Admin User' : 'Create Account',
       onPressed: _handleRegister,
-      type: ButtonType.primary,
       size: ButtonSize.large,
       isFullWidth: true,
+      semanticsLabel: 'Register button',
     );
   }
 
   Widget _buildBackButton() {
-    return CustomButton(
-      label: 'Back to Login',
-      onPressed: _navigateBack,
-      type: ButtonType.outline,
-      size: ButtonSize.medium,
-      isFullWidth: true,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Already have an account? ",
+          style: TextStyles.bodyMedium.copyWith(
+            color: AppColors.onBackground.withValues(alpha: 0.7),
+          ),
+        ),
+        TextButton(
+          onPressed: _navigateBack,
+          child: Text(
+            'Sign In',
+            style: TextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
