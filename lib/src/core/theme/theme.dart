@@ -1,50 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:y_chat_admin/src/core/theme/typography.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:y_chat_admin/src/core/constants/constants.dart';
 
-final _lightCardColor = Colors.white;
-final _darkCardColor = Colors.black87;
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Inter',
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF584FBC),
+        seedColor: AppColors.primary,
         brightness: Brightness.light,
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        surface: AppColors.surface,
+        error: AppColors.error,
       ),
-      textTheme: AppTypography.textTheme,
+      textTheme: GoogleFonts.poppinsTextTheme(
+        const TextTheme(
+          displayLarge: TextStyle(fontSize: 57, fontWeight: FontWeight.w400, height: 1.2),
+          displayMedium: TextStyle(fontSize: 45, fontWeight: FontWeight.w400, height: 1.2),
+          displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w400, height: 1.2),
+          headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600, height: 1.2),
+          headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, height: 1.2),
+          headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.2),
+          titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.3),
+          titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.3),
+          titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.3),
+          bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, height: 1.5),
+          bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, height: 1.5),
+          bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, height: 1.5),
+          labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.4),
+          labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.4),
+          labelSmall: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, height: 1.4),
+        ),
+      ),
       appBarTheme: AppBarTheme(
         centerTitle: false,
-        titleTextStyle: AppTypography.textTheme.headlineSmall,
-        backgroundColor: Color(0xFF584FBC),
-        iconTheme: IconThemeData(size: 20.sp),
+        titleTextStyle: TextStyles.headlineSmall.copyWith(color: AppColors.onPrimary),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
+        elevation: Elevation.sm,
+        iconTheme: const IconThemeData(color: AppColors.onPrimary, size: 24),
       ),
       navigationBarTheme: NavigationBarThemeData(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData?>((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
-              color: Color(0xFF584FBC), // selected color
-              size: 28,
-            );
+            return const IconThemeData(color: AppColors.primary, size: 28);
           }
-          return const IconThemeData(
-            color: Colors.black, // unselected color
+          return IconThemeData(
+            color: AppColors.onSurface.withValues(alpha: 0.6),
             size: 24,
           );
         }),
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTypography.textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF584FBC),
+            return TextStyles.bodySmall.copyWith(
+              color: AppColors.primary,
               fontWeight: FontWeight.w600,
             );
           }
-          return AppTypography.textTheme.bodySmall?.copyWith(
-            color: Colors.black45,
+          return TextStyles.bodySmall.copyWith(
+            color: AppColors.onSurface.withValues(alpha: 0.6),
             fontWeight: FontWeight.w400,
           );
         }),
@@ -56,43 +74,63 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Inter',
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF584FBC),
-        brightness: Brightness.light,
+        seedColor: AppColors.primary,
+        brightness: Brightness.dark,
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        surface: AppColors.darkSurface,
+        error: AppColors.error,
       ),
-      textTheme: AppTypography.textTheme,
+      textTheme: GoogleFonts.poppinsTextTheme(
+        const TextTheme(
+          displayLarge: TextStyle(fontSize: 57, fontWeight: FontWeight.w400, height: 1.2),
+          displayMedium: TextStyle(fontSize: 45, fontWeight: FontWeight.w400, height: 1.2),
+          displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w400, height: 1.2),
+          headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600, height: 1.2),
+          headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, height: 1.2),
+          headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 1.2),
+          titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, height: 1.3),
+          titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 1.3),
+          titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, height: 1.3),
+          bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, height: 1.5),
+          bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, height: 1.5),
+          bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, height: 1.5),
+          labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, height: 1.4),
+          labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.4),
+          labelSmall: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, height: 1.4),
+        ),
+      ),
       appBarTheme: AppBarTheme(
-        backgroundColor: Color(0xFF584FBC),
         centerTitle: false,
-        titleTextStyle: AppTypography.textTheme.headlineSmall,
-        iconTheme: IconThemeData(size: 20.sp),
+        titleTextStyle: TextStyles.headlineSmall.copyWith(color: AppColors.onPrimary),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
+        elevation: Elevation.sm,
+        iconTheme: const IconThemeData(color: AppColors.onPrimary, size: 24),
       ),
       navigationBarTheme: NavigationBarThemeData(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        elevation: 0.5,
-        backgroundColor: Colors.black,
+        elevation: Elevation.sm,
+        backgroundColor: AppColors.darkSurface,
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData?>((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
-              color: Color(0xFF584FBC), // selected color
-              size: 28,
-            );
+            return const IconThemeData(color: AppColors.primary, size: 28);
           }
-          return const IconThemeData(
-            color: Colors.white, // unselected color
+          return IconThemeData(
+            color: AppColors.darkOnSurface.withValues(alpha: 0.6),
             size: 24,
           );
         }),
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTypography.textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF584FBC),
+            return TextStyles.bodySmall.copyWith(
+              color: AppColors.primary,
               fontWeight: FontWeight.w600,
             );
           }
-          return AppTypography.textTheme.bodySmall?.copyWith(
-            color: Colors.black45,
+          return TextStyles.bodySmall.copyWith(
+            color: AppColors.darkOnSurface.withValues(alpha: 0.6),
             fontWeight: FontWeight.w400,
           );
         }),
