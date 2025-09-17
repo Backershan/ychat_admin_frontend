@@ -22,7 +22,6 @@ class AuthEvent with _$AuthEvent {
     String? firstName,
     String? lastName,
     required String email,
-    required String phone,
     required String password,
   }) = RegisterSuperAdminEvent;
 

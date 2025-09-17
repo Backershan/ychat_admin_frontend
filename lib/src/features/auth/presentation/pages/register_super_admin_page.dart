@@ -18,21 +18,19 @@ class RegisterSuperAdminPage extends StatefulWidget {
 
 class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
-    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
@@ -140,14 +138,28 @@ class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
               ),
               const SizedBox(height: Spacing.xl),
               
-              // Name field
+              // First Name field
               InputField(
-                controller: _nameController,
-                label: 'Full Name',
-                hint: 'Enter full name',
+                controller: _firstNameController,
+                label: 'First Name',
+                hint: 'Enter first name',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter full name';
+                    return 'Please enter first name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: Spacing.md),
+              
+              // Last Name field
+              InputField(
+                controller: _lastNameController,
+                label: 'Last Name',
+                hint: 'Enter last name',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter last name';
                   }
                   return null;
                 },
@@ -166,21 +178,6 @@ class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
                   }
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                     return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: Spacing.md),
-              
-              // Phone field
-              InputField(
-                controller: _phoneController,
-                label: 'Phone Number',
-                hint: 'Enter phone number',
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter phone number';
                   }
                   return null;
                 },
@@ -217,17 +214,6 @@ class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
                     return 'Passwords do not match';
                   }
                   return null;
-                },
-              ),
-              const SizedBox(height: Spacing.md),
-              
-              // Location field
-              InputField(
-                controller: _locationController,
-                label: 'Location',
-                hint: 'Enter location (optional)',
-                validator: (value) {
-                  return null; // Optional field
                 },
               ),
               const SizedBox(height: Spacing.xl),
@@ -268,13 +254,10 @@ class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
         AuthEvent.registerSuperAdmin(
-          name: _nameController.text.trim(),
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
           email: _emailController.text.trim(),
-          phone: _phoneController.text.trim(),
           password: _passwordController.text,
-          location: _locationController.text.trim().isEmpty 
-              ? null 
-              : _locationController.text.trim(),
         ),
       );
     }

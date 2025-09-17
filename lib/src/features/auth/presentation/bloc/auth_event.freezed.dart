@@ -30,11 +30,10 @@ mixin _$AuthEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -66,11 +65,10 @@ mixin _$AuthEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -102,11 +100,10 @@ mixin _$AuthEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -277,11 +274,10 @@ class _$LoginEventImpl implements LoginEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -317,11 +313,10 @@ class _$LoginEventImpl implements LoginEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -357,11 +352,10 @@ class _$LoginEventImpl implements LoginEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -609,11 +603,10 @@ class _$RegisterEventImpl implements RegisterEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -656,11 +649,10 @@ class _$RegisterEventImpl implements RegisterEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -703,11 +695,10 @@ class _$RegisterEventImpl implements RegisterEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -828,11 +819,10 @@ abstract class _$$RegisterSuperAdminEventImplCopyWith<$Res> {
   ) = __$$RegisterSuperAdminEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({
-    String name,
+    String? firstName,
+    String? lastName,
     String email,
-    String phone,
     String password,
-    String? location,
   });
 }
 
@@ -850,34 +840,29 @@ class __$$RegisterSuperAdminEventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = null,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
     Object? email = null,
-    Object? phone = null,
     Object? password = null,
-    Object? location = freezed,
   }) {
     return _then(
       _$RegisterSuperAdminEventImpl(
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
+        firstName: freezed == firstName
+            ? _value.firstName
+            : firstName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastName: freezed == lastName
+            ? _value.lastName
+            : lastName // ignore: cast_nullable_to_non_nullable
+                  as String?,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        phone: null == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
                   as String,
         password: null == password
             ? _value.password
             : password // ignore: cast_nullable_to_non_nullable
                   as String,
-        location: freezed == location
-            ? _value.location
-            : location // ignore: cast_nullable_to_non_nullable
-                  as String?,
       ),
     );
   }
@@ -887,27 +872,24 @@ class __$$RegisterSuperAdminEventImplCopyWithImpl<$Res>
 
 class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
   const _$RegisterSuperAdminEventImpl({
-    required this.name,
+    this.firstName,
+    this.lastName,
     required this.email,
-    required this.phone,
     required this.password,
-    this.location,
   });
 
   @override
-  final String name;
+  final String? firstName;
+  @override
+  final String? lastName;
   @override
   final String email;
   @override
-  final String phone;
-  @override
   final String password;
-  @override
-  final String? location;
 
   @override
   String toString() {
-    return 'AuthEvent.registerSuperAdmin(name: $name, email: $email, phone: $phone, password: $password, location: $location)';
+    return 'AuthEvent.registerSuperAdmin(firstName: $firstName, lastName: $lastName, email: $email, password: $password)';
   }
 
   @override
@@ -915,18 +897,18 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RegisterSuperAdminEventImpl &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.password, password) ||
-                other.password == password) &&
-            (identical(other.location, location) ||
-                other.location == location));
+                other.password == password));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, name, email, phone, password, location);
+      Object.hash(runtimeType, firstName, lastName, email, password);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -953,11 +935,10 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -976,7 +957,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     required TResult Function() clearError,
     required TResult Function() initializeAuth,
   }) {
-    return registerSuperAdmin(name, email, phone, password, location);
+    return registerSuperAdmin(firstName, lastName, email, password);
   }
 
   @override
@@ -993,11 +974,10 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -1016,7 +996,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     TResult? Function()? clearError,
     TResult? Function()? initializeAuth,
   }) {
-    return registerSuperAdmin?.call(name, email, phone, password, location);
+    return registerSuperAdmin?.call(firstName, lastName, email, password);
   }
 
   @override
@@ -1033,11 +1013,10 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -1058,7 +1037,7 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
     required TResult orElse(),
   }) {
     if (registerSuperAdmin != null) {
-      return registerSuperAdmin(name, email, phone, password, location);
+      return registerSuperAdmin(firstName, lastName, email, password);
     }
     return orElse();
   }
@@ -1121,18 +1100,16 @@ class _$RegisterSuperAdminEventImpl implements RegisterSuperAdminEvent {
 
 abstract class RegisterSuperAdminEvent implements AuthEvent {
   const factory RegisterSuperAdminEvent({
-    required final String name,
+    final String? firstName,
+    final String? lastName,
     required final String email,
-    required final String phone,
     required final String password,
-    final String? location,
   }) = _$RegisterSuperAdminEventImpl;
 
-  String get name;
+  String? get firstName;
+  String? get lastName;
   String get email;
-  String get phone;
   String get password;
-  String? get location;
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1195,11 +1172,10 @@ class _$LogoutEventImpl implements LogoutEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -1235,11 +1211,10 @@ class _$LogoutEventImpl implements LogoutEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -1275,11 +1250,10 @@ class _$LogoutEventImpl implements LogoutEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -1420,11 +1394,10 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -1460,11 +1433,10 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -1500,11 +1472,10 @@ class _$CheckAuthStatusEventImpl implements CheckAuthStatusEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -1644,11 +1615,10 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -1684,11 +1654,10 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -1724,11 +1693,10 @@ class _$RefreshTokenEventImpl implements RefreshTokenEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -1910,11 +1878,10 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -1950,11 +1917,10 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -1990,11 +1956,10 @@ class _$ChangePasswordEventImpl implements ChangePasswordEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -2234,11 +2199,10 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -2280,11 +2244,10 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -2326,11 +2289,10 @@ class _$UpdateProfileEventImpl implements UpdateProfileEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -2494,11 +2456,10 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -2534,11 +2495,10 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -2574,11 +2534,10 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
@@ -2719,11 +2678,10 @@ class _$InitializeAuthEventImpl implements InitializeAuthEvent {
     )
     register,
     required TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )
     registerSuperAdmin,
     required TResult Function() logout,
@@ -2759,11 +2717,10 @@ class _$InitializeAuthEventImpl implements InitializeAuthEvent {
     )?
     register,
     TResult? Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult? Function()? logout,
@@ -2799,11 +2756,10 @@ class _$InitializeAuthEventImpl implements InitializeAuthEvent {
     )?
     register,
     TResult Function(
-      String name,
+      String? firstName,
+      String? lastName,
       String email,
-      String phone,
       String password,
-      String? location,
     )?
     registerSuperAdmin,
     TResult Function()? logout,
