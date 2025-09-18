@@ -87,7 +87,6 @@ class _UserManagementPageState extends State<UserManagementPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
             SizedBox(height: 24.h),
             Expanded(
               child: _buildContent(),
@@ -98,32 +97,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        Text(
-          'User Management',
-          style: TextStyle(
-            fontSize: 32.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackground,
-          ),
-        ),
-        const Spacer(),
-        ElevatedButton.icon(
-          onPressed: () {
-            // TODO: Implement add user
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('Add User'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.primaryLight,
-          ),
-        ),
-      ],
-    );
-  }
+
 
   Widget _buildContent() {
     if (_isLoading) {

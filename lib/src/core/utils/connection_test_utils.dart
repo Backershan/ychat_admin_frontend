@@ -15,11 +15,11 @@ class ConnectionTestUtils {
       ApiConfig.alternativeBaseUrl2,
       ApiConfig.alternativeBaseUrl3,
       // Also test localhost for web development
-      'http://localhost:3001/api',
-      'http://localhost:3000/api',
+      'http://localhost:3002/api',
+      'http://localhost:3002/api',
       // Android emulator specific URLs
-      'http://10.0.2.2:3000/api',
-      'http://10.0.2.2:3001/api',
+      'http://10.0.2.2:3002/api',
+      'http://10.0.2.2:3002/api',
       'http://10.0.2.2:8000/api',
     ];
 

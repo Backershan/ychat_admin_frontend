@@ -30,7 +30,7 @@ _$LoginDataEntityImpl _$$LoginDataEntityImplFromJson(
   email: json['email'] as String,
   role: json['role'] as bool,
   token: json['token'] as String,
-  refreshToken: json['refreshToken'] as String,
+  refreshToken: json['refreshToken'] as String? ?? '',
   expiresAt: DateTime.parse(json['expiresAt'] as String),
   refreshTokenExpiry: DateTime.parse(json['refreshTokenExpiry'] as String),
 );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/core/constants/constants.dart';
+import 'package:y_chat_admin/src/core/routes/app_routes.dart';
 import 'package:y_chat_admin/src/core/widgets/primary_button.dart';
 import 'package:y_chat_admin/src/core/widgets/input_field.dart';
 import 'package:y_chat_admin/src/core/widgets/card_tile.dart';
@@ -93,7 +95,7 @@ class _RegisterSuperAdminPageState extends State<RegisterSuperAdminPage> {
                 backgroundColor: AppColors.success,
               ),
             );
-            Navigator.of(context).pop();
+            context.go(AppRoutes.home);
           },
           unauthenticated: () {},
           error: (message) {

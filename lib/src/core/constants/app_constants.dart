@@ -9,7 +9,7 @@ class AppConstants {
   static const String appDescription = 'Admin panel for Y Chat application';
   
   // API Configuration
-  static const String baseUrl = 'http://localhost:3000/api';
+  static const String baseUrl = 'http://localhost:3002/api';
   static const Duration apiTimeout = Duration(seconds: 30);
   static const Duration refreshTokenTimeout = Duration(seconds: 10);
   

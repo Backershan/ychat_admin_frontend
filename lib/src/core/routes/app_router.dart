@@ -7,9 +7,12 @@ import 'package:y_chat_admin/src/features/auth/presentation/pages/register_page.
 import 'package:y_chat_admin/src/features/auth/presentation/pages/register_super_admin_page.dart';
 import 'package:y_chat_admin/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
-import 'package:y_chat_admin/src/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:y_chat_admin/src/features/dashboard/presentation/pages/main_dashboard_page.dart';
 import 'package:y_chat_admin/src/features/user_management/presentation/pages/user_management_page.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/pages/ticketing_page.dart';
+import 'package:y_chat_admin/src/features/profile/presentation/pages/profile_page.dart';
+import 'package:y_chat_admin/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
   static final _authRepository = getIt<AuthRepository>();
@@ -75,12 +78,12 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         name: AppRouteNames.home,
-        builder: (context, state) => const DashboardPage(),
+        builder: (context, state) => const MainDashboardPage(),
       ),
       GoRoute(
         path: AppRoutes.dashboard,
         name: AppRouteNames.dashboard,
-        builder: (context, state) => const DashboardPage(),
+        builder: (context, state) => const MainDashboardPage(),
       ),
       GoRoute(
         path: AppRoutes.userManagement,
@@ -91,6 +94,14 @@ class AppRouter {
         path: AppRoutes.ticketing,
         name: AppRouteNames.ticketing,
         builder: (context, state) => const TicketingPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        name: AppRouteNames.profile,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<ProfileBloc>(),
+          child: const ProfilePage(),
+        ),
       ),
       
       // Error routes

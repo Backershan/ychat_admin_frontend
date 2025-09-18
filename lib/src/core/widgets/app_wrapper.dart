@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:y_chat_admin/src/core/di/injection.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
@@ -33,7 +34,60 @@ class AppWrapper extends StatelessWidget {
         //   create: (context) => getIt<TicketingBloc>(),
         // ),
       ],
+      child: BackButtonHandler(child: child),
+    );
+  }
+}
+
+/// Widget that handles browser back button and prevents navigation
+class BackButtonHandler extends StatelessWidget {
+  final Widget child;
+  
+  const BackButtonHandler({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false, // Prevent back navigation
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        
+        // Show confirmation dialog when back button is pressed
+        _showExitConfirmation(context);
+      },
       child: child,
+    );
+  }
+
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Exit Application'),
+          content: const Text('Are you sure you want to exit the application?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                // Close the web app
+                SystemNavigator.pop();
+              },
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -119,7 +119,6 @@ class _TicketingPageState extends State<TicketingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
             SizedBox(height: 24.h),
             _buildFilters(),
             SizedBox(height: 24.h),

@@ -93,6 +93,9 @@ class AppColors {
   static const Color onPrimary = Color(0xffffffff);
   static const Color onSecondary = Color(0xffffffff);
   
+  // Border colors
+  static const Color outline = Color(0xffe0e0e0);
+  
   // Status colors
   static const Color success = Color(0xff4caf50);
   static const Color warning = Color(0xffff9800);

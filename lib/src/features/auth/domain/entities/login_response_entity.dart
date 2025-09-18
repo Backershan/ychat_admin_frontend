@@ -23,7 +23,7 @@ class LoginDataEntity with _$LoginDataEntity {
     required String email,
     required bool role,
     required String token,
-    required String refreshToken,
+    @Default('') String refreshToken, // Make optional with default empty string
     required DateTime expiresAt,
     required DateTime refreshTokenExpiry,
   }) = _LoginDataEntity;

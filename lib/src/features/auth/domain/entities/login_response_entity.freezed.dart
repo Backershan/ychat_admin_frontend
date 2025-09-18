@@ -239,7 +239,8 @@ mixin _$LoginDataEntity {
   String get email => throw _privateConstructorUsedError;
   bool get role => throw _privateConstructorUsedError;
   String get token => throw _privateConstructorUsedError;
-  String get refreshToken => throw _privateConstructorUsedError;
+  String get refreshToken =>
+      throw _privateConstructorUsedError; // Make optional with default empty string
   DateTime get expiresAt => throw _privateConstructorUsedError;
   DateTime get refreshTokenExpiry => throw _privateConstructorUsedError;
 
@@ -428,7 +429,7 @@ class _$LoginDataEntityImpl implements _LoginDataEntity {
     required this.email,
     required this.role,
     required this.token,
-    required this.refreshToken,
+    this.refreshToken = '',
     required this.expiresAt,
     required this.refreshTokenExpiry,
   });
@@ -447,7 +448,9 @@ class _$LoginDataEntityImpl implements _LoginDataEntity {
   @override
   final String token;
   @override
+  @JsonKey()
   final String refreshToken;
+  // Make optional with default empty string
   @override
   final DateTime expiresAt;
   @override
@@ -514,7 +517,7 @@ abstract class _LoginDataEntity implements LoginDataEntity {
     required final String email,
     required final bool role,
     required final String token,
-    required final String refreshToken,
+    final String refreshToken,
     required final DateTime expiresAt,
     required final DateTime refreshTokenExpiry,
   }) = _$LoginDataEntityImpl;
@@ -533,7 +536,7 @@ abstract class _LoginDataEntity implements LoginDataEntity {
   @override
   String get token;
   @override
-  String get refreshToken;
+  String get refreshToken; // Make optional with default empty string
   @override
   DateTime get expiresAt;
   @override

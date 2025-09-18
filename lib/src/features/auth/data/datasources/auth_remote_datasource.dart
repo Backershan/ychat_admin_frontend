@@ -76,8 +76,61 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        // Parse response - backend returns boolean role, keep as is
+        // Parse response - backend returns role as string or boolean, normalize to boolean
         final responseData = response.data;
+        print('Raw response data: $responseData');
+        
+        if (responseData is Map<String, dynamic> && 
+            responseData['data'] is Map<String, dynamic>) {
+          final data = responseData['data'] as Map<String, dynamic>;
+          print('Parsed data: $data');
+          
+          // Ensure all required fields are present and not null
+          if (data['id'] == null || data['name'] == null || data['email'] == null || data['token'] == null) {
+            print('Missing required fields - id: ${data['id']}, name: ${data['name']}, email: ${data['email']}, token: ${data['token']}');
+            throw ServerFailure(
+              message: 'Invalid response: Missing required fields',
+              statusCode: 200,
+            );
+          }
+          
+          // Convert role to boolean - handle both string and boolean cases
+          if (data['role'] is String) {
+            data['role'] = data['role'] == 'admin' || data['role'] == 'super_admin' || data['role'] == 'true';
+          } else if (data['role'] is bool) {
+            // Role is already boolean, keep as is
+            data['role'] = data['role'];
+          } else {
+            // Default to false if role is null or unexpected type
+            data['role'] = false;
+          }
+          
+          // Ensure refreshToken has a default value if null
+          data['refreshToken'] ??= '';
+          print('refreshToken: ${data['refreshToken']}');
+          
+          // Ensure refreshTokenExpiry has a default value if null (use expiresAt + 7 days)
+          if (data['refreshTokenExpiry'] == null && data['expiresAt'] != null) {
+            final expiresAt = DateTime.parse(data['expiresAt']);
+            data['refreshTokenExpiry'] = expiresAt.add(const Duration(days: 7)).toIso8601String();
+            print('Generated refreshTokenExpiry: ${data['refreshTokenExpiry']}');
+          } else if (data['refreshTokenExpiry'] == null) {
+            data['refreshTokenExpiry'] = DateTime.now().add(const Duration(days: 7)).toIso8601String();
+            print('Generated refreshTokenExpiry (fallback): ${data['refreshTokenExpiry']}');
+          } else {
+            print('Using existing refreshTokenExpiry: ${data['refreshTokenExpiry']}');
+          }
+          
+          // Ensure expiresAt is valid
+          if (data['expiresAt'] == null) {
+            print('expiresAt is null!');
+            throw ServerFailure(
+              message: 'Invalid response: Missing token expiry information',
+              statusCode: 200,
+            );
+          }
+          print('expiresAt: ${data['expiresAt']}');
+        }
         return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
@@ -88,7 +141,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (e) {
-      throw UnknownFailure(message: 'Unexpected error: $e');
+      print('Login parsing error: $e');
+      throw UnknownFailure(message: 'Login failed: ${e.toString()}');
     }
   }
 
@@ -120,8 +174,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Parse response - backend returns boolean role, keep as is
+        // Parse response - backend returns role as string or boolean, normalize to boolean
         final responseData = response.data;
+        
+        if (responseData is Map<String, dynamic> && 
+            responseData['data'] is Map<String, dynamic>) {
+          final data = responseData['data'] as Map<String, dynamic>;
+          
+          // Convert role to boolean - handle both string and boolean cases
+          if (data['role'] is String) {
+            data['role'] = data['role'] == 'admin' || data['role'] == 'super_admin' || data['role'] == 'true';
+          } else if (data['role'] is bool) {
+            // Role is already boolean, keep as is
+            data['role'] = data['role'];
+          }
+          
+          // Temporary fix: Add default refresh token if missing
+          if (!data.containsKey('refreshToken') || data['refreshToken'] == null) {
+            data['refreshToken'] = 'no_refresh_token';
+            data['refreshTokenExpiry'] = DateTime.now().add(const Duration(days: 7)).toIso8601String();
+          }
+        }
+        
         return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
@@ -160,8 +234,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 201) {
-        // Parse response - backend returns boolean role, keep as is
+        // Parse response - backend returns role as string or boolean, normalize to boolean
         final responseData = response.data;
+        if (responseData is Map<String, dynamic> && 
+            responseData['data'] is Map<String, dynamic>) {
+          final data = responseData['data'] as Map<String, dynamic>;
+          // Convert role to boolean - handle both string and boolean cases
+          if (data['role'] is String) {
+            data['role'] = data['role'] == 'admin' || data['role'] == 'super_admin' || data['role'] == 'true';
+          } else if (data['role'] is bool) {
+            // Role is already boolean, keep as is
+            data['role'] = data['role'];
+          }
+        }
         return LoginResponseEntity.fromJson(responseData);
       } else {
         throw ServerFailure(
@@ -233,7 +318,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
+        final responseData = response.data;
+        final data = responseData['data'] ?? responseData; // Handle both wrapped and direct data
+        
+        // Convert role to boolean - handle both string and boolean cases
+        bool role = false;
+        if (data['role'] is String) {
+          role = data['role'] == 'admin' || data['role'] == 'super_admin' || data['role'] == 'true';
+        } else if (data['role'] is bool) {
+          role = data['role'];
+        }
+        
         return UserEntity(
           id: data['id'] ?? 0,
           name: data['name'] ?? data['username'] ?? '',
@@ -241,17 +336,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           username: data['username'],
           firstName: data['firstName'],
           lastName: data['lastName'],
-          role: data['role'] ?? false,
-          isActive: data['isActive'],
-          createdAt: data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
-          updatedAt: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
+          role: role,
+          isActive: data['is_active'] ?? data['isActive'] ?? true,
+          createdAt: data['created_at'] != null ? DateTime.parse(data['created_at']) : 
+                    (data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null),
+          updatedAt: data['updated_at'] != null ? DateTime.parse(data['updated_at']) : 
+                    (data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null),
           avatar: data['avatar'],
           phoneNumber: data['phoneNumber'],
           department: data['department'],
           position: data['position'],
-          lastLoginAt: data['lastLoginAt'] != null 
-              ? DateTime.parse(data['lastLoginAt']) 
-              : null,
+          lastLoginAt: data['last_login'] != null ? DateTime.parse(data['last_login']) : 
+                      (data['lastLoginAt'] != null ? DateTime.parse(data['lastLoginAt']) : null),
         );
       } else {
         throw ServerFailure(
@@ -278,6 +374,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = response.data;
+        
+        // Convert role to boolean - handle both string and boolean cases
+        bool role = false;
+        if (data['user']['role'] is String) {
+          role = data['user']['role'] == 'admin' || data['user']['role'] == 'super_admin' || data['user']['role'] == 'true';
+        } else if (data['user']['role'] is bool) {
+          role = data['user']['role'];
+        }
+        
         return AuthEntity(
           token: data['token'] ?? '',
           refreshToken: data['refreshToken'] ?? '',
@@ -285,7 +390,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             id: data['user']['id'] ?? 0,
             name: data['user']['name'] ?? '${data['user']['firstName'] ?? ''} ${data['user']['lastName'] ?? ''}'.trim(),
             email: data['user']['email'] ?? '',
-            role: data['user']['role'] ?? false,
+            role: role,
             firstName: data['user']['firstName'],
             lastName: data['user']['lastName'],
             isActive: data['user']['isActive'],
@@ -405,6 +510,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               // Add name field if it doesn't exist
               if (!data.containsKey('name')) {
                 data['name'] = '${data['firstname'] ?? ''} ${data['lastname'] ?? ''}'.trim();
+              }
+              // Temporary fix: Add default refresh token if missing
+              if (!data.containsKey('refreshToken') || data['refreshToken'] == null) {
+                data['refreshToken'] = 'no_refresh_token';
+                data['refreshTokenExpiry'] = DateTime.now().add(const Duration(days: 7)).toIso8601String();
               }
             }
             return SuperAdminResponseEntity.fromJson(responseData);

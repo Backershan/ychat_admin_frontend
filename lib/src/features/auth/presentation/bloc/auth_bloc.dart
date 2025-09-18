@@ -80,8 +80,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         developer.log('❌ Login failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
@@ -121,8 +121,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       role: event.role,
     );
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         developer.log('❌ Registration failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
@@ -160,8 +160,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         developer.log('❌ SuperAdmin registration failed: ${failure.message}', name: 'AuthBloc');
         emit(AuthState.error(message: _getErrorMessage(failure)));
       },
@@ -275,7 +275,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         break;
       case AuthServiceState.accessTokenExpired:
-        add(const AuthEvent.refreshToken());
+        // TODO: Re-enable refresh token functionality when backend endpoint is available
+        // For now, just logout user when token expires
+        add(const AuthEvent.logout());
         break;
       case AuthServiceState.refreshTokenExpired:
         add(const AuthEvent.logout());
@@ -311,9 +313,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _authRepository.updateProfile(
       firstName: event.firstName,
       lastName: event.lastName,
-      phoneNumber: event.phoneNumber,
-      department: event.department,
-      position: event.position,
+     
     );
 
     result.fold(
