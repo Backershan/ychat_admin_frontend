@@ -43,17 +43,46 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
 
   @override
   Future<SettingsModel> updateSettings(SettingsEntity settings) async {
-    // Backend doesn't support settings updates via PUT endpoint
-    // Return the current settings as if update was successful
-    // This prevents the "error loading widgets" issue
     try {
-      // Get current settings to return them
-      final currentSettings = await getSettings();
-      
-      // Return the current settings (simulating successful update)
-      return currentSettings;
+      // Prepare the request data in snake_case format as expected by the API
+      final requestData = {
+        'enable_screen_share': settings.enableScreenShare,
+        'enable_app_in_app': settings.enableAppInApp,
+        'push_notifications': settings.pushNotifications,
+      };
+
+      print('🔧 Settings update request:');
+      print('URL: ${ApiConfig.baseUrl}${ApiConfig.settingsUpdateEndpoint}');
+      print('Data: $requestData');
+
+      final response = await _dio.put(
+        '${ApiConfig.baseUrl}${ApiConfig.settingsUpdateEndpoint}',
+        data: requestData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      print('🔧 Settings update response:');
+      print('Status: ${response.statusCode}');
+      print('Data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        // Parse the response using the same converter
+        return SettingsJsonConverter.parseSettingsResponse(response.data);
+      } else {
+        throw ServerException('Failed to update settings');
+      }
+    } on DioException catch (e) {
+      print('🔧 Settings update DioException: ${e.message}');
+      print('Response: ${e.response?.data}');
+      throw _handleDioException(e);
     } catch (e) {
-      throw UnknownException('Settings update is not supported by the backend');
+      print('🔧 Settings update error: $e');
+      throw UnknownException('An unexpected error occurred: $e');
     }
   }
 

@@ -31,7 +31,7 @@ class ApiConfig {
 
   //super admin management
   static const String dashboardEndpoint = '/admin/data?type=stats';
-  static const String settingsEndpoint = '/admin/data?type=settings';
+  static const String settingsEndpoint = '/admin/settings';
   static const String settingsUpdateEndpoint = '/admin/settings';
 
   static const String actionsEndpoint = '/admin/actions';
