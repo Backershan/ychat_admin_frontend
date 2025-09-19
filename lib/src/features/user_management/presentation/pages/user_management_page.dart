@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
-import 'package:y_chat_admin/src/shared/widgets/error_widget.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/constants.dart';
-import '../../../../core/utils/web_responsive.dart';
-import '../../domain/entities/user_entity.dart';
 import '../bloc/user_bloc.dart';
 import '../bloc/user_event.dart';
 import '../bloc/user_state.dart';
-import '../widgets/user_table_widget.dart';
+import '../widgets/user_card.dart';
+import '../widgets/create_user_dialog.dart';
+import '../widgets/user_actions_dialog.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -20,13 +17,25 @@ class UserManagementPage extends StatefulWidget {
 }
 
 class _UserManagementPageState extends State<UserManagementPage> {
+  String _selectedStatus = 'All';
+  String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-  UserStatus? _selectedStatus;
+
+  final List<String> _statusOptions = [
+    'All',
+    'active',
+    'inactive',
+    'suspended',
+    'banned',
+  ];
 
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(const GetUsers());
+    // Load users on page initialization
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserBloc>().add(const GetUsers());
+    });
   }
 
   @override
@@ -37,8 +46,6 @@ class _UserManagementPageState extends State<UserManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 768;
-    
     return Scaffold(
       backgroundColor: AppColors.background,
       body: BlocListener<UserBloc, UserState>(
@@ -46,84 +53,145 @@ class _UserManagementPageState extends State<UserManagementPage> {
           if (state is UserError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.failure.message}'),
+                content: Text(state.message),
                 backgroundColor: Colors.red,
-                duration: const Duration(seconds: 3),
+              ),
+            );
+          } else if (state is UserCreated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User created successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is UserUpdated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User updated successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is UserDeleted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User deleted successfully'),
+                backgroundColor: Colors.green,
               ),
             );
           } else if (state is UserStatusUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('User status updated successfully'),
+                content: Text('User status updated to ${state.status}'),
                 backgroundColor: Colors.green,
-                duration: const Duration(seconds: 2),
               ),
             );
-          } else if (state is UserDeleted) {
+          } else if (state is UserBanned) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('User deleted successfully'),
+              const SnackBar(
+                content: Text('User banned successfully'),
                 backgroundColor: Colors.orange,
-                duration: const Duration(seconds: 2),
+              ),
+            );
+          } else if (state is UserUnbanned) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User unbanned successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is UserActivated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User activated successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is UserDeactivated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('User deactivated successfully'),
+                backgroundColor: Colors.orange,
               ),
             );
           }
         },
-        child: Padding(
-          padding: WebResponsive.getWebPadding(context, all: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(isMobile),
-              SizedBox(height: WebResponsive.getWebHeight(24, context)),
-              _buildFilters(isMobile),
-              SizedBox(height: WebResponsive.getWebHeight(16, context)),
-              Expanded(
-                child: _buildContent(),
-              ),
-            ],
-          ),
-        ),
+        child: MediaQuery.of(context).size.width < 900 
+          ? _buildMobileLayout()
+          : _buildDesktopLayout(),
       ),
     );
   }
 
-  Widget _buildHeader(bool isMobile) {
-    return Row(
+  Widget _buildMobileLayout() {
+    return Column(
       children: [
-        Icon(
-          Icons.people,
-          size: isMobile ? 24.w : 28.w,
-          color: AppColors.primary,
-        ),
-        SizedBox(width: 12.w),
-        Text(
-          'User Management',
-          style: TextStyle(
-            fontSize: isMobile ? 24.sp : 28.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackground,
+        _buildHeader(),
+        Expanded(
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              print('🔧 UserManagementPage: Current state: $state');
+              
+              if (state is UserLoading) {
+                print('🔧 UserManagementPage: Showing loading state');
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is UsersLoaded) {
+                print('🔧 UserManagementPage: Showing users loaded state with ${state.users.users.length} users');
+                return _buildUsersList(state.users);
+              } else if (state is UserError) {
+                print('🔧 UserManagementPage: Showing error state: ${state.message}');
+                return _buildErrorState(state.message);
+              } else {
+                print('🔧 UserManagementPage: Showing initial state');
+                return const Center(
+                  child: Text('No users loaded. Pull to refresh.'),
+                );
+              }
+            },
           ),
         ),
-        const Spacer(),
-        if (!isMobile) ...[
-          IconButton(
-            onPressed: () => context.read<UserBloc>().add(const RefreshUsers()),
-            icon: Icon(
-              Icons.refresh,
-              color: AppColors.primary,
-              size: 24.w,
-            ),
-            tooltip: 'Refresh Users',
-          ),
-        ],
       ],
     );
   }
 
-  Widget _buildFilters(bool isMobile) {
+  Widget _buildDesktopLayout() {
+    return Padding(
+      padding: EdgeInsets.all(24.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          SizedBox(height: 24.h),
+          Expanded(
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                print('🔧 UserManagementPage: Current state: $state');
+                
+                if (state is UserLoading) {
+                  print('🔧 UserManagementPage: Showing loading state');
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is UsersLoaded) {
+                  print('🔧 UserManagementPage: Showing users loaded state with ${state.users.users.length} users');
+                  return _buildUsersList(state.users);
+                } else if (state is UserError) {
+                  print('🔧 UserManagementPage: Showing error state: ${state.message}');
+                  return _buildErrorState(state.message);
+                } else {
+                  print('🔧 UserManagementPage: Showing initial state');
+                  return const Center(
+                    child: Text('No users loaded. Click refresh to load users.'),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
     return Container(
-      padding: WebResponsive.getWebPadding(context, all: 16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12.r),
@@ -135,272 +203,285 @@ class _UserManagementPageState extends State<UserManagementPage> {
           ),
         ],
       ),
-      child: isMobile ? _buildMobileFilters() : _buildDesktopFilters(),
-    );
-  }
-
-  Widget _buildMobileFilters() {
-    return Column(
-      children: [
-        // Search Field
-        TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search users...',
-            prefixIcon: Icon(Icons.search, size: 20.w),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    onPressed: () {
-                      _searchController.clear();
-                      context.read<UserBloc>().add(const GetUsers());
-                    },
-                    icon: Icon(Icons.clear, size: 20.w),
-                  )
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.primary, width: 2),
-            ),
-          ),
-          onChanged: (value) {
-            if (value.isEmpty) {
-              context.read<UserBloc>().add(const GetUsers());
-            } else {
-              context.read<UserBloc>().add(SearchUsers(query: value));
-            }
-          },
-        ),
-        SizedBox(height: 12.h),
-        // Status Filter
-        Row(
-          children: [
-            Text(
-              'Status:',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.onSurface,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.people_outline,
+                size: 24.sp,
+                color: AppColors.primary,
               ),
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: DropdownButtonFormField<UserStatus?>(
-                value: _selectedStatus,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
-                  ),
+              SizedBox(width: 12.w),
+              Text(
+                'User Management',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.onSurface,
                 ),
-                items: [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text('All Status'),
-                  ),
-                  ...UserStatus.values.map(
-                    (status) => DropdownMenuItem(
-                      value: status,
-                      child: Text(status.displayName),
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedStatus = value;
-                  });
-                  context.read<UserBloc>().add(FilterUsersByStatus(status: value));
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  context.read<UserBloc>().add(const RefreshUsers());
                 },
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Refresh',
               ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDesktopFilters() {
-    return Row(
-      children: [
-        // Search Field
-        Expanded(
-          flex: 2,
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search users by name, email, or UID...',
-              prefixIcon: Icon(Icons.search, size: 20.w),
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        context.read<UserBloc>().add(const GetUsers());
-                      },
-                      icon: Icon(Icons.clear, size: 20.w),
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 2),
-              ),
-            ),
-            onChanged: (value) {
-              if (value.isEmpty) {
-                context.read<UserBloc>().add(const GetUsers());
-              } else {
-                context.read<UserBloc>().add(SearchUsers(query: value));
-              }
-            },
-          ),
-        ),
-        SizedBox(width: 16.w),
-        // Status Filter
-        SizedBox(
-          width: 200.w,
-          child: DropdownButtonFormField<UserStatus?>(
-            value: _selectedStatus,
-            decoration: InputDecoration(
-              labelText: 'Filter by Status',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 2),
-              ),
-            ),
-            items: [
-              const DropdownMenuItem(
-                value: null,
-                child: Text('All Status'),
-              ),
-              ...UserStatus.values.map(
-                (status) => DropdownMenuItem(
-                  value: status,
-                  child: Text(status.displayName),
+              SizedBox(width: 8.w),
+              ElevatedButton.icon(
+                onPressed: () {
+                  _showCreateUserDialog();
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Add User'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],
-            onChanged: (value) {
-              setState(() {
-                _selectedStatus = value;
-              });
-              context.read<UserBloc>().add(FilterUsersByStatus(status: value));
-            },
           ),
-        ),
-      ],
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search users...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                    _performSearch();
+                  },
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedStatus,
+                  decoration: InputDecoration(
+                    labelText: 'Status',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
+                    ),
+                  ),
+                  items: _statusOptions.map((String status) {
+                    return DropdownMenuItem<String>(
+                      value: status,
+                      child: Text(status),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _selectedStatus = newValue;
+                      });
+                      _performSearch();
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildContent() {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        if (state is UserLoading) {
-          return const LoadingWidget(message: 'Loading users...');
-        }
+  Widget _buildUsersList(users) {
+    List<dynamic> filteredUsers = users.users;
+    
+    // Apply search filter
+    if (_searchQuery.isNotEmpty) {
+      filteredUsers = users.users.where((user) {
+        return user.firstname.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+               user.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+               (user.lastname?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+      }).toList();
+    }
+    
+    // Apply status filter
+    if (_selectedStatus != 'All') {
+      filteredUsers = filteredUsers.where((user) => user.status == _selectedStatus).toList();
+    }
 
-        if (state is UserError) {
-          return CustomErrorWidget(
-            message: state.failure.message,
-            onRetry: () => context.read<UserBloc>().add(const RefreshUsers()),
-          );
-        }
+    if (filteredUsers.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.people_outline,
+              size: 64.sp,
+              color: Colors.grey[400],
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'No users found',
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            if (_searchQuery.isNotEmpty || _selectedStatus != 'All')
+              Text(
+                'Try adjusting your search criteria',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey[500],
+                ),
+              ),
+          ],
+        ),
+      );
+    }
 
-        if (state is UserLoaded) {
-          if (state.users.users.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          return UserTableWidget(
-            users: state.users.users,
-            onStatusChanged: (user, newStatus) {
-              context.read<UserBloc>().add(
-                UpdateUserStatus(userId: user.id, status: newStatus),
-              );
-            },
-            onDeleteUser: (user) {
-              context.read<UserBloc>().add(
-                DeleteUser(userId: user.id),
-              );
-            },
-          );
-        }
-
-        return const SizedBox.shrink();
+    return GridView.builder(
+      padding: EdgeInsets.all(16.w),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: MediaQuery.of(context).size.width > 1200 ? 3 : 2,
+        childAspectRatio: 1.2,
+        crossAxisSpacing: 16.w,
+        mainAxisSpacing: 16.h,
+      ),
+      itemCount: filteredUsers.length,
+      itemBuilder: (context, index) {
+        final user = filteredUsers[index];
+        return UserCard(
+          user: user,
+          onEdit: () => _showEditUserDialog(user),
+          onDelete: () => _showDeleteUserDialog(user),
+          onActions: () => _showUserActionsDialog(user),
+        );
       },
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildErrorState(String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.people_outline,
-            size: 64.w,
-            color: AppColors.onBackground.withValues(alpha: 0.3),
+            Icons.error_outline,
+            size: 64.sp,
+            color: Colors.red[400],
           ),
           SizedBox(height: 16.h),
           Text(
-            'No Users Found',
+            'Error loading users',
             style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.onBackground,
+              fontSize: 18.sp,
+              color: Colors.red[600],
             ),
           ),
           SizedBox(height: 8.h),
           Text(
-            'There are no users to display. Try adjusting your search or filters.',
+            message,
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.onBackground.withValues(alpha: 0.6),
+              color: Colors.grey[600],
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 24.h),
-          ElevatedButton.icon(
-            onPressed: () => context.read<UserBloc>().add(const RefreshUsers()),
-            icon: Icon(Icons.refresh, size: 20.w),
-            label: const Text('Refresh'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.onPrimary,
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-            ),
+          SizedBox(height: 16.h),
+          ElevatedButton(
+            onPressed: () {
+              context.read<UserBloc>().add(const GetUsers());
+            },
+            child: const Text('Retry'),
           ),
         ],
       ),
+    );
+  }
+
+  void _performSearch() {
+    context.read<UserBloc>().add(
+          GetUsers(
+            search: _searchQuery.isNotEmpty ? _searchQuery : null,
+            status: _selectedStatus != 'All' ? _selectedStatus : null,
+          ),
+        );
+  }
+
+  void _showCreateUserDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const CreateUserDialog(),
+    );
+  }
+
+  void _showEditUserDialog(user) {
+    // TODO: Implement edit user dialog
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Edit user functionality coming soon'),
+        backgroundColor: Colors.orange,
+      ),
+    );
+  }
+
+  void _showDeleteUserDialog(user) {
+    // Check if user can be deleted based on status
+    if (user.status == 'active') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot delete active users. Please deactivate or suspend first.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete User'),
+        content: Text('Are you sure you want to delete ${user.firstname}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<UserBloc>().add(DeleteUser(user.id));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showUserActionsDialog(user) {
+    showDialog(
+      context: context,
+      builder: (context) => UserActionsDialog(user: user),
     );
   }
 }

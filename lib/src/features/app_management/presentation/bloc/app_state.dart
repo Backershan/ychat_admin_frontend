@@ -47,6 +47,24 @@ class AppDeleted extends AppState {
   List<Object> get props => [appId];
 }
 
+class AppStatusUpdated extends AppState {
+  final AppEntity app;
+
+  const AppStatusUpdated(this.app);
+
+  @override
+  List<Object> get props => [app];
+}
+
+class AppAnalyticsLoaded extends AppState {
+  final AppAnalyticsEntity analytics;
+
+  const AppAnalyticsLoaded(this.analytics);
+
+  @override
+  List<Object> get props => [analytics];
+}
+
 class AppError extends AppState {
   final Failure failure;
 

@@ -20,16 +20,20 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _appKeyController = TextEditingController();
-  final _categoryController = TextEditingController();
+  final _iconUrlController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _versionController = TextEditingController();
   bool _isActive = true;
+  bool _isIntegrated = false;
+  String _selectedCategory = 'general';
+  final List<String> _permissions = ['read'];
+  final Map<String, dynamic> _integrationConfig = {};
 
   @override
   void dispose() {
     _nameController.dispose();
     _appKeyController.dispose();
-    _categoryController.dispose();
+    _iconUrlController.dispose();
     _descriptionController.dispose();
     _versionController.dispose();
     super.dispose();
@@ -133,7 +137,9 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
         SizedBox(height: 16.h),
         _buildDescriptionField(),
         SizedBox(height: 16.h),
-        _buildActiveSwitch(),
+        _buildIconUrlField(),
+        SizedBox(height: 16.h),
+        _buildSwitches(),
       ],
     );
   }
@@ -182,19 +188,46 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
   }
 
   Widget _buildCategoryField() {
-    return TextFormField(
-      controller: _categoryController,
+    final availableCategories = [
+      'social',
+      'productivity',
+      'entertainment',
+      'communication',
+      'health',
+      'education',
+      'business',
+      'finance',
+      'shopping',
+      'travel',
+      'general'
+    ];
+
+    return DropdownButtonFormField<String>(
+      value: _selectedCategory,
       decoration: InputDecoration(
         labelText: 'Category',
-        hintText: 'Enter category',
+        hintText: 'Select category',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
         ),
         prefixIcon: const Icon(Icons.category),
       ),
+      items: availableCategories.map((String category) {
+        return DropdownMenuItem<String>(
+          value: category,
+          child: Text(category),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          setState(() {
+            _selectedCategory = newValue;
+          });
+        }
+      },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter category';
+          return 'Please select a category';
         }
         return null;
       },
@@ -242,25 +275,65 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
     );
   }
 
-  Widget _buildActiveSwitch() {
-    return Row(
-      children: [
-        Switch(
-          value: _isActive,
-          onChanged: (value) {
-            setState(() {
-              _isActive = value;
-            });
-          },
-          activeColor: AppColors.primary,
+  Widget _buildIconUrlField() {
+    return TextFormField(
+      controller: _iconUrlController,
+      decoration: InputDecoration(
+        labelText: 'Icon URL (Optional)',
+        hintText: 'https://example.com/icon.png',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
         ),
-        SizedBox(width: 12.w),
-        Text(
-          'Active',
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: AppColors.onBackground,
-          ),
+        prefixIcon: const Icon(Icons.image),
+      ),
+    );
+  }
+
+  Widget _buildSwitches() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Switch(
+              value: _isActive,
+              onChanged: (value) {
+                setState(() {
+                  _isActive = value;
+                });
+              },
+              activeColor: AppColors.primary,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'Active',
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: AppColors.onBackground,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        Row(
+          children: [
+            Switch(
+              value: _isIntegrated,
+              onChanged: (value) {
+                setState(() {
+                  _isIntegrated = value;
+                });
+              },
+              activeColor: AppColors.primary,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'Integrated',
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: AppColors.onBackground,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -310,7 +383,7 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
       final createAppData = {
         'name': _nameController.text,
         'appKey': _appKeyController.text,
-        'category': _categoryController.text,
+        'category': [_selectedCategory],
         'description': _descriptionController.text,
         'isActive': _isActive,
         'version': _versionController.text,
@@ -322,10 +395,14 @@ class _CreateAppDialogState extends State<CreateAppDialog> {
             CreateApp(
               name: _nameController.text,
               appKey: _appKeyController.text,
-              category: _categoryController.text,
+              iconUrl: _iconUrlController.text.isNotEmpty ? _iconUrlController.text : null,
+              category: [_selectedCategory],
               description: _descriptionController.text,
               isActive: _isActive,
+              isIntegrated: _isIntegrated,
               version: _versionController.text,
+              permissions: _permissions,
+              integrationConfig: _integrationConfig.isNotEmpty ? _integrationConfig : null,
             ),
           );
     } else {

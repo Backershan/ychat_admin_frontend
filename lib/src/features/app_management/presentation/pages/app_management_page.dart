@@ -22,6 +22,8 @@ class _AppManagementPageState extends State<AppManagementPage>
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  String _selectedCategory = 'All';
+  final List<String> _categories = ['All', 'productivity', 'entertainment', 'business', 'education', 'health', 'finance'];
 
   @override
   void initState() {
@@ -145,14 +147,78 @@ class _AppManagementPageState extends State<AppManagementPage>
   }
 
   Widget _buildHeader() {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      
-        const Spacer(),
-        IconButton(
-          onPressed: () => context.read<AppBloc>().add(const RefreshApps()),
-          icon: const Icon(Icons.refresh),
-          tooltip: 'Refresh Apps',
+        Row(
+          children: [
+            Icon(
+              Icons.apps,
+              size: 32.w,
+              color: AppColors.primary,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'App Management',
+              style: TextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.onBackground,
+              ),
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: () => context.read<AppBloc>().add(const RefreshApps()),
+              icon: const Icon(Icons.refresh),
+              tooltip: 'Refresh Apps',
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+        Row(
+          children: [
+            BlocBuilder<AppBloc, AppState>(
+              builder: (context, state) {
+                String statusText = 'Loading...';
+                Color statusColor = Colors.blue;
+                
+                if (state is AppsLoaded) {
+                  statusText = '${state.apps.apps.length} apps loaded';
+                  statusColor = Colors.green;
+                } else if (state is AppError) {
+                  statusText = 'Error: ${state.failure.message}';
+                  statusColor = Colors.red;
+                } else if (state is AppLoading) {
+                  statusText = 'Loading apps...';
+                  statusColor = Colors.blue;
+                }
+                
+                return Row(
+                  children: [
+                    Container(
+                      width: 8.w,
+                      height: 8.w,
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      statusText,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: statusColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const Spacer(),
+            _buildCategoryFilter(),
+          ],
         ),
       ],
     );
@@ -161,13 +227,27 @@ class _AppManagementPageState extends State<AppManagementPage>
   Widget _buildContent() {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
+        print('🔧 AppManagementPage: Current state: ${state.runtimeType}');
+        
         if (state is AppLoading) {
+          print('🔧 AppManagementPage: Showing loading state');
           return const Center(child: LoadingWidget());
         } else if (state is AppError) {
+          print('🔧 AppManagementPage: Showing error state: ${state.failure.message}');
           return _buildErrorState(state.failure.message);
         } else if (state is AppsLoaded) {
+          print('🔧 AppManagementPage: Showing apps loaded state with ${state.apps.apps.length} apps');
           return _buildAppsList(state.apps);
+        } else if (state is AppInitial) {
+          print('🔧 AppManagementPage: Showing initial state, triggering GetApps');
+          // Trigger GetApps if we're in initial state
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<AppBloc>().add(const GetApps());
+          });
+          return const Center(child: LoadingWidget());
         }
+        
+        print('🔧 AppManagementPage: Showing default loading state for state: ${state.runtimeType}');
         return const Center(child: LoadingWidget());
       },
     );
@@ -219,8 +299,52 @@ class _AppManagementPageState extends State<AppManagementPage>
     );
   }
 
+  Widget _buildCategoryFilter() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.outline),
+      ),
+      child: DropdownButton<String>(
+        value: _selectedCategory,
+        underline: const SizedBox(),
+        icon: Icon(Icons.arrow_drop_down, size: 20.w),
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: AppColors.onBackground,
+        ),
+        items: _categories.map((String category) {
+          return DropdownMenuItem<String>(
+            value: category,
+            child: Text(category),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            setState(() {
+              _selectedCategory = newValue;
+            });
+            if (newValue == 'All') {
+              context.read<AppBloc>().add(const GetApps());
+            } else {
+              context.read<AppBloc>().add(GetAppsByCategory(category: newValue));
+            }
+          }
+        },
+      ),
+    );
+  }
+
   Widget _buildAppsList(apps) {
-    if (apps.apps.isEmpty) {
+    // Filter apps by category if not "All"
+    List<dynamic> filteredApps = apps.apps;
+    if (_selectedCategory != 'All') {
+      filteredApps = apps.apps.where((app) => app.category.contains(_selectedCategory)).toList();
+    }
+    
+    if (filteredApps.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -298,9 +422,9 @@ class _AppManagementPageState extends State<AppManagementPage>
         mainAxisSpacing: WebResponsive.getWebHeight(16, context),
         childAspectRatio: 1.2,
       ),
-      itemCount: apps.apps.length,
+      itemCount: filteredApps.length,
       itemBuilder: (context, index) {
-        final app = apps.apps[index];
+        final app = filteredApps[index];
         return AppCard(
           app: app,
           onEdit: () => _showEditAppDialog(app),

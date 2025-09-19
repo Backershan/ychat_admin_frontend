@@ -644,30 +644,35 @@ class _DashboardViewState extends State<_DashboardView>
             ),
             if (change != null) ...[
               SizedBox(width: 4.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.trending_up,
-                      color: Colors.green,
-                      size: 8.w,
-                    ),
-                    SizedBox(width: 1.w),
-                    Text(
-                      change,
-                      style: TextStyle(
-                        fontSize: 7.sp,
-                        fontWeight: FontWeight.w600,
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.trending_up,
                         color: Colors.green,
+                        size: 8.w,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 1.w),
+                      Flexible(
+                        child: Text(
+                          change,
+                          style: TextStyle(
+                            fontSize: 7.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

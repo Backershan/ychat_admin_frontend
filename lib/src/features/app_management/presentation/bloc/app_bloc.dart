@@ -29,22 +29,39 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<GetApps>(_onGetApps);
     on<CreateApp>(_onCreateApp);
     on<UpdateApp>(_onUpdateApp);
+    on<UpdateAppStatus>(_onUpdateAppStatus);
     on<DeleteApp>(_onDeleteApp);
     on<RefreshApps>(_onRefreshApps);
+    on<GetAppAnalytics>(_onGetAppAnalytics);
+    on<GetAppsByCategory>(_onGetAppsByCategory);
   }
 
   Future<void> _onGetApps(
     GetApps event,
     Emitter<AppState> emit,
   ) async {
+    print('🔧 AppBloc: _onGetApps called');
     emit(AppLoading());
 
-    final result = await _getAppsUseCase();
+    try {
+      print('🔧 AppBloc: Calling _getAppsUseCase...');
+      final result = await _getAppsUseCase();
+      print('🔧 AppBloc: Got result from use case: $result');
 
-    result.fold(
-      (failure) => emit(AppError(failure)),
-      (apps) => emit(AppsLoaded(apps)),
-    );
+      result.fold(
+        (failure) {
+          print('🔧 AppBloc: GetApps failed with: ${failure.message}');
+          emit(AppError(failure));
+        },
+        (apps) {
+          print('🔧 AppBloc: GetApps successful, got ${apps.apps.length} apps');
+          emit(AppsLoaded(apps));
+        },
+      );
+    } catch (e) {
+      print('🔧 AppBloc: GetApps exception: $e');
+      emit(AppError(UnknownFailure('An unexpected error occurred: $e')));
+    }
   }
 
   Future<void> _onCreateApp(
@@ -58,10 +75,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final result = await _createAppUseCase(
         name: event.name,
         appKey: event.appKey,
+        iconUrl: event.iconUrl,
         category: event.category,
         description: event.description,
         isActive: event.isActive,
+        isIntegrated: event.isIntegrated,
         version: event.version,
+        permissions: event.permissions,
+        integrationConfig: event.integrationConfig,
       );
 
       print('🔧 AppBloc: CreateAppUseCase result: $result');
@@ -90,8 +111,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     final result = await _updateAppUseCase(
       appId: event.appId,
-      name: event.name,
-      description: event.description,
+      name: event.name ?? '',
+      description: event.description ?? '',
     );
 
     result.fold(
@@ -112,6 +133,51 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       (failure) => emit(AppError(failure)),
       (_) => emit(AppDeleted(event.appId)),
     );
+  }
+
+  Future<void> _onUpdateAppStatus(
+    UpdateAppStatus event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(AppLoading());
+
+    final result = await _updateAppUseCase(
+      appId: event.appId,
+      name: '',
+      description: '',
+    );
+
+    result.fold(
+      (failure) => emit(AppError(failure)),
+      (app) => emit(AppStatusUpdated(app)),
+    );
+  }
+
+  Future<void> _onGetAppAnalytics(
+    GetAppAnalytics event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(AppLoading());
+
+    // TODO: Implement analytics use case
+    // For now, emit empty analytics
+    emit(const AppAnalyticsLoaded(AppAnalyticsEntity(
+      categories: [],
+      totalApps: 0,
+      activeApps: 0,
+      integratedApps: 0,
+    )));
+  }
+
+  Future<void> _onGetAppsByCategory(
+    GetAppsByCategory event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(AppLoading());
+
+    // TODO: Implement get apps by category use case
+    // For now, just get all apps
+    add(const GetApps());
   }
 
   Future<void> _onRefreshApps(

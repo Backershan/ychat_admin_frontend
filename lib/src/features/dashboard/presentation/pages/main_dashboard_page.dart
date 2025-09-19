@@ -6,8 +6,10 @@ import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_p
 import '../../../../core/constants/constants.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/web_responsive.dart';
+import '../../../app_management/presentation/bloc/app_bloc.dart';
 import 'dashboard_page.dart';
 import '../../../user_management/presentation/pages/user_management_page.dart';
+import '../../../user_management/presentation/bloc/user_bloc.dart';
 import '../../../ticketing/presentation/pages/ticketing_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../profile/presentation/bloc/profile_bloc.dart';
@@ -44,13 +46,19 @@ class _MainDashboardPageState extends State<MainDashboardPage>
       title: 'Users',
       icon: Icons.people_outline,
       selectedIcon: Icons.people,
-      page: const UserManagementPage(),
+      page: BlocProvider(
+        create: (context) => getIt<UserBloc>(),
+        child: const UserManagementPage(),
+      ),
     ),
     DashboardPageItem(
       title: 'Apps',
       icon: Icons.apps_outlined,
       selectedIcon: Icons.apps,
-      page: const AppManagementPage(),
+      page: BlocProvider(
+        create: (context) => getIt<AppBloc>(),
+        child: const AppManagementPage(),
+      ),
     ),
     DashboardPageItem(
       title: 'Tickets',
@@ -492,7 +500,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                 ),
               );
             },
-            child: Container(
+            child: SizedBox(
               key: ValueKey(_selectedIndex),
               width: double.infinity,
               height: double.infinity,

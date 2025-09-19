@@ -94,15 +94,45 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<void> changePassword(ChangePasswordRequest request) async {
-    print('🔒 ProfileRemoteDataSource: changePassword called');
-    print('🔒 Password change is not supported by backend - simulating success');
-    
-    // Since password change is not supported by backend, simulate a successful response
-    // This prevents the app from crashing and provides a better user experience
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
-    
-    print('🔒 ProfileRemoteDataSource: Simulated successful password change');
-    return; // Return successfully without making actual API call
+    try {
+      print('🔒 Change password request:');
+      print('Current: ${request.currentPassword}');
+      print('New: ${request.newPassword}');
+      
+      final response = await _dio.post(
+        '${ApiConfig.baseUrl}/admin/change-password',
+        data: {
+          'currentPassword': request.currentPassword,
+          'newPassword': request.newPassword,
+        },
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
+        ),
+      );
+
+      print('🔒 Change password response:');
+      print('Status: ${response.statusCode}');
+      print('Data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData['success'] == true) {
+          print('🔒 Password changed successfully: ${responseData['message']}');
+          return;
+        } else {
+          throw ServerFailure(responseData['message'] ?? 'Failed to change password');
+        }
+      } else {
+        throw ServerFailure('Failed to change password');
+      }
+    } on DioException catch (e) {
+      print('🔒 Change password DioException: ${e.message}');
+      print('Response: ${e.response?.data}');
+      throw _handleDioException(e);
+    } catch (e) {
+      print('🔒 Change password error: $e');
+      throw UnknownFailure('Change password failed: ${e.toString()}');
+    }
   }
 
   @override

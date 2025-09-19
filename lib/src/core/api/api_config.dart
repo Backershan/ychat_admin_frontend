@@ -51,9 +51,16 @@ class ApiConfig {
   // App management endpoints
   static const String appsEndpoint = '/admin/data?type=apps';
   static const String appActionsEndpoint = '/admin/actions';
-  
+  static const String appAnalyticsEndpoint = '/admin/apps/analytics';
+
   // User management endpoints
   static const String usersEndpoint = '/admin/users';
+  static const String userActionsEndpoint = '/admin/actions';
+  static String userEndpoint(int userId) => '/admin/users/$userId';
+  static String banUserEndpoint(int userId) => '/admin/users/$userId/ban';
+  static String unbanUserEndpoint(int userId) => '/admin/users/$userId/unban';
+  static String activateUserEndpoint(int userId) => '/admin/users/$userId/activate';
+  static String deactivateUserEndpoint(int userId) => '/admin/users/$userId/deactivate';
   
   // Default headers
   static const Map<String, String> defaultHeaders = {

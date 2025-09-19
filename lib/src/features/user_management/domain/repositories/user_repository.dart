@@ -4,15 +4,18 @@ import '../entities/user_entity.dart';
 
 abstract class UserRepository {
   Future<Either<Failure, UserListEntity>> getUsers({
-    int page = 1,
-    int limit = 20,
     String? search,
-    UserStatus? status,
+    String? status,
+    int? page,
+    int? limit,
   });
   
-  Future<Either<Failure, UserEntity>> getUserById(String userId);
-  
-  Future<Either<Failure, UserEntity>> updateUserStatus(UpdateUserStatusRequest request);
-  
-  Future<Either<Failure, void>> deleteUser(String userId);
+  Future<Either<Failure, UserEntity>> createUser(CreateUserRequest request);
+  Future<Either<Failure, UserEntity>> updateUser(UpdateUserRequest request);
+  Future<Either<Failure, void>> deleteUser(int userId);
+  Future<Either<Failure, void>> updateUserStatus(UpdateUserStatusRequest request);
+  Future<Either<Failure, void>> banUser(int userId, BanUserRequest request);
+  Future<Either<Failure, void>> unbanUser(int userId);
+  Future<Either<Failure, void>> activateUser(int userId);
+  Future<Either<Failure, void>> deactivateUser(int userId, DeactivateUserRequest request);
 }

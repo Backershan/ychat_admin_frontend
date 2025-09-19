@@ -3,20 +3,21 @@ import '../../../../core/error/failures.dart';
 import '../entities/user_entity.dart';
 import '../repositories/user_repository.dart';
 
-class UpdateUserStatusUseCase {
+class BanUserUseCase {
   final UserRepository _repository;
 
-  UpdateUserStatusUseCase(this._repository);
+  BanUserUseCase(this._repository);
 
   Future<Either<Failure, void>> call({
     required int userId,
-    required String status,
+    required String reason,
+    required String banType,
   }) async {
-    final request = UpdateUserStatusRequest(
-      userId: userId,
-      status: status,
+    final request = BanUserRequest(
+      reason: reason,
+      banType: banType,
     );
 
-    return await _repository.updateUserStatus(request);
+    return await _repository.banUser(userId, request);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/constants.dart';
 import '../bloc/profile_bloc.dart';
+import '../events/profile_event.dart';
 import '../states/profile_state.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
@@ -100,26 +101,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColors.onSurface,
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                          color: Colors.orange.withValues(alpha: 0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        'Not Supported',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.orange,
-                          fontWeight: FontWeight.w500,
-                        ),
                       ),
                     ),
                   ],
@@ -342,80 +323,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       print('New: ${_newPasswordController.text}');
       print('Confirm: ${_confirmPasswordController.text}');
       
-      // Show informative dialog about password change not being supported
-      _showPasswordChangeNotSupportedDialog();
+      // Actually call the API to change password
+      context.read<ProfileBloc>().add(
+        ProfileEvent.changePassword(
+          currentPassword: _currentPasswordController.text,
+          newPassword: _newPasswordController.text,
+          confirmPassword: _confirmPasswordController.text,
+        ),
+      );
     }
   }
 
-  void _showPasswordChangeNotSupportedDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Icons.info_outline,
-              color: Colors.orange,
-              size: 24.w,
-            ),
-            SizedBox(width: 12.w),
-            const Text('Feature Not Available'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Password change functionality is not currently supported by the backend server.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16.h),
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                  color: Colors.blue.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.lightbulb_outline,
-                    color: Colors.blue,
-                    size: 20.w,
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: Text(
-                      'This feature will be available in a future update.',
-                      style: TextStyle(
-                        color: Colors.blue.shade700,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close info dialog
-              Navigator.of(context).pop(); // Close password change dialog
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -120,7 +120,7 @@ class AppCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildInfoRow('Category', app.category),
+        _buildCategoryRow(),
         SizedBox(height: 8.h),
         _buildInfoRow('Version', app.version),
         SizedBox(height: 8.h),
@@ -132,6 +132,49 @@ class AppCard extends StatelessWidget {
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Categories: ',
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.onBackground.withValues(alpha: 0.6),
+          ),
+        ),
+        Expanded(
+          child: Wrap(
+            spacing: 4.w,
+            runSpacing: 4.h,
+            children: app.category.map((category) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4.r),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 0.5,
+                  ),
+                ),
+                child: Text(
+                  category,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

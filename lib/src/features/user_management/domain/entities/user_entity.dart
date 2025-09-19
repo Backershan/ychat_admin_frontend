@@ -1,79 +1,127 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_entity.freezed.dart';
+part 'user_entity.g.dart';
 
 @freezed
- abstract class UserEntity with _$UserEntity {
+class UserEntity with _$UserEntity {
   const factory UserEntity({
-    required String id,
-    required String name,
-    required String phone,
-    required String uid,
+    required int id,
+    required String firstname,
     required String email,
-    required UserStatus status,
-    required String ipAddress,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    required String status,
+    String? lastname,
+    String? phone,
     String? avatar,
-    String? role,
-    String? lastLoginAt,
-    String? deviceInfo,
+    DateTime? lastLogin,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? banReason,
+    String? banType,
+    DateTime? bannedAt,
+    String? deactivationReason,
+    DateTime? deactivatedAt,
   }) = _UserEntity;
+
+  factory UserEntity.fromJson(Map<String, dynamic> json) =>
+      _$UserEntityFromJson(json);
 }
 
 @freezed
 class UserListEntity with _$UserListEntity {
   const factory UserListEntity({
     required List<UserEntity> users,
+    required UserPaginationEntity pagination,
+  }) = _UserListEntity;
+
+  factory UserListEntity.fromJson(Map<String, dynamic> json) =>
+      _$UserListEntityFromJson(json);
+}
+
+@freezed
+class UserPaginationEntity with _$UserPaginationEntity {
+  const factory UserPaginationEntity({
     required int total,
     required int page,
+    required int pages,
     required int limit,
-  }) = _UserListEntity;
+  }) = _UserPaginationEntity;
+
+  factory UserPaginationEntity.fromJson(Map<String, dynamic> json) =>
+      _$UserPaginationEntityFromJson(json);
+}
+
+@freezed
+class CreateUserRequest with _$CreateUserRequest {
+  const factory CreateUserRequest({
+    required String firstname,
+    required String email,
+    String? lastname,
+    String? phone,
+    String? password,
+    String? status,
+  }) = _CreateUserRequest;
+
+  factory CreateUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$CreateUserRequestFromJson(json);
+}
+
+@freezed
+class UpdateUserRequest with _$UpdateUserRequest {
+  const factory UpdateUserRequest({
+    required int userId,
+    String? firstname,
+    String? lastname,
+    String? email,
+    String? phone,
+    String? status,
+  }) = _UpdateUserRequest;
+
+  factory UpdateUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateUserRequestFromJson(json);
 }
 
 @freezed
 class UpdateUserStatusRequest with _$UpdateUserStatusRequest {
   const factory UpdateUserStatusRequest({
-    required String userId,
-    required UserStatus status,
+    required int userId,
+    required String status,
   }) = _UpdateUserStatusRequest;
+
+  factory UpdateUserStatusRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateUserStatusRequestFromJson(json);
 }
 
-enum UserStatus {
-  @JsonValue('active')
-  active,
-  @JsonValue('inactive')
-  inactive,
-  @JsonValue('suspended')
-  suspended,
-  @JsonValue('banned')
-  banned,
+@freezed
+class BanUserRequest with _$BanUserRequest {
+  const factory BanUserRequest({
+    required String reason,
+    required String banType,
+  }) = _BanUserRequest;
+
+  factory BanUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$BanUserRequestFromJson(json);
 }
 
-extension UserStatusExtension on UserStatus {
-  String get displayName {
-    switch (this) {
-      case UserStatus.active:
-        return 'Active';
-      case UserStatus.inactive:
-        return 'Inactive';
-      case UserStatus.suspended:
-        return 'Suspended';
-      case UserStatus.banned:
-        return 'Banned';
-    }
-  }
+@freezed
+class DeactivateUserRequest with _$DeactivateUserRequest {
+  const factory DeactivateUserRequest({
+    required String reason,
+  }) = _DeactivateUserRequest;
 
-  String get color {
-    switch (this) {
-      case UserStatus.active:
-        return 'green';
-      case UserStatus.inactive:
-        return 'orange';
-      case UserStatus.suspended:
-        return 'red';
-      case UserStatus.banned:
-        return 'red';
-    }
-  }
+  factory DeactivateUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$DeactivateUserRequestFromJson(json);
+}
+
+@freezed
+class UserSearchParams with _$UserSearchParams {
+  const factory UserSearchParams({
+    String? search,
+    String? status,
+    int? page,
+    int? limit,
+  }) = _UserSearchParams;
+
+  factory UserSearchParams.fromJson(Map<String, dynamic> json) =>
+      _$UserSearchParamsFromJson(json);
 }

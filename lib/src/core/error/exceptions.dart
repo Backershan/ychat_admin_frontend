@@ -32,3 +32,13 @@ class UnknownException implements Exception {
   final String message;
   const UnknownException(this.message);
 }
+
+class ValidationException implements Exception {
+  final String message;
+  const ValidationException(this.message);
+}
+
+class ConflictException implements Exception {
+  final String message;
+  const ConflictException(this.message);
+}

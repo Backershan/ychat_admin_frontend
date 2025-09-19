@@ -21,17 +21,23 @@ class AppRepositoryImpl implements AppRepository {
           id: app.id,
           name: app.name,
           appKey: app.appKey,
+          iconUrl: app.iconUrl,
           category: app.category,
           description: app.description,
           isActive: app.isActive,
+          isIntegrated: app.isIntegrated,
           version: app.version,
+          permissions: app.permissions,
+          integrationConfig: app.integrationConfig,
           createdAt: app.createdAt,
           updatedAt: app.updatedAt,
         )).toList(),
-        total: appListModel.total,
-        page: appListModel.page,
-        pages: appListModel.pages,
-        limit: appListModel.limit,
+        pagination: PaginationEntity(
+          total: appListModel.pagination.total,
+          page: appListModel.pagination.page,
+          pages: appListModel.pagination.pages,
+          limit: appListModel.pagination.limit,
+        ),
       );
       return Right(appListEntity);
     } on ServerException catch (e) {
@@ -55,10 +61,14 @@ class AppRepositoryImpl implements AppRepository {
       final requestModel = CreateAppRequestModel(
         name: request.name,
         appKey: request.appKey,
+        iconUrl: request.iconUrl,
         category: request.category,
         description: request.description,
         isActive: request.isActive,
+        isIntegrated: request.isIntegrated,
         version: request.version,
+        permissions: request.permissions,
+        integrationConfig: request.integrationConfig,
       );
       
       print('🔧 AppRepositoryImpl: Created requestModel: $requestModel');
@@ -72,10 +82,14 @@ class AppRepositoryImpl implements AppRepository {
         id: appModel.id,
         name: appModel.name,
         appKey: appModel.appKey,
+        iconUrl: appModel.iconUrl,
         category: appModel.category,
         description: appModel.description,
         isActive: appModel.isActive,
+        isIntegrated: appModel.isIntegrated,
         version: appModel.version,
+        permissions: appModel.permissions,
+        integrationConfig: appModel.integrationConfig,
         createdAt: appModel.createdAt,
         updatedAt: appModel.updatedAt,
       );
@@ -109,6 +123,11 @@ class AppRepositoryImpl implements AppRepository {
         appId: request.appId,
         name: request.name,
         description: request.description,
+        isActive: request.isActive,
+        isIntegrated: request.isIntegrated,
+        version: request.version,
+        permissions: request.permissions,
+        integrationConfig: request.integrationConfig,
       );
       
       final appModel = await _remoteDataSource.updateApp(requestModel);
@@ -116,10 +135,14 @@ class AppRepositoryImpl implements AppRepository {
         id: appModel.id,
         name: appModel.name,
         appKey: appModel.appKey,
+        iconUrl: appModel.iconUrl,
         category: appModel.category,
         description: appModel.description,
         isActive: appModel.isActive,
+        isIntegrated: appModel.isIntegrated,
         version: appModel.version,
+        permissions: appModel.permissions,
+        integrationConfig: appModel.integrationConfig,
         createdAt: appModel.createdAt,
         updatedAt: appModel.updatedAt,
       );

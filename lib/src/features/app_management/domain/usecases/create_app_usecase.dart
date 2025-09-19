@@ -11,26 +11,38 @@ class CreateAppUseCase {
   Future<Either<Failure, AppEntity>> call({
     required String name,
     required String appKey,
-    required String category,
+    String? iconUrl,
+    required List<String> category,
     required String description,
     required bool isActive,
+    required bool isIntegrated,
     required String version,
+    required List<String> permissions,
+    Map<String, dynamic>? integrationConfig,
   }) async {
     print('🔧 CreateAppUseCase: called with params:');
     print('  name: $name');
     print('  appKey: $appKey');
+    print('  iconUrl: $iconUrl');
     print('  category: $category');
     print('  description: $description');
     print('  isActive: $isActive');
+    print('  isIntegrated: $isIntegrated');
     print('  version: $version');
+    print('  permissions: $permissions');
+    print('  integrationConfig: $integrationConfig');
     
     final request = CreateAppRequest(
       name: name,
       appKey: appKey,
+      iconUrl: iconUrl,
       category: category,
       description: description,
       isActive: isActive,
+      isIntegrated: isIntegrated,
       version: version,
+      permissions: permissions,
+      integrationConfig: integrationConfig,
     );
     
     print('🔧 CreateAppUseCase: Created request: $request');

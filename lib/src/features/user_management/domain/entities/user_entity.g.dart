@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_model.dart';
+part of 'user_entity.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
-    _$UserModelImpl(
+_$UserEntityImpl _$$UserEntityImplFromJson(Map<String, dynamic> json) =>
+    _$UserEntityImpl(
       id: (json['id'] as num).toInt(),
       firstname: json['firstname'] as String,
       email: json['email'] as String,
@@ -35,7 +35,7 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['deactivatedAt'] as String),
     );
 
-Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
+Map<String, dynamic> _$$UserEntityImplToJson(_$UserEntityImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'firstname': instance.firstname,
@@ -54,33 +54,34 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'deactivatedAt': instance.deactivatedAt?.toIso8601String(),
     };
 
-_$UserListModelImpl _$$UserListModelImplFromJson(Map<String, dynamic> json) =>
-    _$UserListModelImpl(
+_$UserListEntityImpl _$$UserListEntityImplFromJson(Map<String, dynamic> json) =>
+    _$UserListEntityImpl(
       users: (json['users'] as List<dynamic>)
-          .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => UserEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pagination: UserPaginationModel.fromJson(
+      pagination: UserPaginationEntity.fromJson(
         json['pagination'] as Map<String, dynamic>,
       ),
     );
 
-Map<String, dynamic> _$$UserListModelImplToJson(_$UserListModelImpl instance) =>
-    <String, dynamic>{
-      'users': instance.users,
-      'pagination': instance.pagination,
-    };
+Map<String, dynamic> _$$UserListEntityImplToJson(
+  _$UserListEntityImpl instance,
+) => <String, dynamic>{
+  'users': instance.users,
+  'pagination': instance.pagination,
+};
 
-_$UserPaginationModelImpl _$$UserPaginationModelImplFromJson(
+_$UserPaginationEntityImpl _$$UserPaginationEntityImplFromJson(
   Map<String, dynamic> json,
-) => _$UserPaginationModelImpl(
+) => _$UserPaginationEntityImpl(
   total: (json['total'] as num).toInt(),
   page: (json['page'] as num).toInt(),
   pages: (json['pages'] as num).toInt(),
   limit: (json['limit'] as num).toInt(),
 );
 
-Map<String, dynamic> _$$UserPaginationModelImplToJson(
-  _$UserPaginationModelImpl instance,
+Map<String, dynamic> _$$UserPaginationEntityImplToJson(
+  _$UserPaginationEntityImpl instance,
 ) => <String, dynamic>{
   'total': instance.total,
   'page': instance.page,
@@ -88,9 +89,9 @@ Map<String, dynamic> _$$UserPaginationModelImplToJson(
   'limit': instance.limit,
 };
 
-_$CreateUserRequestModelImpl _$$CreateUserRequestModelImplFromJson(
+_$CreateUserRequestImpl _$$CreateUserRequestImplFromJson(
   Map<String, dynamic> json,
-) => _$CreateUserRequestModelImpl(
+) => _$CreateUserRequestImpl(
   firstname: json['firstname'] as String,
   email: json['email'] as String,
   lastname: json['lastname'] as String?,
@@ -99,8 +100,8 @@ _$CreateUserRequestModelImpl _$$CreateUserRequestModelImplFromJson(
   status: json['status'] as String?,
 );
 
-Map<String, dynamic> _$$CreateUserRequestModelImplToJson(
-  _$CreateUserRequestModelImpl instance,
+Map<String, dynamic> _$$CreateUserRequestImplToJson(
+  _$CreateUserRequestImpl instance,
 ) => <String, dynamic>{
   'firstname': instance.firstname,
   'email': instance.email,
@@ -110,9 +111,9 @@ Map<String, dynamic> _$$CreateUserRequestModelImplToJson(
   'status': instance.status,
 };
 
-_$UpdateUserRequestModelImpl _$$UpdateUserRequestModelImplFromJson(
+_$UpdateUserRequestImpl _$$UpdateUserRequestImplFromJson(
   Map<String, dynamic> json,
-) => _$UpdateUserRequestModelImpl(
+) => _$UpdateUserRequestImpl(
   userId: (json['userId'] as num).toInt(),
   firstname: json['firstname'] as String?,
   lastname: json['lastname'] as String?,
@@ -121,8 +122,8 @@ _$UpdateUserRequestModelImpl _$$UpdateUserRequestModelImplFromJson(
   status: json['status'] as String?,
 );
 
-Map<String, dynamic> _$$UpdateUserRequestModelImplToJson(
-  _$UpdateUserRequestModelImpl instance,
+Map<String, dynamic> _$$UpdateUserRequestImplToJson(
+  _$UpdateUserRequestImpl instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'firstname': instance.firstname,
@@ -132,47 +133,46 @@ Map<String, dynamic> _$$UpdateUserRequestModelImplToJson(
   'status': instance.status,
 };
 
-_$UpdateUserStatusRequestModelImpl _$$UpdateUserStatusRequestModelImplFromJson(
+_$UpdateUserStatusRequestImpl _$$UpdateUserStatusRequestImplFromJson(
   Map<String, dynamic> json,
-) => _$UpdateUserStatusRequestModelImpl(
+) => _$UpdateUserStatusRequestImpl(
   userId: (json['userId'] as num).toInt(),
   status: json['status'] as String,
 );
 
-Map<String, dynamic> _$$UpdateUserStatusRequestModelImplToJson(
-  _$UpdateUserStatusRequestModelImpl instance,
+Map<String, dynamic> _$$UpdateUserStatusRequestImplToJson(
+  _$UpdateUserStatusRequestImpl instance,
 ) => <String, dynamic>{'userId': instance.userId, 'status': instance.status};
 
-_$BanUserRequestModelImpl _$$BanUserRequestModelImplFromJson(
-  Map<String, dynamic> json,
-) => _$BanUserRequestModelImpl(
-  reason: json['reason'] as String,
-  banType: json['banType'] as String,
-);
+_$BanUserRequestImpl _$$BanUserRequestImplFromJson(Map<String, dynamic> json) =>
+    _$BanUserRequestImpl(
+      reason: json['reason'] as String,
+      banType: json['banType'] as String,
+    );
 
-Map<String, dynamic> _$$BanUserRequestModelImplToJson(
-  _$BanUserRequestModelImpl instance,
+Map<String, dynamic> _$$BanUserRequestImplToJson(
+  _$BanUserRequestImpl instance,
 ) => <String, dynamic>{'reason': instance.reason, 'banType': instance.banType};
 
-_$DeactivateUserRequestModelImpl _$$DeactivateUserRequestModelImplFromJson(
+_$DeactivateUserRequestImpl _$$DeactivateUserRequestImplFromJson(
   Map<String, dynamic> json,
-) => _$DeactivateUserRequestModelImpl(reason: json['reason'] as String);
+) => _$DeactivateUserRequestImpl(reason: json['reason'] as String);
 
-Map<String, dynamic> _$$DeactivateUserRequestModelImplToJson(
-  _$DeactivateUserRequestModelImpl instance,
+Map<String, dynamic> _$$DeactivateUserRequestImplToJson(
+  _$DeactivateUserRequestImpl instance,
 ) => <String, dynamic>{'reason': instance.reason};
 
-_$UserSearchParamsModelImpl _$$UserSearchParamsModelImplFromJson(
+_$UserSearchParamsImpl _$$UserSearchParamsImplFromJson(
   Map<String, dynamic> json,
-) => _$UserSearchParamsModelImpl(
+) => _$UserSearchParamsImpl(
   search: json['search'] as String?,
   status: json['status'] as String?,
   page: (json['page'] as num?)?.toInt(),
   limit: (json['limit'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$$UserSearchParamsModelImplToJson(
-  _$UserSearchParamsModelImpl instance,
+Map<String, dynamic> _$$UserSearchParamsImplToJson(
+  _$UserSearchParamsImpl instance,
 ) => <String, dynamic>{
   'search': instance.search,
   'status': instance.status,

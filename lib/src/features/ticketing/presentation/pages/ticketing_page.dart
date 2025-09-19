@@ -79,21 +79,7 @@ class _TicketingPageState extends State<TicketingPage> {
   Widget _buildHeader(bool isMobile) {
     return Row(
       children: [
-        Icon(
-          Icons.support_agent,
-          size: isMobile ? 24.w : 28.w,
-          color: AppColors.primary,
-        ),
-        SizedBox(width: 12.w),
-        Text(
-          'Ticket Management',
-          style: TextStyle(
-            fontSize: isMobile ? 24.sp : 28.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackground,
-          ),
-        ),
-        const Spacer(),
+        
         if (!isMobile) ...[
           IconButton(
             onPressed: _loadTickets,

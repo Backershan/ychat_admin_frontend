@@ -56,8 +56,14 @@ import 'package:y_chat_admin/src/features/user_management/data/datasources/user_
 import 'package:y_chat_admin/src/features/user_management/data/repositories/user_repository_impl.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/repositories/user_repository.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/get_users_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/create_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_status_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/delete_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/ban_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/unban_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/activate_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/deactivate_user_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -288,30 +294,60 @@ Future<void> configureDependencies() async {
 
   // User Management
   getIt.registerLazySingleton<UserRemoteDataSource>(
-    () => UserRemoteDataSourceImpl(dio: getIt<Dio>()),
+    () => UserRemoteDataSourceImpl(getIt<Dio>()),
   );
 
   getIt.registerLazySingleton<UserRepository>(
-    () => UserRepositoryImpl(remoteDataSource: getIt<UserRemoteDataSource>()),
+    () => UserRepositoryImpl(getIt<UserRemoteDataSource>()),
   );
 
   getIt.registerLazySingleton<GetUsersUseCase>(
-    () => GetUsersUseCase(repository: getIt<UserRepository>()),
+    () => GetUsersUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateUserUseCase>(
+    () => CreateUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateUserUseCase>(
+    () => UpdateUserUseCase(getIt<UserRepository>()),
   );
 
   getIt.registerLazySingleton<UpdateUserStatusUseCase>(
-    () => UpdateUserStatusUseCase(repository: getIt<UserRepository>()),
+    () => UpdateUserStatusUseCase(getIt<UserRepository>()),
   );
 
   getIt.registerLazySingleton<DeleteUserUseCase>(
-    () => DeleteUserUseCase(repository: getIt<UserRepository>()),
+    () => DeleteUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<BanUserUseCase>(
+    () => BanUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UnbanUserUseCase>(
+    () => UnbanUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<ActivateUserUseCase>(
+    () => ActivateUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeactivateUserUseCase>(
+    () => DeactivateUserUseCase(getIt<UserRepository>()),
   );
 
   getIt.registerFactory<UserBloc>(
     () => UserBloc(
       getUsersUseCase: getIt<GetUsersUseCase>(),
-      updateUserStatusUseCase: getIt<UpdateUserStatusUseCase>(),
+      createUserUseCase: getIt<CreateUserUseCase>(),
+      updateUserUseCase: getIt<UpdateUserUseCase>(),
       deleteUserUseCase: getIt<DeleteUserUseCase>(),
+      updateUserStatusUseCase: getIt<UpdateUserStatusUseCase>(),
+      banUserUseCase: getIt<BanUserUseCase>(),
+      unbanUserUseCase: getIt<UnbanUserUseCase>(),
+      activateUserUseCase: getIt<ActivateUserUseCase>(),
+      deactivateUserUseCase: getIt<DeactivateUserUseCase>(),
     ),
   );
 }

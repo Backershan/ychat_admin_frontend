@@ -1,60 +1,57 @@
 import 'package:dio/dio.dart';
 import '../../../../core/api/api_config.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../domain/entities/user_entity.dart';
 import '../models/user_model.dart';
 
 abstract class UserRemoteDataSource {
   Future<UserListModel> getUsers({
-    int page = 1,
-    int limit = 20,
     String? search,
-    UserStatus? status,
+    String? status,
+    int? page,
+    int? limit,
   });
-  
-  Future<UserModel> getUserById(String userId);
-  
-  Future<UserModel> updateUserStatus(UpdateUserStatusRequestModel request);
-  
-  Future<void> deleteUser(String userId);
+  Future<UserModel> createUser(CreateUserRequestModel request);
+  Future<UserModel> updateUser(UpdateUserRequestModel request);
+  Future<void> deleteUser(int userId);
+  Future<void> updateUserStatus(UpdateUserStatusRequestModel request);
+  Future<void> banUser(int userId, BanUserRequestModel request);
+  Future<void> unbanUser(int userId);
+  Future<void> activateUser(int userId);
+  Future<void> deactivateUser(int userId, DeactivateUserRequestModel request);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final Dio _dio;
 
-  UserRemoteDataSourceImpl({required Dio dio}) : _dio = dio;
+  UserRemoteDataSourceImpl(this._dio);
 
   @override
   Future<UserListModel> getUsers({
-    int page = 1,
-    int limit = 20,
     String? search,
-    UserStatus? status,
+    String? status,
+    int? page,
+    int? limit,
   }) async {
     try {
-      print('🔧 Fetching users from: ${ApiConfig.baseUrl}${ApiConfig.usersEndpoint}');
-      
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-      };
-      
+      final queryParams = <String, dynamic>{};
       if (search != null && search.isNotEmpty) {
         queryParams['search'] = search;
       }
-      
-      if (status != null) {
-        queryParams['status'] = status.name;
+      if (status != null && status.isNotEmpty) {
+        queryParams['status'] = status;
+      }
+      if (page != null) {
+        queryParams['page'] = page;
+      }
+      if (limit != null) {
+        queryParams['limit'] = limit;
       }
 
       final response = await _dio.get(
-        '${ApiConfig.baseUrl}${ApiConfig.usersEndpoint}',
+        ApiConfig.usersEndpoint,
         queryParameters: queryParams,
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+          headers: ApiConfig.defaultHeaders,
         ),
       );
 
@@ -67,292 +64,415 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         throw ServerException('Failed to fetch users: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Users DioException: ${e.message}');
-      print('🔧 Users DioException response: ${e.response?.data}');
-      print('🔧 Users DioException status: ${e.response?.statusCode}');
-      
-      // If 404, 500, or any server error, return mock data instead of throwing error
-      if (e.response?.statusCode == 404 || 
-          e.response?.statusCode == 500 || 
-          e.response?.statusCode == 502 || 
-          e.response?.statusCode == 503) {
-        print('🔧 Users endpoint not available, returning mock data');
-        return _getMockUsersList();
+      print('🔧 Users DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        print('🔧 Users endpoint not found, returning mock data');
+        return _getMockUsersList(search: search, status: status, page: page, limit: limit);
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while fetching users');
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw NetworkException('Connection timeout while fetching users');
+      } else {
+        throw NetworkException('Network error while fetching users: ${e.message}');
       }
-      
-      // For connection errors, also return mock data
-      if (e.type == DioExceptionType.connectionError || 
-          e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Connection error, returning mock users data');
-        return _getMockUsersList();
-      }
-      
-      throw _handleDioException(e);
     } catch (e) {
       print('🔧 Users general error: $e');
-      // Return mock data for any other error
-      return _getMockUsersList();
+      throw ServerException('Unexpected error while fetching users: $e');
     }
   }
 
+  UserListModel _getMockUsersList({
+    String? search,
+    String? status,
+    int? page,
+    int? limit,
+  }) {
+    final mockUsers = [
+      {
+        'id': 1,
+        'firstname': 'John',
+        'lastname': 'Doe',
+        'email': 'john.doe@example.com',
+        'phone': '+1234567890',
+        'status': 'active',
+        'last_login': '2024-01-15T10:30:00Z',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-15T10:30:00Z',
+      },
+      {
+        'id': 2,
+        'firstname': 'Jane',
+        'lastname': 'Smith',
+        'email': 'jane.smith@example.com',
+        'phone': '+1234567891',
+        'status': 'inactive',
+        'last_login': '2024-01-10T15:45:00Z',
+        'created_at': '2024-01-02T00:00:00Z',
+        'updated_at': '2024-01-10T15:45:00Z',
+      },
+      {
+        'id': 3,
+        'firstname': 'Bob',
+        'lastname': 'Johnson',
+        'email': 'bob.johnson@example.com',
+        'phone': '+1234567892',
+        'status': 'banned',
+        'last_login': '2024-01-05T09:20:00Z',
+        'created_at': '2024-01-03T00:00:00Z',
+        'updated_at': '2024-01-12T14:15:00Z',
+      },
+      {
+        'id': 4,
+        'firstname': 'Alice',
+        'lastname': 'Brown',
+        'email': 'alice.brown@example.com',
+        'phone': '+1234567893',
+        'status': 'suspended',
+        'last_login': '2024-01-08T11:30:00Z',
+        'created_at': '2024-01-04T00:00:00Z',
+        'updated_at': '2024-01-14T16:20:00Z',
+      },
+      {
+        'id': 5,
+        'firstname': 'Charlie',
+        'lastname': 'Wilson',
+        'email': 'charlie.wilson@example.com',
+        'phone': '+1234567894',
+        'status': 'active',
+        'last_login': '2024-01-16T08:15:00Z',
+        'created_at': '2024-01-05T00:00:00Z',
+        'updated_at': '2024-01-16T08:15:00Z',
+      },
+    ];
+
+    // Apply search filter
+    List<Map<String, dynamic>> filteredUsers = mockUsers;
+    if (search != null && search.isNotEmpty) {
+      filteredUsers = mockUsers.where((user) {
+        return user['firstname'].toString().toLowerCase().contains(search.toLowerCase()) ||
+               user['lastname'].toString().toLowerCase().contains(search.toLowerCase()) ||
+               user['email'].toString().toLowerCase().contains(search.toLowerCase());
+      }).toList();
+    }
+
+    // Apply status filter
+    if (status != null && status.isNotEmpty && status != 'All') {
+      filteredUsers = filteredUsers.where((user) => user['status'] == status).toList();
+    }
+
+    // Apply pagination
+    final currentPage = page ?? 1;
+    final pageLimit = limit ?? 20;
+    final startIndex = (currentPage - 1) * pageLimit;
+    final endIndex = startIndex + pageLimit;
+    final paginatedUsers = filteredUsers.skip(startIndex).take(pageLimit).toList();
+
+    return UserListModel.fromJson({
+      'users': paginatedUsers,
+      'pagination': {
+        'total': filteredUsers.length,
+        'page': currentPage,
+        'pages': (filteredUsers.length / pageLimit).ceil(),
+        'limit': pageLimit,
+      },
+    });
+  }
+
   @override
-  Future<UserModel> getUserById(String userId) async {
+  Future<UserModel> createUser(CreateUserRequestModel request) async {
     try {
-      print('🔧 Fetching user by ID: $userId');
-      
-      final response = await _dio.get(
-        '${ApiConfig.baseUrl}${ApiConfig.usersEndpoint}/$userId',
+      final response = await _dio.post(
+        ApiConfig.userActionsEndpoint,
+        data: {
+          'action': 'create-user',
+          'data': request.toJson(),
+        },
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+          headers: ApiConfig.defaultHeaders,
         ),
       );
 
-      if (response.statusCode == 200) {
-        return UserModel.fromJson(response.data);
+      print('🔧 Create user response status: ${response.statusCode}');
+      print('🔧 Create user response data: ${response.data}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        if (responseData['success'] == true && responseData['data'] != null) {
+          return UserModel.fromJson(responseData['data']);
+        } else {
+          throw ServerException('Invalid response format for create user');
+        }
       } else {
-        throw ServerException('Failed to fetch user: ${response.statusCode}');
+        throw ServerException('Failed to create user: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Get user by ID DioException: ${e.message}');
-      
-      // Return mock user data if API is not available
-      if (e.response?.statusCode == 404 || 
-          e.response?.statusCode == 500) {
-        return _getMockUser(userId);
+      print('🔧 Create user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 400) {
+        throw ValidationException('Invalid user data provided');
+      } else if (e.response?.statusCode == 409) {
+        throw ConflictException('User with this email already exists');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while creating user');
+      } else {
+        throw NetworkException('Network error while creating user: ${e.message}');
       }
-      
-      throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Get user by ID general error: $e');
-      return _getMockUser(userId);
+      print('🔧 Create user general error: $e');
+      throw ServerException('Unexpected error while creating user: $e');
     }
   }
 
   @override
-  Future<UserModel> updateUserStatus(UpdateUserStatusRequestModel request) async {
+  Future<UserModel> updateUser(UpdateUserRequestModel request) async {
     try {
-      print('🔧 Updating user status: ${request.userId} to ${request.status}');
-      
       final response = await _dio.put(
-        '${ApiConfig.baseUrl}${ApiConfig.usersEndpoint}/${request.userId}/status',
+        ApiConfig.userEndpoint(request.userId),
         data: request.toJson(),
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+          headers: ApiConfig.defaultHeaders,
         ),
       );
 
+      print('🔧 Update user response status: ${response.statusCode}');
+      print('🔧 Update user response data: ${response.data}');
+
       if (response.statusCode == 200) {
-        return UserModel.fromJson(response.data);
+        final responseData = response.data;
+        if (responseData['success'] == true && responseData['data'] != null) {
+          return UserModel.fromJson(responseData['data']);
+        } else {
+          throw ServerException('Invalid response format for update user');
+        }
       } else {
-        throw ServerException('Failed to update user status: ${response.statusCode}');
+        throw ServerException('Failed to update user: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Update user status DioException: ${e.message}');
-      
-      // Simulate successful update if API is not available
-      if (e.response?.statusCode == 404 || 
-          e.response?.statusCode == 500) {
-        print('🔧 Users API not available, simulating successful status update');
-        return _simulateUpdatedUser(request);
+      print('🔧 Update user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 400) {
+        throw ValidationException('Invalid user data provided');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while updating user');
+      } else {
+        throw NetworkException('Network error while updating user: ${e.message}');
       }
-      
-      throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Update user status general error: $e');
-      return _simulateUpdatedUser(request);
+      print('🔧 Update user general error: $e');
+      throw ServerException('Unexpected error while updating user: $e');
     }
   }
 
   @override
-  Future<void> deleteUser(String userId) async {
+  Future<void> deleteUser(int userId) async {
     try {
-      print('🔧 Deleting user: $userId');
-      
       final response = await _dio.delete(
-        '${ApiConfig.baseUrl}${ApiConfig.usersEndpoint}/$userId',
+        ApiConfig.userEndpoint(userId),
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+          headers: ApiConfig.defaultHeaders,
         ),
       );
 
-      if (response.statusCode == 200) {
-        print('🔧 User deleted successfully');
+      print('🔧 Delete user response status: ${response.statusCode}');
+      print('🔧 Delete user response data: ${response.data}');
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
         return;
       } else {
         throw ServerException('Failed to delete user: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Delete user DioException: ${e.message}');
-      
-      // Simulate successful deletion if API is not available
-      if (e.response?.statusCode == 404 || 
-          e.response?.statusCode == 500) {
-        print('🔧 Users API not available, simulating successful deletion');
-        return;
+      print('🔧 Delete user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 403) {
+        throw ForbiddenException('Cannot delete active user');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while deleting user');
+      } else {
+        throw NetworkException('Network error while deleting user: ${e.message}');
       }
-      
-      throw _handleDioException(e);
     } catch (e) {
       print('🔧 Delete user general error: $e');
-      // Simulate successful deletion
-      return;
+      throw ServerException('Unexpected error while deleting user: $e');
     }
   }
 
-  Exception _handleDioException(DioException e) {
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        return NetworkException('Connection timeout. Please check your internet connection.');
-      case DioExceptionType.connectionError:
-        return NetworkException('No internet connection. Please check your network.');
-      case DioExceptionType.badResponse:
-        final statusCode = e.response?.statusCode;
-        if (statusCode == 401) {
-          return UnauthorizedException('Unauthorized access. Please login again.');
-        } else if (statusCode == 404) {
-          return ServerException('Resource not found.');
-        } else if (statusCode == 500) {
-          return ServerException('Internal server error. Please try again later.');
-        } else {
-          return ServerException('Server error: $statusCode');
-        }
-      default:
-        return UnknownException('An unexpected error occurred: ${e.message}');
+  @override
+  Future<void> updateUserStatus(UpdateUserStatusRequestModel request) async {
+    try {
+      final response = await _dio.post(
+        ApiConfig.userActionsEndpoint,
+        data: {
+          'action': 'update-user-status',
+          'data': request.toJson(),
+        },
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
+        ),
+      );
+
+      print('🔧 Update user status response status: ${response.statusCode}');
+      print('🔧 Update user status response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException('Failed to update user status: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      print('🔧 Update user status DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 400) {
+        throw ValidationException('Invalid status provided');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while updating user status');
+      } else {
+        throw NetworkException('Network error while updating user status: ${e.message}');
+      }
+    } catch (e) {
+      print('🔧 Update user status general error: $e');
+      throw ServerException('Unexpected error while updating user status: $e');
     }
   }
 
-  UserListModel _getMockUsersList() {
-    final now = DateTime.now();
-    return UserListModel(
-      users: [
-        UserModel(
-          id: '1',
-          name: 'John Doe',
-          phone: '+1 234 567 8900',
-          uid: 'UID001',
-          email: 'john.doe@example.com',
-          status: UserStatus.active,
-          ipAddress: '192.168.1.100',
-          createdAt: now.subtract(const Duration(days: 30)),
-          updatedAt: now.subtract(const Duration(days: 1)),
-          avatar: null,
-          role: 'user',
-          lastLoginAt: now.subtract(const Duration(hours: 2)).toIso8601String(),
-          deviceInfo: 'iPhone 13 Pro, iOS 15.0',
+  @override
+  Future<void> banUser(int userId, BanUserRequestModel request) async {
+    try {
+      final response = await _dio.post(
+        ApiConfig.banUserEndpoint(userId),
+        data: request.toJson(),
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
         ),
-        UserModel(
-          id: '2',
-          name: 'Jane Smith',
-          phone: '+1 234 567 8901',
-          uid: 'UID002',
-          email: 'jane.smith@example.com',
-          status: UserStatus.active,
-          ipAddress: '192.168.1.101',
-          createdAt: now.subtract(const Duration(days: 25)),
-          updatedAt: now.subtract(const Duration(days: 2)),
-          avatar: null,
-          role: 'admin',
-          lastLoginAt: now.subtract(const Duration(hours: 5)).toIso8601String(),
-          deviceInfo: 'Samsung Galaxy S21, Android 12',
-        ),
-        UserModel(
-          id: '3',
-          name: 'Bob Wilson',
-          phone: '+1 234 567 8902',
-          uid: 'UID003',
-          email: 'bob.wilson@example.com',
-          status: UserStatus.inactive,
-          ipAddress: '192.168.1.102',
-          createdAt: now.subtract(const Duration(days: 20)),
-          updatedAt: now.subtract(const Duration(days: 10)),
-          avatar: null,
-          role: 'user',
-          lastLoginAt: now.subtract(const Duration(days: 5)).toIso8601String(),
-          deviceInfo: 'MacBook Pro, macOS 12.0',
-        ),
-        UserModel(
-          id: '4',
-          name: 'Alice Johnson',
-          phone: '+1 234 567 8903',
-          uid: 'UID004',
-          email: 'alice.johnson@example.com',
-          status: UserStatus.suspended,
-          ipAddress: '192.168.1.103',
-          createdAt: now.subtract(const Duration(days: 15)),
-          updatedAt: now.subtract(const Duration(days: 3)),
-          avatar: null,
-          role: 'user',
-          lastLoginAt: now.subtract(const Duration(days: 1)).toIso8601String(),
-          deviceInfo: 'iPad Pro, iPadOS 15.0',
-        ),
-        UserModel(
-          id: '5',
-          name: 'Charlie Brown',
-          phone: '+1 234 567 8904',
-          uid: 'UID005',
-          email: 'charlie.brown@example.com',
-          status: UserStatus.banned,
-          ipAddress: '192.168.1.104',
-          createdAt: now.subtract(const Duration(days: 10)),
-          updatedAt: now.subtract(const Duration(days: 1)),
-          avatar: null,
-          role: 'user',
-          lastLoginAt: now.subtract(const Duration(days: 2)).toIso8601String(),
-          deviceInfo: 'Windows PC, Windows 11',
-        ),
-      ],
-      total: 5,
-      page: 1,
-      limit: 20,
-    );
+      );
+
+      print('🔧 Ban user response status: ${response.statusCode}');
+      print('🔧 Ban user response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException('Failed to ban user: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      print('🔧 Ban user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 400) {
+        throw ValidationException('Invalid ban data provided');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while banning user');
+      } else {
+        throw NetworkException('Network error while banning user: ${e.message}');
+      }
+    } catch (e) {
+      print('🔧 Ban user general error: $e');
+      throw ServerException('Unexpected error while banning user: $e');
+    }
   }
 
-  UserModel _getMockUser(String userId) {
-    final now = DateTime.now();
-    return UserModel(
-      id: userId,
-      name: 'Mock User $userId',
-      phone: '+1 234 567 8900',
-      uid: 'UID$userId',
-      email: 'user$userId@example.com',
-      status: UserStatus.active,
-      ipAddress: '192.168.1.100',
-      createdAt: now.subtract(const Duration(days: 30)),
-      updatedAt: now,
-      avatar: null,
-      role: 'user',
-      lastLoginAt: now.toIso8601String(),
-      deviceInfo: 'Mock Device',
-    );
+  @override
+  Future<void> unbanUser(int userId) async {
+    try {
+      final response = await _dio.post(
+        ApiConfig.unbanUserEndpoint(userId),
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
+        ),
+      );
+
+      print('🔧 Unban user response status: ${response.statusCode}');
+      print('🔧 Unban user response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException('Failed to unban user: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      print('🔧 Unban user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while unbanning user');
+      } else {
+        throw NetworkException('Network error while unbanning user: ${e.message}');
+      }
+    } catch (e) {
+      print('🔧 Unban user general error: $e');
+      throw ServerException('Unexpected error while unbanning user: $e');
+    }
   }
 
-  UserModel _simulateUpdatedUser(UpdateUserStatusRequestModel request) {
-    final now = DateTime.now();
-    return UserModel(
-      id: request.userId,
-      name: 'Updated User ${request.userId}',
-      phone: '+1 234 567 8900',
-      uid: 'UID${request.userId}',
-      email: 'user${request.userId}@example.com',
-      status: request.status,
-      ipAddress: '192.168.1.100',
-      createdAt: now.subtract(const Duration(days: 30)),
-      updatedAt: now,
-      avatar: null,
-      role: 'user',
-      lastLoginAt: now.toIso8601String(),
-      deviceInfo: 'Updated Device',
-    );
+  @override
+  Future<void> activateUser(int userId) async {
+    try {
+      final response = await _dio.post(
+        ApiConfig.activateUserEndpoint(userId),
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
+        ),
+      );
+
+      print('🔧 Activate user response status: ${response.statusCode}');
+      print('🔧 Activate user response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException('Failed to activate user: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      print('🔧 Activate user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while activating user');
+      } else {
+        throw NetworkException('Network error while activating user: ${e.message}');
+      }
+    } catch (e) {
+      print('🔧 Activate user general error: $e');
+      throw ServerException('Unexpected error while activating user: $e');
+    }
+  }
+
+  @override
+  Future<void> deactivateUser(int userId, DeactivateUserRequestModel request) async {
+    try {
+      final response = await _dio.post(
+        ApiConfig.deactivateUserEndpoint(userId),
+        data: request.toJson(),
+        options: Options(
+          headers: ApiConfig.defaultHeaders,
+        ),
+      );
+
+      print('🔧 Deactivate user response status: ${response.statusCode}');
+      print('🔧 Deactivate user response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw ServerException('Failed to deactivate user: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      print('🔧 Deactivate user DioException: ${e.type} - ${e.message}');
+      if (e.response?.statusCode == 404) {
+        throw NotFoundException('User not found');
+      } else if (e.response?.statusCode == 400) {
+        throw ValidationException('Invalid deactivation data provided');
+      } else if (e.response?.statusCode == 500) {
+        throw ServerException('Server error while deactivating user');
+      } else {
+        throw NetworkException('Network error while deactivating user: ${e.message}');
+      }
+    } catch (e) {
+      print('🔧 Deactivate user general error: $e');
+      throw ServerException('Unexpected error while deactivating user: $e');
+    }
   }
 }

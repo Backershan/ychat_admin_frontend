@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../datasources/user_remote_datasource.dart';
@@ -9,170 +9,183 @@ import '../models/user_model.dart';
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource _remoteDataSource;
 
-  UserRepositoryImpl({required UserRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+  UserRepositoryImpl(this._remoteDataSource);
 
   @override
   Future<Either<Failure, UserListEntity>> getUsers({
-    int page = 1,
-    int limit = 20,
     String? search,
-    UserStatus? status,
+    String? status,
+    int? page,
+    int? limit,
   }) async {
     try {
-      print('🔧 UserRepositoryImpl: getUsers called');
-      
       final userListModel = await _remoteDataSource.getUsers(
-        page: page,
-        limit: limit,
         search: search,
         status: status,
+        page: page,
+        limit: limit,
       );
-      
-      print('🔧 UserRepositoryImpl: Received userListModel: ${userListModel.users.length} users');
-      
-      final userListEntity = UserListEntity(
-        users: userListModel.users.map((model) => _modelToEntity(model)).toList(),
-        total: userListModel.total,
-        page: userListModel.page,
-        limit: userListModel.limit,
-      );
-      
-      print('🔧 UserRepositoryImpl: Created userListEntity with ${userListEntity.users.length} users');
-      
-      return Right(userListEntity);
+      return Right(userListModel.toEntity());
     } on ServerException catch (e) {
-      print('🔧 UserRepositoryImpl: ServerException: ${e.message}');
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
-      print('🔧 UserRepositoryImpl: NetworkException: ${e.message}');
       return Left(NetworkFailure(e.message));
-    } on UnauthorizedException catch (e) {
-      print('🔧 UserRepositoryImpl: UnauthorizedException: ${e.message}');
-      return Left(UnauthorizedFailure(e.message));
-    } on UnknownException catch (e) {
-      print('🔧 UserRepositoryImpl: UnknownException: ${e.message}');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } on ConflictException catch (e) {
+      return Left(ConflictFailure(e.message));
+    } on ForbiddenException catch (e) {
+      return Left(ForbiddenFailure(e.message));
     } catch (e) {
-      print('🔧 UserRepositoryImpl: General exception: $e');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+      return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> getUserById(String userId) async {
+  Future<Either<Failure, UserEntity>> createUser(CreateUserRequest request) async {
     try {
-      print('🔧 UserRepositoryImpl: getUserById called with userId: $userId');
-      
-      final userModel = await _remoteDataSource.getUserById(userId);
-      
-      print('🔧 UserRepositoryImpl: Received userModel: $userModel');
-      
-      final userEntity = _modelToEntity(userModel);
-      
-      print('🔧 UserRepositoryImpl: Created userEntity: $userEntity');
-      
-      return Right(userEntity);
-    } on ServerException catch (e) {
-      print('🔧 UserRepositoryImpl: ServerException: ${e.message}');
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      print('🔧 UserRepositoryImpl: NetworkException: ${e.message}');
-      return Left(NetworkFailure(e.message));
-    } on UnauthorizedException catch (e) {
-      print('🔧 UserRepositoryImpl: UnauthorizedException: ${e.message}');
-      return Left(UnauthorizedFailure(e.message));
-    } on UnknownException catch (e) {
-      print('🔧 UserRepositoryImpl: UnknownException: ${e.message}');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
-    } catch (e) {
-      print('🔧 UserRepositoryImpl: General exception: $e');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, UserEntity>> updateUserStatus(UpdateUserStatusRequest request) async {
-    try {
-      print('🔧 UserRepositoryImpl: updateUserStatus called with request: $request');
-      
-      final requestModel = UpdateUserStatusRequestModel(
-        userId: request.userId,
-        status: request.status,
+      final userModel = await _remoteDataSource.createUser(
+        request.toModel(),
       );
-      
-      print('🔧 UserRepositoryImpl: Created requestModel: $requestModel');
-      
-      final userModel = await _remoteDataSource.updateUserStatus(requestModel);
-      
-      print('🔧 UserRepositoryImpl: Received updated userModel: $userModel');
-      
-      final userEntity = _modelToEntity(userModel);
-      
-      print('🔧 UserRepositoryImpl: Created userEntity: $userEntity');
-      
-      return Right(userEntity);
+      return Right(userModel.toEntity());
     } on ServerException catch (e) {
-      print('🔧 UserRepositoryImpl: ServerException: ${e.message}');
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
-      print('🔧 UserRepositoryImpl: NetworkException: ${e.message}');
       return Left(NetworkFailure(e.message));
-    } on UnauthorizedException catch (e) {
-      print('🔧 UserRepositoryImpl: UnauthorizedException: ${e.message}');
-      return Left(UnauthorizedFailure(e.message));
-    } on UnknownException catch (e) {
-      print('🔧 UserRepositoryImpl: UnknownException: ${e.message}');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } on ConflictException catch (e) {
+      return Left(ConflictFailure(e.message));
     } catch (e) {
-      print('🔧 UserRepositoryImpl: General exception: $e');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+      return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> deleteUser(String userId) async {
+  Future<Either<Failure, UserEntity>> updateUser(UpdateUserRequest request) async {
     try {
-      print('🔧 UserRepositoryImpl: deleteUser called with userId: $userId');
-      
+      final userModel = await _remoteDataSource.updateUser(
+        request.toModel(),
+      );
+      return Right(userModel.toEntity());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteUser(int userId) async {
+    try {
       await _remoteDataSource.deleteUser(userId);
-      
-      print('🔧 UserRepositoryImpl: User deleted successfully');
-      
       return const Right(null);
     } on ServerException catch (e) {
-      print('🔧 UserRepositoryImpl: ServerException: ${e.message}');
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
-      print('🔧 UserRepositoryImpl: NetworkException: ${e.message}');
       return Left(NetworkFailure(e.message));
-    } on UnauthorizedException catch (e) {
-      print('🔧 UserRepositoryImpl: UnauthorizedException: ${e.message}');
-      return Left(UnauthorizedFailure(e.message));
-    } on UnknownException catch (e) {
-      print('🔧 UserRepositoryImpl: UnknownException: ${e.message}');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ForbiddenException catch (e) {
+      return Left(ForbiddenFailure(e.message));
     } catch (e) {
-      print('🔧 UserRepositoryImpl: General exception: $e');
-      return Left(UnknownFailure('An unexpected error occurred: $e'));
+      return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 
-  UserEntity _modelToEntity(UserModel model) {
-    return UserEntity(
-      id: model.id,
-      name: model.name,
-      phone: model.phone,
-      uid: model.uid,
-      email: model.email,
-      status: model.status,
-      ipAddress: model.ipAddress,
-      createdAt: model.createdAt,
-      updatedAt: model.updatedAt,
-      avatar: model.avatar,
-      role: model.role,
-      lastLoginAt: model.lastLoginAt,
-      deviceInfo: model.deviceInfo,
-    );
+  @override
+  Future<Either<Failure, void>> updateUserStatus(UpdateUserStatusRequest request) async {
+    try {
+      await _remoteDataSource.updateUserStatus(
+        request.toModel(),
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> banUser(int userId, BanUserRequest request) async {
+    try {
+      await _remoteDataSource.banUser(userId, request.toModel());
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> unbanUser(int userId) async {
+    try {
+      await _remoteDataSource.unbanUser(userId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> activateUser(int userId) async {
+    try {
+      await _remoteDataSource.activateUser(userId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deactivateUser(int userId, DeactivateUserRequest request) async {
+    try {
+      await _remoteDataSource.deactivateUser(userId, request.toModel());
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } on NotFoundException catch (e) {
+      return Left(NotFoundFailure(e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
   }
 }

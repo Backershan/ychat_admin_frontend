@@ -182,9 +182,55 @@ class _EditAppDialogState extends State<EditAppDialog> {
           ),
           SizedBox(height: 8.h),
           _buildInfoRow('App Key', widget.app.appKey),
-          _buildInfoRow('Category', widget.app.category),
+          _buildCategoryRow(),
           _buildInfoRow('Version', widget.app.version),
           _buildInfoRow('Status', widget.app.isActive ? 'Active' : 'Inactive'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryRow() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Categories: ',
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.onBackground.withValues(alpha: 0.6),
+            ),
+          ),
+          Expanded(
+            child: Wrap(
+              spacing: 4.w,
+              runSpacing: 4.h,
+              children: widget.app.category.map((category) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4.r),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Text(
+                    category,
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),
     );
