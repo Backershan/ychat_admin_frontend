@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:y_chat_admin/src/features/app_manage/presentations/app_manage_page.dart';
+import 'package:y_chat_admin/src/features/app_management/presentation/pages/app_management_page.dart';
 import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/utils/web_responsive.dart';
 import 'dashboard_page.dart';
 import '../../../user_management/presentation/pages/user_management_page.dart';
 import '../../../ticketing/presentation/pages/ticketing_page.dart';
@@ -45,12 +46,6 @@ class _MainDashboardPageState extends State<MainDashboardPage>
       page: const UserManagementPage(),
     ),
     DashboardPageItem(
-      title: 'Settings',
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      page: const SettingsPage(),
-    ),
-    DashboardPageItem(
       title: 'Apps',
       icon: Icons.apps_outlined,
       selectedIcon: Icons.apps,
@@ -61,6 +56,12 @@ class _MainDashboardPageState extends State<MainDashboardPage>
       icon: Icons.support_agent_outlined,
       selectedIcon: Icons.support_agent,
       page: const TicketingPage(),
+    ),
+    DashboardPageItem(
+      title: 'Settings',
+      icon: Icons.settings_outlined,
+      selectedIcon: Icons.settings,
+      page: const SettingsPage(),
     ),
     DashboardPageItem(
       title: 'Profile',
@@ -172,7 +173,16 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                         parent: _contentAnimationController,
                         curve: Curves.easeOutCubic,
                       )),
-                      child: _buildMainContent(isMobile),
+                      child: isMobile 
+                        ? _buildMainContent(isMobile)
+                        : Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: WebResponsive.getMaxContentWidth(context),
+                              ),
+                              child: _buildMainContent(isMobile),
+                            ),
+                          ),
                     ),
                   );
                 },
@@ -188,7 +198,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
 
   Widget _buildModernSidebar() {
     return Container(
-      width: 100.w,
+      width: WebResponsive.isWebDesktop(context) ? 120.w : 100.w,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -212,7 +222,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
           // Navigation Items
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 24.h),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 itemCount: _pages.length,
@@ -235,7 +245,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
     final isSelected = _selectedIndex == index;
     
     return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+      margin: EdgeInsets.only(bottom: 30.h),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -247,7 +257,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
             decoration: BoxDecoration(
               gradient: isSelected
                   ? LinearGradient(
@@ -302,26 +312,28 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                     color: isSelected ? Colors.white : AppColors.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Text(
-                    page.title,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                      color: isSelected ? AppColors.primary : AppColors.onSurface,
-                    ),
-                  ),
-                ),
-                if (isSelected)
-                  Container(
-                    width: 6.w,
-                    height: 6.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+              //   SizedBox(width: 16.w),
+              //   Expanded(
+              //     child: Text(
+              //       page.title,
+              //       style: TextStyle(
+              //         fontSize: 15.sp,
+              //         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              //         color: isSelected ? AppColors.primary : AppColors.onSurface,
+              //       ),
+              //       overflow: TextOverflow.ellipsis,
+              //       maxLines: 1,
+              //     ),
+              //   ),
+              //   if (isSelected)
+              //     Container(
+              //       width: 6.w,
+              //       height: 6.w,
+              //       decoration: BoxDecoration(
+              //         color: AppColors.primary,
+              //         shape: BoxShape.circle,
+              //       ),
+              //     ),
               ],
             ),
           ),
@@ -332,7 +344,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
 
   Widget _buildUserProfileSection() {
     return Container(
-      margin: EdgeInsets.all(16.w),
+      margin: EdgeInsets.all(0.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -351,61 +363,61 @@ class _MainDashboardPageState extends State<MainDashboardPage>
       child: Column(
         children: [
           // Profile Button
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12.r),
-              onTap: () {
-                setState(() {
-                  _selectedIndex = _pages.indexWhere((page) => page.title == 'Profile');
-                });
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.primary,
-                            AppColors.primary.withValues(alpha: 0.8),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Icon(
-                        Icons.account_circle_rounded,
-                        size: 20.w,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Text(
-                        'Profile',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.onSurface,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16.w,
-                      color: AppColors.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Material(
+          //   color: Colors.transparent,
+          //   child: InkWell(
+          //     borderRadius: BorderRadius.circular(12.r),
+          //     onTap: () {
+          //       setState(() {
+          //         _selectedIndex = _pages.indexWhere((page) => page.title == 'Profile');
+          //       });
+          //     },
+          //     child: Container(
+          //       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          //       child: Row(
+          //         children: [
+          //           Container(
+          //             padding: EdgeInsets.all(10.w),
+          //             decoration: BoxDecoration(
+          //               gradient: LinearGradient(
+          //                 begin: Alignment.topLeft,
+          //                 end: Alignment.bottomRight,
+          //                 colors: [
+          //                   AppColors.primary,
+          //                   AppColors.primary.withValues(alpha: 0.8),
+          //                 ],
+          //               ),
+          //               borderRadius: BorderRadius.circular(12.r),
+          //             ),
+          //             child: Icon(
+          //               Icons.account_circle_rounded,
+          //               size: 20.w,
+          //               color: Colors.white,
+          //             ),
+          //           ),
+          //         //   SizedBox(width: 12.w),
+          //         //   Expanded(
+          //         //     child: Text(
+          //         //       'Profile',
+          //         //       style: TextStyle(
+          //         //         fontSize: 14.sp,
+          //         //         fontWeight: FontWeight.w600,
+          //         //         color: AppColors.onSurface,
+          //         //       ),
+          //         //     ),
+          //         //   ),
+          //         //   Icon(
+          //         //     Icons.arrow_forward_ios_rounded,
+          //         //     size: 16.w,
+          //         //     color: AppColors.onSurface.withValues(alpha: 0.5),
+          //         //   ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           
-          SizedBox(height: 12.h),
+          // SizedBox(height: 12.h),
           
           // Logout Button
           Material(
@@ -429,22 +441,22 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                         color: Colors.red,
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16.w,
-                      color: Colors.red.withValues(alpha: 0.5),
-                    ),
+                    // SizedBox(width: 12.w),
+                    // Expanded(
+                    //   child: Text(
+                    //     'Logout',
+                    //     style: TextStyle(
+                    //       fontSize: 14.sp,
+                    //       fontWeight: FontWeight.w600,
+                    //       color: Colors.red,
+                    //     ),
+                    //   ),
+                    // ),
+                    // Icon(
+                    //   Icons.arrow_forward_ios_rounded,
+                    //   size: 16.w,
+                    //   color: Colors.red.withValues(alpha: 0.5),
+                    // ),
                   ],
                 ),
               ),
@@ -458,6 +470,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
   Widget _buildMainContent(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Mobile App Bar
         if (isMobile) _buildMobileAppBar(),
@@ -557,52 +570,55 @@ class _MainDashboardPageState extends State<MainDashboardPage>
           ),
           
           // Action Buttons
-          Row(
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12.r),
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = _pages.indexWhere((page) => page.title == 'Profile');
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Icon(
-                      Icons.account_circle_rounded,
-                      size: 22.w,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12.r),
-                  onTap: () => _showLogoutDialog(context),
-                  child: Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Icon(
-                      Icons.logout_rounded,
-                      size: 22.w,
-                      color: Colors.red,
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12.r),
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = _pages.indexWhere((page) => page.title == 'Profile');
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        Icons.account_circle_rounded,
+                        size: 22.w,
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(width: 8.w),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12.r),
+                    onTap: () => _showLogoutDialog(context),
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        Icons.logout_rounded,
+                        size: 22.w,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -610,6 +626,9 @@ class _MainDashboardPageState extends State<MainDashboardPage>
   }
 
   Widget _buildMobileNavigation() {
+    // Limit mobile navigation to 4 items + More
+    final mainPages = _pages.take(4).toList();
+    
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -629,21 +648,121 @@ class _MainDashboardPageState extends State<MainDashboardPage>
         ],
       ),
       child: NavigationBar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: _selectedIndex < 4 ? _selectedIndex : 4,
         onDestinationSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          if (index < 4) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          } else {
+            // Show more options
+            _showMoreOptions(context);
+          }
         },
         backgroundColor: Colors.transparent,
         elevation: 0,
-        destinations: _pages.map((page) {
-          return NavigationDestination(
-            icon: Icon(page.icon),
-            selectedIcon: Icon(page.selectedIcon),
-            label: page.title,
-          );
-        }).toList(),
+        destinations: [
+          ...mainPages.map((page) {
+            return NavigationDestination(
+              icon: Icon(page.icon),
+              selectedIcon: Icon(page.selectedIcon),
+              label: page.title,
+            );
+          }).toList(),
+          NavigationDestination(
+            icon: const Icon(Icons.more_horiz),
+            selectedIcon: const Icon(Icons.more_horiz),
+            label: 'More',
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMoreOptions(BuildContext context) {
+    final morePages = _pages.skip(4).toList();
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40.w,
+              height: 4.h,
+              margin: EdgeInsets.symmetric(vertical: 12.h),
+              decoration: BoxDecoration(
+                color: AppColors.onSurface.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Text(
+                'More Options',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.onSurface,
+                ),
+              ),
+            ),
+            ...morePages.asMap().entries.map((entry) {
+              final index = entry.key + 4; // Offset by 4 for the main pages
+              final page = entry.value;
+              final isSelected = _selectedIndex == index;
+              
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12.r),
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: isSelected ? Border.all(color: AppColors.primary.withValues(alpha: 0.2)) : null,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isSelected ? page.selectedIcon : page.icon,
+                            size: 20.w,
+                            color: isSelected ? AppColors.primary : AppColors.onSurface.withValues(alpha: 0.7),
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            page.title,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                              color: isSelected ? AppColors.primary : AppColors.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+            SizedBox(height: 16.h),
+          ],
+        ),
       ),
     );
   }
@@ -831,6 +950,8 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: isSelected ? AppColors.primary : AppColors.onSurface,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
                 if (isSelected)

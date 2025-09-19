@@ -29,6 +29,27 @@ import 'package:y_chat_admin/src/features/settings/domain/repositories/settings_
 import 'package:y_chat_admin/src/features/settings/domain/usecases/get_settings_usecase.dart';
 import 'package:y_chat_admin/src/features/settings/domain/usecases/update_settings_usecase.dart';
 import 'package:y_chat_admin/src/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/datasources/ticket_remote_datasource.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/repositories/ticket_repository_impl.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/repositories/ticket_repository.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/get_tickets_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/get_ticket_by_id_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/create_ticket_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/update_ticket_status_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/add_reply_to_ticket_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/get_ticket_stats_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/domain/usecases/delete_ticket_usecase.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_bloc.dart';
+
+// App Management
+import 'package:y_chat_admin/src/features/app_management/data/datasources/app_remote_datasource.dart';
+import 'package:y_chat_admin/src/features/app_management/data/repositories/app_repository_impl.dart';
+import 'package:y_chat_admin/src/features/app_management/domain/repositories/app_repository.dart';
+import 'package:y_chat_admin/src/features/app_management/domain/usecases/get_apps_usecase.dart';
+import 'package:y_chat_admin/src/features/app_management/domain/usecases/create_app_usecase.dart';
+import 'package:y_chat_admin/src/features/app_management/domain/usecases/update_app_usecase.dart';
+import 'package:y_chat_admin/src/features/app_management/domain/usecases/delete_app_usecase.dart';
+import 'package:y_chat_admin/src/features/app_management/presentation/bloc/app_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -126,8 +147,19 @@ Future<void> configureDependencies() async {
     () => SettingsRemoteDataSourceImpl(dio: getIt<Dio>()),
   );
 
+  getIt.registerLazySingleton<TicketRemoteDataSource>(
+    () => TicketRemoteDataSourceImpl(
+      dio: getIt<Dio>(),
+      authService: getIt<AuthService>(),
+    ),
+  );
+
   getIt.registerLazySingleton<SettingsRepository>(
     () => SettingsRepositoryImpl(remoteDataSource: getIt<SettingsRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<TicketRepository>(
+    () => TicketRepositoryImpl(remoteDataSource: getIt<TicketRemoteDataSource>()),
   );
 
   getIt.registerLazySingleton<GetSettingsUseCase>(
@@ -136,6 +168,35 @@ Future<void> configureDependencies() async {
 
   getIt.registerLazySingleton<UpdateSettingsUseCase>(
     () => UpdateSettingsUseCase(repository: getIt<SettingsRepository>()),
+  );
+
+  // Ticket use cases
+  getIt.registerLazySingleton<GetTicketsUseCase>(
+    () => GetTicketsUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetTicketByIdUseCase>(
+    () => GetTicketByIdUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateTicketUseCase>(
+    () => CreateTicketUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateTicketStatusUseCase>(
+    () => UpdateTicketStatusUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddReplyToTicketUseCase>(
+    () => AddReplyToTicketUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetTicketStatsUseCase>(
+    () => GetTicketStatsUseCase(repository: getIt<TicketRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteTicketUseCase>(
+    () => DeleteTicketUseCase(repository: getIt<TicketRepository>()),
   );
 
   // BLoCs
@@ -167,6 +228,52 @@ Future<void> configureDependencies() async {
     () => SettingsBloc(
       getSettingsUseCase: getIt<GetSettingsUseCase>(),
       updateSettingsUseCase: getIt<UpdateSettingsUseCase>(),
+    ),
+  );
+
+  getIt.registerFactory<TicketBloc>(
+    () => TicketBloc(
+      getTicketsUseCase: getIt<GetTicketsUseCase>(),
+      getTicketByIdUseCase: getIt<GetTicketByIdUseCase>(),
+      createTicketUseCase: getIt<CreateTicketUseCase>(),
+      updateTicketStatusUseCase: getIt<UpdateTicketStatusUseCase>(),
+      addReplyToTicketUseCase: getIt<AddReplyToTicketUseCase>(),
+      getTicketStatsUseCase: getIt<GetTicketStatsUseCase>(),
+      deleteTicketUseCase: getIt<DeleteTicketUseCase>(),
+    ),
+  );
+
+  // App Management
+  getIt.registerLazySingleton<AppRemoteDataSource>(
+    () => AppRemoteDataSourceImpl(dio: getIt<Dio>()),
+  );
+
+  getIt.registerLazySingleton<AppRepository>(
+    () => AppRepositoryImpl(remoteDataSource: getIt<AppRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<GetAppsUseCase>(
+    () => GetAppsUseCase(repository: getIt<AppRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateAppUseCase>(
+    () => CreateAppUseCase(repository: getIt<AppRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateAppUseCase>(
+    () => UpdateAppUseCase(repository: getIt<AppRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteAppUseCase>(
+    () => DeleteAppUseCase(repository: getIt<AppRepository>()),
+  );
+
+  getIt.registerFactory<AppBloc>(
+    () => AppBloc(
+      getAppsUseCase: getIt<GetAppsUseCase>(),
+      createAppUseCase: getIt<CreateAppUseCase>(),
+      updateAppUseCase: getIt<UpdateAppUseCase>(),
+      deleteAppUseCase: getIt<DeleteAppUseCase>(),
     ),
   );
 }

@@ -77,16 +77,36 @@ class _SettingsViewState extends State<_SettingsView>
     
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: BlocBuilder<SettingsBloc, SettingsState>(
-        builder: (context, state) {
-          if (state is SettingsLoading) {
-            return _buildLoadingState();
+      body: BlocListener<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+          if (state is SettingsUpdated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Settings updated successfully'),
+                backgroundColor: Colors.green,
+                duration: const Duration(seconds: 2),
+              ),
+            );
           } else if (state is SettingsError) {
-            return _buildErrorState(context, state.message);
-          } else if (state is SettingsLoaded || state is SettingsUpdated) {
-            final settings = state is SettingsLoaded 
-                ? state.settings 
-                : (state as SettingsUpdated).settings;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to update settings: ${state.message}'),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) {
+            if (state is SettingsLoading) {
+              return _buildLoadingState();
+            } else if (state is SettingsError) {
+              return _buildErrorState(context, state.message);
+            } else if (state is SettingsLoaded || state is SettingsUpdated) {
+              final settings = state is SettingsLoaded 
+                  ? state.settings 
+                  : (state as SettingsUpdated).settings;
             
             return AnimatedBuilder(
               animation: _fadeAnimation,
@@ -95,11 +115,50 @@ class _SettingsViewState extends State<_SettingsView>
                   opacity: _fadeAnimation,
                   child: SlideTransition(
                     position: _slideAnimation,
-                    child: Padding(
-                      padding: EdgeInsets.all(isMobile ? 16.w : 32.w),
-                      child: isMobile 
-                        ? _buildMobileLayout(context, settings)
-                        : _buildWebLayout(context, settings),
+                    child: Column(
+                      children: [
+                        // Show banner only if using default settings (API not available)
+                        if (settings.systemInfo.version == '1.0.0')
+                          Container(
+                            margin: EdgeInsets.all(isMobile ? 16.w : 32.w),
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(
+                                color: Colors.blue.withValues(alpha: 0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.cloud_off,
+                                  color: Colors.blue,
+                                  size: 20.w,
+                                ),
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: Text(
+                                    'Settings API is not available. Using offline mode with local settings.',
+                                    style: TextStyle(
+                                      color: Colors.blue.shade700,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(isMobile ? 16.w : 32.w),
+                            child: isMobile 
+                              ? _buildMobileLayout(context, settings)
+                              : _buildWebLayout(context, settings),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -107,7 +166,8 @@ class _SettingsViewState extends State<_SettingsView>
             );
           }
           return _buildLoadingState();
-        },
+          },
+        ),
       ),
     );
   }
@@ -201,7 +261,11 @@ class _SettingsViewState extends State<_SettingsView>
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  message,
+                  message.contains('404') 
+                      ? 'Settings API is not available. Please check if the backend server is running and the settings endpoints are implemented.'
+                      : message.contains('500')
+                      ? 'Internal server error. The backend server is running but there\'s an issue with the settings endpoints. Please check the server logs.'
+                      : message,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -589,18 +653,18 @@ class _SettingsViewState extends State<_SettingsView>
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
+                    color: Colors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: Colors.orange.withValues(alpha: 0.3),
+                      color: Colors.green.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
                   child: Text(
-                    'Read Only',
+                    'Live Update',
                     style: TextStyle(
                       fontSize: 10.sp,
-                      color: Colors.orange,
+                      color: Colors.green,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -611,7 +675,7 @@ class _SettingsViewState extends State<_SettingsView>
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: color,
+            activeThumbColor: color,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
@@ -662,7 +726,7 @@ class _SettingsViewState extends State<_SettingsView>
                Switch(
                  value: value,
                  onChanged: onChanged,
-                 activeColor: color,
+                 activeThumbColor: color,
                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                ),
             ],
@@ -688,18 +752,18 @@ class _SettingsViewState extends State<_SettingsView>
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
             decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.1),
+              color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
-                color: Colors.orange.withValues(alpha: 0.3),
+                color: Colors.green.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
             child: Text(
-              'Read Only',
+              'Live Update',
               style: TextStyle(
                 fontSize: 10.sp,
-                color: Colors.orange,
+                color: Colors.green,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -820,16 +884,7 @@ class _SettingsViewState extends State<_SettingsView>
   }
 
   void _updateSetting(BuildContext context, SettingsEntity settings) {
-    // Show a message that settings updates are not supported
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Settings updates are not supported by the backend'),
-        backgroundColor: Colors.orange,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-    
-    // Still dispatch the event to update the UI state
+    // Dispatch the event to update settings
     context.read<SettingsBloc>().add(UpdateSettings(settings: settings));
   }
 

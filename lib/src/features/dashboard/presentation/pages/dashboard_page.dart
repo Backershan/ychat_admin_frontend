@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/utils/web_responsive.dart';
 import '../bloc/dashboard_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -253,7 +254,7 @@ class _DashboardViewState extends State<_DashboardView>
             crossAxisCount: 2,
             crossAxisSpacing: 12.w,
             mainAxisSpacing: 12.h,
-            childAspectRatio: 1.2,
+            childAspectRatio: 1.5,
             children: [
               _buildUserMetricCard(
                 title: 'Total Users',
@@ -282,7 +283,7 @@ class _DashboardViewState extends State<_DashboardView>
             ],
           ),
           
-          SizedBox(height: 24.h),
+          SizedBox(height: 20.h),
           
           // Screen Share Metrics - 1 card per row
           Text(
@@ -293,7 +294,7 @@ class _DashboardViewState extends State<_DashboardView>
               color: AppColors.onBackground,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 12.h),
           Column(
             children: [
               _buildScreenShareCard(
@@ -303,7 +304,7 @@ class _DashboardViewState extends State<_DashboardView>
                 icon: Icons.screen_share,
                 color: Colors.purple,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 8.h),
               _buildScreenShareCard(
                 title: 'Daily Screen Shares',
                 value: dashboardData.screenShares.daily.toString(),
@@ -311,7 +312,7 @@ class _DashboardViewState extends State<_DashboardView>
                 icon: Icons.today,
                 color: Colors.indigo,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 8.h),
               _buildScreenShareCard(
                 title: 'Monthly Screen Shares',
                 value: dashboardData.screenShares.monthly.toString(),
@@ -319,7 +320,7 @@ class _DashboardViewState extends State<_DashboardView>
                 icon: Icons.calendar_view_month,
                 color: Colors.teal,
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 8.h),
               _buildScreenShareCard(
                 title: 'Average Duration',
                 value: '${dashboardData.screenShares.averageDuration} min',
@@ -330,9 +331,7 @@ class _DashboardViewState extends State<_DashboardView>
             ],
           ),
           
-          SizedBox(height: 24.h),
-          
-      
+          SizedBox(height: 20.h),
           
           // Geographical Distribution
           Text(
@@ -343,7 +342,7 @@ class _DashboardViewState extends State<_DashboardView>
               color: AppColors.onBackground,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 12.h),
           _buildGeographicalCard(dashboardData.geographicalDistribution),
         ],
       ),
@@ -358,12 +357,17 @@ class _DashboardViewState extends State<_DashboardView>
         Expanded(
           flex: 2,
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: WebResponsive.getMaxContentWidth(context),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                 // Header with gradient
                 Container(
-                  padding: EdgeInsets.all(32.w),
+                  padding: WebResponsive.getWebPadding(context, all: 32),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -391,24 +395,28 @@ class _DashboardViewState extends State<_DashboardView>
                       ),
                       SizedBox(width: 20.w),
                       Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
                               'Dashboard Overview',
                               style: TextStyle(
-                                fontSize: 36.sp,
+                                fontSize: WebResponsive.getWebFontSize(36, context),
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.onBackground,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 8.h),
                             Text(
                               'Welcome back! Here\'s what\'s happening with your platform.',
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: WebResponsive.getWebFontSize(16, context),
                                 color: AppColors.onBackground.withValues(alpha: 0.7),
                               ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                             ),
                           ],
                         ),
@@ -432,10 +440,16 @@ class _DashboardViewState extends State<_DashboardView>
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 20.w,
-                  mainAxisSpacing: 20.h,
-                  childAspectRatio: 1.1,
+                  crossAxisCount: WebResponsive.getWebGridColumns(
+                    context,
+                    mobileColumns: 1,
+                    tabletColumns: 2,
+                    desktopColumns: 3,
+                    largeDesktopColumns: 4,
+                  ),
+                  crossAxisSpacing: WebResponsive.getWebSpacing(20, context),
+                  mainAxisSpacing: WebResponsive.getWebHeight(20, context),
+                  childAspectRatio: 1.3,
                   children: [
                     _buildUserMetricCard(
                       title: 'Total Users',
@@ -479,10 +493,16 @@ class _DashboardViewState extends State<_DashboardView>
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 20.w,
-                  mainAxisSpacing: 20.h,
-                  childAspectRatio: 1.1,
+                  crossAxisCount: WebResponsive.getWebGridColumns(
+                    context,
+                    mobileColumns: 1,
+                    tabletColumns: 2,
+                    desktopColumns: 3,
+                    largeDesktopColumns: 4,
+                  ),
+                  crossAxisSpacing: WebResponsive.getWebSpacing(20, context),
+                  mainAxisSpacing: WebResponsive.getWebHeight(20, context),
+                  childAspectRatio: 1.3,
                   children: [
                     _buildScreenShareCard(
                       title: 'Total Screen Shares',
@@ -530,18 +550,22 @@ class _DashboardViewState extends State<_DashboardView>
                 ),
                 SizedBox(height: 20.h),
                 _buildGeographicalCard(dashboardData.geographicalDistribution),
-              ],
+                ],
+              ),
             ),
           ),
         ),
         
-        SizedBox(width: 32.w),
-        
-        // Quick Navigation Sidebar
-        Expanded(
-          flex: 1,
-          child: _buildQuickNavigationSidebar(context),
-        ),
+        // Only show quick navigation on large screens (desktop and above)
+        // if (MediaQuery.of(context).size.width >= 1440) ...[
+        //   SizedBox(width: 24.w),
+           
+        //   // Quick Navigation Sidebar with fixed width
+        //   SizedBox(
+        //     width: 280.w,
+        //     child: _buildQuickNavigationSidebar(context),
+        //   ),
+        // ],
       ],
     );
   }
@@ -587,40 +611,44 @@ class _DashboardViewState extends State<_DashboardView>
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // First row: Icon and Count
         Row(
           children: [
             // Icon
             Container(
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(10.w),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
                 icon,
                 color: color,
-                size: 24.w,
+                size: 20.w,
               ),
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: 8.w),
             // Count
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackground,
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.onBackground,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (change != null) ...[
-              SizedBox(width: 8.w),
+              SizedBox(width: 4.w),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6.r),
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -628,13 +656,13 @@ class _DashboardViewState extends State<_DashboardView>
                     Icon(
                       Icons.trending_up,
                       color: Colors.green,
-                      size: 10.w,
+                      size: 8.w,
                     ),
-                    SizedBox(width: 2.w),
+                    SizedBox(width: 1.w),
                     Text(
                       change,
                       style: TextStyle(
-                        fontSize: 8.sp,
+                        fontSize: 7.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.green,
                       ),
@@ -645,15 +673,17 @@ class _DashboardViewState extends State<_DashboardView>
             ],
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 6.h),
         // Second row: Title
         Text(
           title,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 11.sp,
             color: AppColors.onBackground.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
         ),
       ],
     );
@@ -668,68 +698,77 @@ class _DashboardViewState extends State<_DashboardView>
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 icon,
                 color: color,
-                size: 28.w,
+                size: 24.w,
               ),
             ),
             if (change != null)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.trending_up,
-                      color: Colors.green,
-                      size: 16.w,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      change,
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.trending_up,
                         color: Colors.green,
+                        size: 12.w,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 2.w),
+                      Flexible(
+                        child: Text(
+                          change,
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
         ),
-        SizedBox(height: 20.h),
+        SizedBox(height: 12.h),
         Text(
           value,
-              style: TextStyle(
-                fontSize: 32.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackground,
-              ),
-            ),
-        SizedBox(height: 8.h),
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.onBackground,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(height: 4.h),
         Text(
           title,
           style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 14.sp,
             color: AppColors.onBackground.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
         ),
       ],
     );
@@ -742,66 +781,75 @@ class _DashboardViewState extends State<_DashboardView>
     required IconData icon,
     required Color color,
   }) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(24.w),
+        padding: EdgeInsets.all(isMobile ? 16.w : 24.w),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(isMobile ? 12.r : 20.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              blurRadius: isMobile ? 8 : 20,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(isMobile ? 12.w : 16.w),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(isMobile ? 8.r : 16.r),
               ),
               child: Icon(
                 icon,
                 color: color,
-                size: 28.w,
+                size: isMobile ? 20.w : 28.w,
               ),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: isMobile ? 12.w : 20.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     value,
                     style: TextStyle(
-                      fontSize: 24.sp,
+                      fontSize: isMobile ? 18.sp : 24.sp,
                       fontWeight: FontWeight.bold,
                       color: AppColors.onBackground,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: isMobile ? 4.h : 8.h),
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: isMobile ? 12.sp : 14.sp,
                       color: AppColors.onBackground.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ],
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 8.w : 12.w, 
+                vertical: isMobile ? 4.h : 8.h
+              ),
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(isMobile ? 6.r : 12.r),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -809,13 +857,13 @@ class _DashboardViewState extends State<_DashboardView>
                   Icon(
                     Icons.trending_up,
                     color: Colors.green,
-                    size: 16.w,
+                    size: isMobile ? 12.w : 16.w,
                   ),
-                  SizedBox(width: 6.w),
+                  SizedBox(width: isMobile ? 4.w : 6.w),
                   Text(
                     change,
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: isMobile ? 10.sp : 12.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.green,
                     ),
@@ -829,76 +877,105 @@ class _DashboardViewState extends State<_DashboardView>
     );
   }
 
-
   Widget _buildGeographicalCard(geographicalDistribution) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    
     return Container(
-      padding: EdgeInsets.all(32.w),
+      padding: EdgeInsets.all(isMobile ? 20.w : 32.w),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(isMobile ? 12.r : 20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            blurRadius: isMobile ? 8 : 20,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(12.w),
+                padding: EdgeInsets.all(isMobile ? 8.w : 12.w),
                 decoration: BoxDecoration(
                   color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(isMobile ? 8.r : 12.r),
                 ),
                 child: Icon(
                   Icons.public,
                   color: Colors.blue,
-                  size: 24.w,
+                  size: isMobile ? 20.w : 24.w,
                 ),
               ),
-              SizedBox(width: 16.w),
-              Text(
-                'Geographical ',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.onBackground,
+              SizedBox(width: isMobile ? 12.w : 16.w),
+              Flexible(
+                child: Text(
+                  'Geographical Distribution',
+                  style: TextStyle(
+                    fontSize: isMobile ? 16.sp : 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onBackground,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: isMobile ? 16.h : 20.h),
           
           // Countries Section
           Text(
             'By Country',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: isMobile ? 14.sp : 16.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.onBackground,
             ),
           ),
-          SizedBox(height: 16.h),
-          ...geographicalDistribution.byCountry.map((country) => _buildCountryItem(country)).toList(),
+          SizedBox(height: isMobile ? 8.h : 12.h),
+          ...geographicalDistribution.byCountry.take(3).map((country) => _buildCountryItem(country)).toList(),
           
-          SizedBox(height: 24.h),
+          if (geographicalDistribution.byCountry.length > 3) ...[
+            SizedBox(height: isMobile ? 4.h : 8.h),
+            Text(
+              '+${geographicalDistribution.byCountry.length - 3} more countries',
+              style: TextStyle(
+                fontSize: isMobile ? 10.sp : 12.sp,
+                color: AppColors.onBackground.withValues(alpha: 0.6),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+          
+          SizedBox(height: isMobile ? 16.h : 20.h),
           
           // Cities Section
           Text(
             'By City',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: isMobile ? 14.sp : 16.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.onBackground,
             ),
           ),
-          SizedBox(height: 16.h),
-          ...geographicalDistribution.byCity.map((city) => _buildCityItem(city)).toList(),
+          SizedBox(height: isMobile ? 8.h : 12.h),
+          ...geographicalDistribution.byCity.take(3).map((city) => _buildCityItem(city)).toList(),
+          
+          if (geographicalDistribution.byCity.length > 3) ...[
+            SizedBox(height: isMobile ? 4.h : 8.h),
+            Text(
+              '+${geographicalDistribution.byCity.length - 3} more cities',
+              style: TextStyle(
+                fontSize: isMobile ? 10.sp : 12.sp,
+                color: AppColors.onBackground.withValues(alpha: 0.6),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -906,11 +983,11 @@ class _DashboardViewState extends State<_DashboardView>
 
   Widget _buildCountryItem(country) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
           color: AppColors.outline.withValues(alpha: 0.1),
         ),
@@ -918,38 +995,39 @@ class _DashboardViewState extends State<_DashboardView>
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
               color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Icon(
+              borderRadius: BorderRadius.circular(6.r),
+            ),
+            child: Icon(
               Icons.flag,
               color: Colors.blue,
-              size: 20.w,
+              size: 16.w,
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               country.country,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.onBackground,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             decoration: BoxDecoration(
               color: Colors.blue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(6.r),
             ),
             child: Text(
               country.count.toString(),
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.blue,
               ),
@@ -962,11 +1040,11 @@ class _DashboardViewState extends State<_DashboardView>
 
   Widget _buildCityItem(city) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
           color: AppColors.outline.withValues(alpha: 0.1),
         ),
@@ -974,51 +1052,54 @@ class _DashboardViewState extends State<_DashboardView>
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(6.r),
             ),
             child: Icon(
               Icons.location_city,
-                color: Colors.green,
-                size: 20.w,
-               ),
+              color: Colors.green,
+              size: 16.w,
+            ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 8.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-          Text(
+                Text(
                   city.city,
-            style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-              color: AppColors.onBackground,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-                  city.country,
                   style: TextStyle(
                     fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onBackground,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  city.country,
+                  style: TextStyle(
+                    fontSize: 10.sp,
                     color: AppColors.onBackground.withValues(alpha: 0.6),
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(6.r),
             ),
             child: Text(
               city.count.toString(),
-            style: TextStyle(
-              fontSize: 14.sp,
+              style: TextStyle(
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.green,
               ),
@@ -1058,10 +1139,10 @@ class _DashboardViewState extends State<_DashboardView>
     ];
 
     return Container(
-      padding: EdgeInsets.all(24.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -1072,16 +1153,18 @@ class _DashboardViewState extends State<_DashboardView>
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Quick Navigation',
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w700,
               color: AppColors.onBackground,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 16.h),
           ...quickNavItems.map((item) => _buildQuickNavItem(
             context,
             title: item['title'] as String,
@@ -1107,11 +1190,11 @@ class _DashboardViewState extends State<_DashboardView>
         onTap: () => context.go(route),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: EdgeInsets.only(bottom: 12.h),
-          padding: EdgeInsets.all(16.w),
+          margin: EdgeInsets.only(bottom: 8.h),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             color: AppColors.background,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
               color: AppColors.outline.withValues(alpha: 0.1),
             ),
@@ -1119,31 +1202,32 @@ class _DashboardViewState extends State<_DashboardView>
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(6.w),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Icon(
                   icon,
                   color: color,
-                  size: 20.w,
+                  size: 16.w,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 8.w),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.onBackground,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Icon(
                 Icons.arrow_forward_ios,
-                size: 16.w,
+                size: 12.w,
                 color: AppColors.onBackground.withValues(alpha: 0.5),
               ),
             ],

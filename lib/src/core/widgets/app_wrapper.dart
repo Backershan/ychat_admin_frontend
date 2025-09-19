@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:y_chat_admin/src/core/di/injection.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_bloc.dart';
+import 'package:y_chat_admin/src/features/app_management/presentation/bloc/app_bloc.dart';
 
 /// App wrapper that provides all necessary BlocProviders for the application
 /// This ensures consistent state management across all features
@@ -26,13 +28,15 @@ class AppWrapper extends StatelessWidget {
         ),
         
         // Add more BlocProviders here as features are added
-        // Example:
-        // BlocProvider<UserManagementBloc>(
-        //   create: (context) => getIt<UserManagementBloc>(),
-        // ),
-        // BlocProvider<TicketingBloc>(
-        //   create: (context) => getIt<TicketingBloc>(),
-        // ),
+        // Ticket Management Bloc - Available globally
+        BlocProvider<TicketBloc>(
+          create: (context) => getIt<TicketBloc>(),
+        ),
+        
+        // App Management Bloc - Available globally
+        BlocProvider<AppBloc>(
+          create: (context) => getIt<AppBloc>(),
+        ),
       ],
       child: BackButtonHandler(child: child),
     );

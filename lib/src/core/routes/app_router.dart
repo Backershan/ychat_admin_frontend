@@ -12,6 +12,10 @@ import 'package:y_chat_admin/src/features/user_management/presentation/pages/use
 import 'package:y_chat_admin/src/features/ticketing/presentation/pages/ticketing_page.dart';
 import 'package:y_chat_admin/src/features/profile/presentation/pages/profile_page.dart';
 import 'package:y_chat_admin/src/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page.dart';
+import 'package:y_chat_admin/src/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:y_chat_admin/src/features/app_management/presentation/pages/app_management_page.dart';
+import 'package:y_chat_admin/src/features/app_management/presentation/bloc/app_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
@@ -101,6 +105,22 @@ class AppRouter {
         builder: (context, state) => BlocProvider(
           create: (context) => getIt<ProfileBloc>(),
           child: const ProfilePage(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        name: AppRouteNames.settings,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<SettingsBloc>(),
+          child: const SettingsPage(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.appManagement,
+        name: AppRouteNames.appManagement,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AppBloc>(),
+          child: const AppManagementPage(),
         ),
       ),
       

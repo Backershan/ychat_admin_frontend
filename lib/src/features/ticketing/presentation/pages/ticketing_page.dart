@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_bloc.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_event.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_state.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_card.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_stats_widget.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_detail_dialog.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
-import 'package:y_chat_admin/src/shared/widgets/error_widget.dart';
-
-
 import '../../../../core/constants/constants.dart';
 
 class TicketingPage extends StatefulWidget {
@@ -14,101 +18,33 @@ class TicketingPage extends StatefulWidget {
 }
 
 class _TicketingPageState extends State<TicketingPage> {
-  final List<Map<String, dynamic>> _tickets = [
-    {
-      'id': '1',
-      'title': 'Login Issue',
-      'description': 'Unable to login with correct credentials',
-      'status': 'open',
-      'priority': 'high',
-      'category': 'technical',
-      'userName': 'John Doe',
-      'userEmail': 'john@example.com',
-      'createdAt': '2024-01-15',
-      'assignedTo': 'Support Team',
-    },
-    {
-      'id': '2',
-      'title': 'Feature Request',
-      'description': 'Add dark mode to the application',
-      'status': 'in_progress',
-      'priority': 'medium',
-      'category': 'feature_request',
-      'userName': 'Jane Smith',
-      'userEmail': 'jane@example.com',
-      'createdAt': '2024-01-14',
-      'assignedTo': 'Development Team',
-    },
-    {
-      'id': '3',
-      'title': 'Billing Question',
-      'description': 'Question about monthly subscription',
-      'status': 'resolved',
-      'priority': 'low',
-      'category': 'billing',
-      'userName': 'Bob Wilson',
-      'userEmail': 'bob@example.com',
-      'createdAt': '2024-01-13',
-      'assignedTo': 'Billing Team',
-    },
-  ];
-
-  bool _isLoading = false;
-  String? _error;
   String _selectedFilter = 'all';
+  String _selectedPriority = 'all';
+  int _currentPage = 1;
+  final int _limit = 20;
 
   @override
   void initState() {
     super.initState();
     _loadTickets();
+    _loadStats();
   }
 
-  Future<void> _loadTickets() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() {
-      _isLoading = false;
-    });
+  void _loadTickets() {
+    context.read<TicketBloc>().add(
+          TicketEvent.getTickets(
+            status: _selectedFilter == 'all' ? null : _selectedFilter,
+            priority: _selectedPriority == 'all' ? null : _selectedPriority,
+            page: _currentPage,
+            limit: _limit,
+          ),
+        );
   }
 
-  List<Map<String, dynamic>> get _filteredTickets {
-    if (_selectedFilter == 'all') return _tickets;
-    return _tickets.where((ticket) => ticket['status'] == _selectedFilter).toList();
+  void _loadStats() {
+    context.read<TicketBloc>().add(const TicketEvent.getTicketStats());
   }
 
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'open':
-        return Colors.orange;
-      case 'in_progress':
-        return Colors.blue;
-      case 'resolved':
-        return Colors.green;
-      case 'closed':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getPriorityColor(String priority) {
-    switch (priority) {
-      case 'high':
-        return Colors.red;
-      case 'medium':
-        return Colors.orange;
-      case 'low':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +55,7 @@ class _TicketingPageState extends State<TicketingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildStats(),
             SizedBox(height: 24.h),
             _buildFilters(),
             SizedBox(height: 24.h),
@@ -131,233 +68,313 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Row(
+  
+
+  Widget _buildStats() {
+    return BlocBuilder<TicketBloc, TicketState>(
+      builder: (context, state) {
+        if (state is TicketStatsLoadedState) {
+          return TicketStatsWidget(stats: state.stats);
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildFilters() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ticket Management',
+          'Filters',
           style: TextStyle(
-            fontSize: 32.sp,
-            fontWeight: FontWeight.bold,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
             color: AppColors.onBackground,
           ),
         ),
-        const Spacer(),
-        ElevatedButton.icon(
-          onPressed: () {
-            // TODO: Implement create ticket
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('Create Ticket'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.onPrimary,
-          ),
+        SizedBox(height: 12.h),
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatusFilter(),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: _buildPriorityFilter(),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildFilters() {
-    final filters = [
-      {'key': 'all', 'label': 'All'},
-      {'key': 'open', 'label': 'Open'},
-      {'key': 'in_progress', 'label': 'In Progress'},
-      {'key': 'resolved', 'label': 'Resolved'},
+  Widget _buildStatusFilter() {
+    final statuses = [
+      {'key': 'all', 'label': 'All Status'},
+      {'key': 'opened', 'label': 'Opened'},
+      {'key': 'pending', 'label': 'Pending'},
       {'key': 'closed', 'label': 'Closed'},
     ];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: filters.map((filter) {
-          final isSelected = _selectedFilter == filter['key'];
-          return Container(
-            margin: EdgeInsets.only(right: 8.w),
-            child: FilterChip(
-              label: Text(filter['label']!),
-              selected: isSelected,
-              onSelected: (selected) {
-                setState(() {
-                  _selectedFilter = filter['key']!;
-                });
-              },
-              selectedColor: AppColors.primary.withValues(alpha: 0.2),
-              checkmarkColor: AppColors.primary,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Status',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.onBackground,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        DropdownButtonFormField<String>(
+          value: _selectedFilter,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
             ),
-          );
-        }).toList(),
-      ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          ),
+          items: statuses.map((status) {
+            return DropdownMenuItem<String>(
+              value: status['key'],
+              child: Text(status['label']!),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedFilter = value!;
+              _currentPage = 1;
+            });
+            _loadTickets();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriorityFilter() {
+    final priorities = [
+      {'key': 'all', 'label': 'All Priority'},
+      {'key': 'high', 'label': 'High'},
+      {'key': 'medium', 'label': 'Medium'},
+      {'key': 'low', 'label': 'Low'},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Priority',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.onBackground,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        DropdownButtonFormField<String>(
+          value: _selectedPriority,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          ),
+          items: priorities.map((priority) {
+            return DropdownMenuItem<String>(
+              value: priority['key'],
+              child: Text(priority['label']!),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedPriority = value!;
+              _currentPage = 1;
+            });
+            _loadTickets();
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildContent() {
-    if (_isLoading) {
-      return const LoadingWidget(message: 'Loading tickets...');
-    }
+    return BlocBuilder<TicketBloc, TicketState>(
+      builder: (context, state) {
+        if (state is TicketLoadingState) {
+          return const LoadingWidget(message: 'Loading tickets...');
+        }
 
-    if (_error != null) {
-      return CustomErrorWidget(
-        message: _error!,
-        onRetry: _loadTickets,
-      );
-    }
+        if (state is TicketErrorState) {
+          return _buildErrorState(state.failure.message);
+        }
 
-    if (_filteredTickets.isEmpty) {
-      return EmptyStateWidget(
-        title: 'No Tickets Found',
-        message: _selectedFilter == 'all' 
-            ? 'There are no tickets to display.'
-            : 'No tickets found with the selected filter.',
-        action: ElevatedButton.icon(
-          onPressed: () {
-            // TODO: Implement create ticket
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('Create Ticket'),
-        ),
-      );
-    }
+        if (state is TicketLoadedState) {
+          return _buildTicketsList(state.tickets);
+        }
 
-    return _buildTicketsList();
-  }
-
-  Widget _buildTicketsList() {
-    return ListView.builder(
-      itemCount: _filteredTickets.length,
-      itemBuilder: (context, index) {
-        final ticket = _filteredTickets[index];
-        return _buildTicketCard(ticket);
+        return _buildEmptyState();
       },
     );
   }
 
-  Widget _buildTicketCard(Map<String, dynamic> ticket) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64.w,
+              color: Colors.red.withValues(alpha: 0.6),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Unable to Load Tickets',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.onBackground,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              message.contains('404') 
+                  ? 'Ticket management API is not available. Please check if the backend server is running and the ticket endpoints are implemented.'
+                  : message.contains('500')
+                  ? 'Internal server error. The backend server is running but there\'s an issue with the ticket endpoints. Please check the server logs or contact the backend team.'
+                  : message,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.onBackground.withValues(alpha: 0.6),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _loadTickets,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Retry'),
+                ),
+                SizedBox(width: 12.w),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildTicketsList(tickets) {
+    final allTickets = <dynamic>[];
+    tickets.tickets.forEach((status, ticketList) {
+      allTickets.addAll(ticketList);
+    });
+
+    if (allTickets.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return ListView.builder(
+      itemCount: allTickets.length,
+      itemBuilder: (context, index) {
+        final ticket = allTickets[index];
+        return TicketCard(
+          ticket: ticket,
+          onTap: () => _showTicketDetail(ticket),
+          onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
+          onDelete: () => _deleteTicket(ticket.id),
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  ticket['title'],
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.onBackground,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(ticket['status']).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  ticket['status'].toUpperCase().replaceAll('_', ' '),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: _getStatusColor(ticket['status']),
-                  ),
-                ),
-              ),
-            ],
+          Icon(
+            Icons.support_agent,
+            size: 64.w,
+            color: AppColors.onBackground.withValues(alpha: 0.3),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No Tickets Found',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.onBackground,
+            ),
           ),
           SizedBox(height: 8.h),
           Text(
-            ticket['description'],
+            _selectedFilter == 'all' 
+                ? 'There are no tickets to display.'
+                : 'No tickets found with the selected filter.',
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.onBackground.withValues(alpha: 0.7),
+              color: AppColors.onBackground.withValues(alpha: 0.6),
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: _getPriorityColor(ticket['priority']).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  ticket['priority'].toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: _getPriorityColor(ticket['priority']),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  ticket['category'].toUpperCase().replaceAll('_', ' '),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.secondary,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                'By ${ticket['userName']}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.onBackground.withValues(alpha: 0.6),
-                ),
-              ),
-            ],
+          SizedBox(height: 24.h),
+        ]
+      ),
+    );
+  }
+
+ 
+  void _showTicketDetail(ticket) {
+    showDialog(
+      context: context,
+      builder: (context) => TicketDetailDialog(
+        ticket: ticket,
+        onTicketUpdated: () {
+          _loadTickets();
+          _loadStats();
+        },
+      ),
+    );
+  }
+
+  void _updateTicketStatus(int ticketId, String status) {
+    context.read<TicketBloc>().add(
+          TicketEvent.updateTicketStatus(
+            id: ticketId,
+            status: status,
           ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Icons.person,
-                size: 14.w,
-                color: AppColors.onBackground.withValues(alpha: 0.6),
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                'Assigned to ${ticket['assignedTo']}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.onBackground.withValues(alpha: 0.6),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                ticket['createdAt'],
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.onBackground.withValues(alpha: 0.6),
-                ),
-              ),
-            ],
+        );
+  }
+
+  void _deleteTicket(int ticketId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Ticket'),
+        content: const Text('Are you sure you want to delete this ticket?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<TicketBloc>().add(
+                    TicketEvent.deleteTicket(ticketId),
+                  );
+            },
+            child: const Text('Delete'),
           ),
         ],
       ),

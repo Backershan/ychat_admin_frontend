@@ -342,15 +342,80 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       print('New: ${_newPasswordController.text}');
       print('Confirm: ${_confirmPasswordController.text}');
       
-      // Show message that password change is not supported by backend
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Password change is not supported by the backend'),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      // Show informative dialog about password change not being supported
+      _showPasswordChangeNotSupportedDialog();
     }
+  }
+
+  void _showPasswordChangeNotSupportedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.orange,
+              size: 24.w,
+            ),
+            SizedBox(width: 12.w),
+            const Text('Feature Not Available'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Password change functionality is not currently supported by the backend server.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 16.h),
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: Colors.blue.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline,
+                    color: Colors.blue,
+                    size: 20.w,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      'This feature will be available in a future update.',
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close info dialog
+              Navigator.of(context).pop(); // Close password change dialog
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }

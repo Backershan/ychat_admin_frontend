@@ -19,19 +19,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 800),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return AppWrapper(
-          child: MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            routerConfig: AppRouter.router,
-          ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Determine design size based on screen width
+        Size designSize;
+        if (constraints.maxWidth >= 1200) {
+          // Desktop: Use larger design size
+          designSize = const Size(1440, 900);
+        } else if (constraints.maxWidth >= 768) {
+          // Tablet: Use medium design size
+          designSize = const Size(768, 1024);
+        } else {
+          // Mobile: Use original design size
+          designSize = const Size(360, 800);
+        }
+
+        return ScreenUtilInit(
+          designSize: designSize,
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return AppWrapper(
+              child: MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                themeMode: ThemeMode.system,
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                routerConfig: AppRouter.router,
+              ),
+            );
+          },
         );
       },
     );
