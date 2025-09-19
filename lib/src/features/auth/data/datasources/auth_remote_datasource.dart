@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:y_chat_admin/src/core/api/api_config.dart';
+import 'package:y_chat_admin/src/core/services/token_storage_service.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/user_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/auth_entity.dart';
 import 'package:y_chat_admin/src/features/auth/domain/entities/super_admin_response_entity.dart';
@@ -264,10 +265,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
+      // Get the current access token
+      final tokenStorage = await TokenStorageService.getInstance();
+      final accessToken = tokenStorage.getAccessToken();
+      
+      // Prepare headers with authorization token
+      final headers = Map<String, String>.from(ApiConfig.defaultHeaders);
+      if (accessToken != null) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+      
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.logoutEndpoint}',
         options: Options(
-          headers: ApiConfig.defaultHeaders,
+          headers: headers,
         ),
       );
       
@@ -277,13 +288,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return; // Logout successful
       }
     } on DioException catch (e) {
-      // If it's a 401 error, treat it as successful logout
+      // Handle different error cases
       if (e.response?.statusCode == 401) {
+        // 401 is expected for logout - treat as successful
+        return;
+      } else if (e.response?.statusCode == 429) {
+        // Rate limited - still treat as successful logout locally
+        // The user should be logged out locally even if server is rate limited
+        print('⚠️ Logout rate limited by server, but proceeding with local logout');
+        return;
+      } else if (e.response?.statusCode == 404) {
+        // Logout endpoint not found - still proceed with local logout
+        print('⚠️ Logout endpoint not found, proceeding with local logout');
+        return;
+      } else if (e.type == DioExceptionType.connectionError || 
+                 e.type == DioExceptionType.connectionTimeout) {
+        // Network issues - still proceed with local logout
+        print('⚠️ Network error during logout, proceeding with local logout');
         return;
       }
-      throw _handleDioException(e);
+      
+      // For other errors, still proceed with local logout but log the error
+      print('⚠️ Logout API error: ${e.message}, proceeding with local logout');
+      return;
     } catch (e) {
-      throw UnknownFailure(message: 'Unexpected error: $e');
+      // For any other errors, still proceed with local logout
+      print('⚠️ Unexpected logout error: $e, proceeding with local logout');
+      return;
     }
   }
 

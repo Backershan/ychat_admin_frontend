@@ -6,6 +6,7 @@ import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_bloc.dart'
 import 'package:y_chat_admin/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_bloc.dart';
 import 'package:y_chat_admin/src/features/app_management/presentation/bloc/app_bloc.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_bloc.dart';
 
 /// App wrapper that provides all necessary BlocProviders for the application
 /// This ensures consistent state management across all features
@@ -36,6 +37,11 @@ class AppWrapper extends StatelessWidget {
         // App Management Bloc - Available globally
         BlocProvider<AppBloc>(
           create: (context) => getIt<AppBloc>(),
+        ),
+        
+        // User Management Bloc - Available globally
+        BlocProvider<UserBloc>(
+          create: (context) => getIt<UserBloc>(),
         ),
       ],
       child: BackButtonHandler(child: child),

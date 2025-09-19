@@ -9,6 +9,7 @@ import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_
 import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_detail_dialog.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../../core/utils/web_responsive.dart';
 
 class TicketingPage extends StatefulWidget {
   const TicketingPage({super.key});
@@ -48,27 +49,65 @@ class _TicketingPageState extends State<TicketingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: EdgeInsets.all(24.w),
+        padding: WebResponsive.getWebPadding(context, all: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildHeader(isMobile),
+            SizedBox(height: WebResponsive.getWebHeight(24, context)),
             _buildStats(),
-            SizedBox(height: 24.h),
-            _buildFilters(),
-            SizedBox(height: 24.h),
+            SizedBox(height: WebResponsive.getWebHeight(24, context)),
+            _buildFilters(isMobile),
+            SizedBox(height: WebResponsive.getWebHeight(16, context)),
             Expanded(
-              child: _buildContent(),
+              child: _buildContent(isMobile),
             ),
           ],
         ),
       ),
+      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
   
+
+  Widget _buildHeader(bool isMobile) {
+    return Row(
+      children: [
+        Icon(
+          Icons.support_agent,
+          size: isMobile ? 24.w : 28.w,
+          color: AppColors.primary,
+        ),
+        SizedBox(width: 12.w),
+        Text(
+          'Ticket Management',
+          style: TextStyle(
+            fontSize: isMobile ? 24.sp : 28.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.onBackground,
+          ),
+        ),
+        const Spacer(),
+        if (!isMobile) ...[
+          IconButton(
+            onPressed: _loadTickets,
+            icon: Icon(
+              Icons.refresh,
+              color: AppColors.primary,
+              size: 24.w,
+            ),
+            tooltip: 'Refresh Tickets',
+          ),
+        ],
+      ],
+    );
+  }
 
   Widget _buildStats() {
     return BlocBuilder<TicketBloc, TicketState>(
@@ -81,31 +120,90 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
-  Widget _buildFilters() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Filters',
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.onBackground,
+  Widget _buildFilters(bool isMobile) {
+    return Container(
+      padding: WebResponsive.getWebPadding(context, all: 16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-        ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Filters',
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(18, context),
+              fontWeight: FontWeight.w600,
+              color: AppColors.onBackground,
+            ),
+          ),
+          SizedBox(height: WebResponsive.getWebHeight(12, context)),
+          isMobile ? _buildMobileFilters() : _buildDesktopFilters(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileFilters() {
+    return Column(
+      children: [
+        _buildStatusFilter(),
         SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildStatusFilter(),
-            ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: _buildPriorityFilter(),
-            ),
-          ],
+        _buildPriorityFilter(),
+        SizedBox(height: 12.h),
+        _buildSearchField(),
+      ],
+    );
+  }
+
+  Widget _buildDesktopFilters() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: _buildSearchField(),
+        ),
+        SizedBox(width: 16.w),
+        Expanded(
+          child: _buildStatusFilter(),
+        ),
+        SizedBox(width: 16.w),
+        Expanded(
+          child: _buildPriorityFilter(),
         ),
       ],
+    );
+  }
+
+  Widget _buildSearchField() {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: 'Search tickets...',
+        prefixIcon: Icon(Icons.search, size: 20.w),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.onSurface.withValues(alpha: 0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
+        ),
+      ),
+      onChanged: (value) {
+        // TODO: Implement search functionality
+      },
     );
   }
 
@@ -201,7 +299,7 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(bool isMobile) {
     return BlocBuilder<TicketBloc, TicketState>(
       builder: (context, state) {
         if (state is TicketLoadingState) {
@@ -213,7 +311,7 @@ class _TicketingPageState extends State<TicketingPage> {
         }
 
         if (state is TicketLoadedState) {
-          return _buildTicketsList(state.tickets);
+          return _buildTicketsList(state.tickets, isMobile);
         }
 
         return _buildEmptyState();
@@ -273,7 +371,7 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
-  Widget _buildTicketsList(tickets) {
+  Widget _buildTicketsList(tickets, bool isMobile) {
     final allTickets = <dynamic>[];
     tickets.tickets.forEach((status, ticketList) {
       allTickets.addAll(ticketList);
@@ -283,17 +381,61 @@ class _TicketingPageState extends State<TicketingPage> {
       return _buildEmptyState();
     }
 
-    return ListView.builder(
-      itemCount: allTickets.length,
-      itemBuilder: (context, index) {
-        final ticket = allTickets[index];
-        return TicketCard(
-          ticket: ticket,
-          onTap: () => _showTicketDetail(ticket),
-          onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
-          onDelete: () => _deleteTicket(ticket.id),
-        );
-      },
+    if (isMobile) {
+      return ListView.builder(
+        itemCount: allTickets.length,
+        itemBuilder: (context, index) {
+          final ticket = allTickets[index];
+          return TicketCard(
+            ticket: ticket,
+            onTap: () => _showTicketDetail(ticket),
+            onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
+            onDelete: () => _deleteTicket(ticket.id),
+          );
+        },
+      );
+    } else {
+      // Desktop: Use responsive grid layout
+      return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: WebResponsive.getWebGridColumns(
+            context,
+            mobileColumns: 1,
+            tabletColumns: 2,
+            desktopColumns: 3,
+            largeDesktopColumns: 4,
+          ),
+          crossAxisSpacing: WebResponsive.getWebSpacing(16, context),
+          mainAxisSpacing: WebResponsive.getWebHeight(16, context),
+          childAspectRatio: 1.2,
+        ),
+        itemCount: allTickets.length,
+        itemBuilder: (context, index) {
+          final ticket = allTickets[index];
+          return TicketCard(
+            ticket: ticket,
+            onTap: () => _showTicketDetail(ticket),
+            onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
+            onDelete: () => _deleteTicket(ticket.id),
+          );
+        },
+      );
+    }
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton.extended(
+      onPressed: _showCreateTicketDialog,
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.onPrimary,
+      icon: Icon(Icons.add, size: 20.w),
+      label: Text(
+        'Create Ticket',
+        style: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 
@@ -375,6 +517,93 @@ class _TicketingPageState extends State<TicketingPage> {
                   );
             },
             child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCreateTicketDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.add_circle_outline,
+              color: AppColors.primary,
+              size: 24.w,
+            ),
+            SizedBox(width: 12.w),
+            const Text('Create New Ticket'),
+          ],
+        ),
+        content: SizedBox(
+          width: 400.w,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+                maxLines: 3,
+              ),
+              SizedBox(height: 16.h),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Priority',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+                items: ['low', 'medium', 'high', 'urgent']
+                    .map((priority) => DropdownMenuItem(
+                          value: priority,
+                          child: Text(priority.toUpperCase()),
+                        ))
+                    .toList(),
+                onChanged: (value) {},
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // TODO: Implement create ticket functionality
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Create ticket functionality will be implemented'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: AppColors.onPrimary,
+            ),
+            child: const Text('Create'),
           ),
         ],
       ),

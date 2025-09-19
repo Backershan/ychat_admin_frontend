@@ -28,6 +28,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
     with TickerProviderStateMixin {
   int _selectedIndex = 0;
   late AnimationController _sidebarAnimationController;
+  bool _isLoggingOut = false;
   late AnimationController _contentAnimationController;
   late Animation<double> _sidebarAnimation;
   late Animation<double> _contentAnimation;
@@ -1018,21 +1019,63 @@ class _MainDashboardPageState extends State<MainDashboardPage>
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: _isLoggingOut ? null : () async {
+              if (_isLoggingOut) return;
+              
+              setState(() {
+                _isLoggingOut = true;
+              });
+              
               Navigator.pop(context);
-              context.read<AuthBloc>().add(const AuthEvent.logout());
+              
+              try {
+                context.read<AuthBloc>().add(const AuthEvent.logout());
+                
+                // Reset the logout state after a delay to prevent rapid clicking
+                await Future.delayed(const Duration(seconds: 2));
+                if (mounted) {
+                  setState(() {
+                    _isLoggingOut = false;
+                  });
+                }
+              } catch (e) {
+                if (mounted) {
+                  setState(() {
+                    _isLoggingOut = false;
+                  });
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: _isLoggingOut ? Colors.grey : Colors.red,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: Text(
-              'Logout',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
+            child: _isLoggingOut 
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 16.w,
+                      height: 16.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Logging out...',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                )
+              : Text(
+                  'Logout',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
           ),
         ],
       ),

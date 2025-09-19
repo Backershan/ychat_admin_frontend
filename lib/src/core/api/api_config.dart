@@ -38,15 +38,22 @@ class ApiConfig {
   static const String dataEndpoint = '/admin/data';
  
   // Ticket management endpoints
-  static const String ticketsEndpoint = '/admin/ticket';
+  static const String ticketsEndpoint = '/admin/tickets';
+  static const String ticketsByCategoryEndpoint = '/admin/tickets/category';
   static const String ticketByIdEndpoint = '/admin/tickets';
-  static const String ticketStatusEndpoint = '/admin/ticket';
-  static const String ticketRepliesEndpoint = '/admin/ticket' ;
-  static const String ticketStatsEndpoint = '/admin/ticket/stats';
+  static const String ticketStatusEndpoint = '/admin/tickets';
+  static const String ticketRepliesEndpoint = '/admin/tickets';
+  static const String ticketStatsEndpoint = '/admin/tickets/stats';
+  
+  // Legacy ticket endpoints (for backward compatibility)
+  static const String legacyTicketsEndpoint = '/admin/ticket';
   
   // App management endpoints
   static const String appsEndpoint = '/admin/data?type=apps';
   static const String appActionsEndpoint = '/admin/actions';
+  
+  // User management endpoints
+  static const String usersEndpoint = '/admin/users';
   
   // Default headers
   static const Map<String, String> defaultHeaders = {

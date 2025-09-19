@@ -47,7 +47,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _authStateSubscription = _authService.authStateStream.listen((authState) {
       switch (authState) {
         case AuthServiceState.unauthenticated:
-          add(const AuthEvent.logout());
+          // Only emit unauthenticated if we're not already in that state
+          if (state is! AuthUnauthenticated) {
+            emit(const AuthState.unauthenticated());
+          }
           break;
         case AuthServiceState.authenticated:
           final user = _authService.currentUser;
@@ -194,12 +197,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       await _authRepository.logout();
+      developer.log('✅ Logout API call successful', name: 'AuthBloc');
     } catch (e) {
       developer.log('⚠️ Logout API call failed: $e', name: 'AuthBloc');
+      // Continue with local logout even if API fails
     }
 
+    // Always clear local auth data
     await _authService.logout();
-    developer.log('✅ Logout successful', name: 'AuthBloc');
+    developer.log('✅ Local logout successful', name: 'AuthBloc');
+    
+    // Emit unauthenticated state - this will trigger the BlocListener to redirect
     emit(const AuthState.unauthenticated());
   }
 

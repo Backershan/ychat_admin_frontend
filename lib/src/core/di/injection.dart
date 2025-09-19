@@ -51,6 +51,15 @@ import 'package:y_chat_admin/src/features/app_management/domain/usecases/update_
 import 'package:y_chat_admin/src/features/app_management/domain/usecases/delete_app_usecase.dart';
 import 'package:y_chat_admin/src/features/app_management/presentation/bloc/app_bloc.dart';
 
+// User Management
+import 'package:y_chat_admin/src/features/user_management/data/datasources/user_remote_datasource.dart';
+import 'package:y_chat_admin/src/features/user_management/data/repositories/user_repository_impl.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/repositories/user_repository.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/get_users_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_status_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/delete_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_bloc.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
@@ -274,6 +283,35 @@ Future<void> configureDependencies() async {
       createAppUseCase: getIt<CreateAppUseCase>(),
       updateAppUseCase: getIt<UpdateAppUseCase>(),
       deleteAppUseCase: getIt<DeleteAppUseCase>(),
+    ),
+  );
+
+  // User Management
+  getIt.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(dio: getIt<Dio>()),
+  );
+
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(remoteDataSource: getIt<UserRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<GetUsersUseCase>(
+    () => GetUsersUseCase(repository: getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateUserStatusUseCase>(
+    () => UpdateUserStatusUseCase(repository: getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteUserUseCase>(
+    () => DeleteUserUseCase(repository: getIt<UserRepository>()),
+  );
+
+  getIt.registerFactory<UserBloc>(
+    () => UserBloc(
+      getUsersUseCase: getIt<GetUsersUseCase>(),
+      updateUserStatusUseCase: getIt<UpdateUserStatusUseCase>(),
+      deleteUserUseCase: getIt<DeleteUserUseCase>(),
     ),
   );
 }
