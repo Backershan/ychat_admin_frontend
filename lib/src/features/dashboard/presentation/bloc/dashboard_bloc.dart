@@ -32,18 +32,18 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
+    switch (failure) {
+      case ServerFailure _:
         return 'Server error. Please try again later.';
-      case NetworkFailure:
+      case NetworkFailure _:
         return 'No internet connection. Please check your network.';
-      case TimeoutFailure:
+      case TimeoutFailure _:
         return 'Connection timeout. Please try again.';
-      case UnauthorizedFailure:
+      case UnauthorizedFailure _:
         return 'Unauthorized access. Please login again.';
-      case ForbiddenFailure:
+      case ForbiddenFailure _:
         return 'Access forbidden. You do not have permission.';
-      case NotFoundFailure:
+      case NotFoundFailure _:
         return 'Dashboard data not found.';
       default:
         return 'An unexpected error occurred. Please try again.';

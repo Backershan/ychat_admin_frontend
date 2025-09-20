@@ -752,7 +752,7 @@ class _SettingsViewState extends State<_SettingsView>
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: color,
+            activeThumbColor: color,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
@@ -803,7 +803,7 @@ class _SettingsViewState extends State<_SettingsView>
                Switch(
                  value: value,
                  onChanged: onChanged,
-                 activeColor: color,
+                 activeThumbColor: color,
                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                ),
             ],

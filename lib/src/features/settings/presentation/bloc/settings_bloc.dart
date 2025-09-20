@@ -51,23 +51,23 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
+    switch (failure) {
+      case ServerFailure _:
         final message = failure.message.toLowerCase();
         if (message.contains('settings database not configured') || 
             message.contains('relation "settings" does not exist')) {
           return 'Settings database not configured. Settings are working in offline mode. Contact your administrator to set up the database.';
         }
         return 'Server error. Please try again later.';
-      case NetworkFailure:
+      case NetworkFailure _:
         return 'No internet connection. Settings are working in offline mode.';
-      case TimeoutFailure:
+      case TimeoutFailure _:
         return 'Connection timeout. Settings are working in offline mode.';
-      case UnauthorizedFailure:
+      case UnauthorizedFailure _:
         return 'Unauthorized access. Please login again.';
-      case ForbiddenFailure:
+      case ForbiddenFailure _:
         return 'Access forbidden. You do not have permission.';
-      case NotFoundFailure:
+      case NotFoundFailure _:
         return 'Settings not found. Using default settings.';
       default:
         return 'An unexpected error occurred. Settings are working in offline mode.';

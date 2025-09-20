@@ -190,7 +190,7 @@ class ListUtils {
   
   /// Get union of two lists
   static List<T> union<T>(List<T> list1, List<T> list2) {
-    return [...list1, ...list2].toSet().toList();
+    return {...list1, ...list2}.toList();
   }
   
   /// Get difference of two lists

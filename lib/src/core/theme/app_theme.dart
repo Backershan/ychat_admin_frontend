@@ -8,7 +8,6 @@ class AppTheme {
   static const Color _secondaryColor = Color(0xFF03DAC6);
   static const Color _errorColor = Color(0xFFB00020);
   static const Color _surfaceColor = Color(0xFFFFFFFF);
-  static const Color _backgroundColor = Color(0xFFF5F5F5);
   
   // Text colors
   static const Color _onPrimaryColor = Color(0xFFFFFFFF);
@@ -25,9 +24,10 @@ class AppTheme {
         primary: _primaryColor,
         secondary: _secondaryColor,
         error: _errorColor,
-        surface: _surfaceColor,        onPrimary: _onPrimaryColor,
+        surface: _surfaceColor,
+        onPrimary: _onPrimaryColor,
         onSecondary: _onSecondaryColor,
-        onSurface: _onBackgroundColor, // onBackground -> onSurface
+        onSurface: _onBackgroundColor,
         onError: _onErrorColor,
       ),
       appBarTheme: AppBarTheme(
@@ -227,34 +227,34 @@ class AppTheme {
         circularTrackColor: _primaryColor.withValues(alpha: 0.3),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return _primaryColor;
           }
           return Colors.grey.shade400;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return _primaryColor.withValues(alpha: 0.5);
           }
           return Colors.grey.shade300;
         }),
       ),
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return _primaryColor;
           }
           return Colors.transparent;
         }),
-        checkColor: MaterialStateProperty.all(_onPrimaryColor),
+        checkColor: WidgetStateProperty.all(_onPrimaryColor),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.r),
         ),
       ),
       radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return _primaryColor;
           }
           return Colors.grey.shade400;
@@ -271,10 +271,10 @@ class AppTheme {
 //         primary: _primaryColor,
 //         secondary: _secondaryColor,
 //         error: _errorColor,
-//         surface: Color(0xFF1E1E1E),
+//         background: Color(0xFF1E1E1E),
 //         onPrimary: _onPrimaryColor,
 //         onSecondary: _onSecondaryColor,
-//         onSurface: Color(0xFFFFFFFF), // onBackground -> onSurface
+//         onBackground: Color(0xFFFFFFFF), // onBackground -> onSurface
 //         onError: _onErrorColor,
 //       ),
 //       appBarTheme: AppBarTheme(

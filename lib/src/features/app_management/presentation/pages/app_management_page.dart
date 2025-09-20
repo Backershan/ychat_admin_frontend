@@ -124,34 +124,34 @@ class _AppManagementPageState extends State<AppManagementPage>
           physics: const BouncingScrollPhysics(),
           slivers: [
             // Mobile App Bar
-            SliverAppBar(
-              expandedHeight: 100.h,
-              floating: false,
-              pinned: true,
-              backgroundColor: AppColors.primary,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'App Management',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.primary,
-                        AppColors.primary.withValues(alpha: 0.8),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // SliverAppBar(
+            //   expandedHeight: 100.h,
+            //   floating: false,
+            //   pinned: true,
+            //   backgroundColor: AppColors.primary,
+            //   flexibleSpace: FlexibleSpaceBar(
+            //     title: Text(
+            //       'App Management',
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 18.sp,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //     background: Container(
+            //       decoration: BoxDecoration(
+            //         gradient: LinearGradient(
+            //           begin: Alignment.topLeft,
+            //           end: Alignment.bottomRight,
+            //           colors: [
+            //             AppColors.primary,
+            //             AppColors.primary.withValues(alpha: 0.8),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             
             // Content
             SliverToBoxAdapter(

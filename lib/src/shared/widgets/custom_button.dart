@@ -108,14 +108,14 @@ class CustomButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? AppColors.primaryLight,
           foregroundColor: textColor ?? AppColors.onPrimary,
           elevation: 2,
-          shadowColor: AppColors.primaryLight.withOpacity(0.3),
+          shadowColor: AppColors.primaryLight.withValues(alpha: 0.3),
         );
       case ButtonType.secondary:
         return ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppColors.secondaryLight,
           foregroundColor: textColor ?? AppColors.onSecondary,
           elevation: 2,
-          shadowColor: AppColors.secondaryLight.withOpacity(0.3),
+          shadowColor: AppColors.secondaryLight.withValues(alpha: 0.3),
         );
       case ButtonType.outline:
         return ElevatedButton.styleFrom(
@@ -139,7 +139,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? AppColors.error,
           foregroundColor: textColor ?? AppColors.error,
           elevation: 2,
-          shadowColor: AppColors.error.withOpacity(0.3),
+          shadowColor: AppColors.error.withValues(alpha: 0.3),
         );
     }
   }

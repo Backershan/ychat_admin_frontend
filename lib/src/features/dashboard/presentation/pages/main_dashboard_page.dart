@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/features/app_management/presentation/pages/app_management_page.dart';
 import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page.dart';
-import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page_refactored.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/pages/ticketing_page_new.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/routes/app_routes.dart';
@@ -679,7 +678,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
               selectedIcon: Icon(page.selectedIcon),
               label: page.title,
             );
-          }).toList(),
+          }),
           NavigationDestination(
             icon: const Icon(Icons.more_horiz),
             selectedIcon: const Icon(Icons.more_horiz),
@@ -770,7 +769,7 @@ class _MainDashboardPageState extends State<MainDashboardPage>
                   ),
                 ),
               );
-            }).toList(),
+            }),
             SizedBox(height: 16.h),
           ],
         ),

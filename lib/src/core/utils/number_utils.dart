@@ -202,13 +202,13 @@ class NumberUtils {
   
   /// Get percentage
   static double percentage(num? value, num total) {
-    if (value == null || total == null || total == 0) return 0.0;
+    if (value == null || total == 0) return 0.0;
     return (value / total) * 100;
   }
   
   /// Get percentage of
   static double percentageOf(num? value, num percentage) {
-    if (value == null || percentage == null) return 0.0;
+    if (value == null) return 0.0;
     return (value * percentage) / 100;
   }
   

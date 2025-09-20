@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/utils/logger.dart';
 import '../../domain/entities/app_entity.dart';
 import '../../domain/repositories/app_repository.dart';
 import '../datasources/app_remote_datasource.dart';
@@ -55,7 +56,7 @@ class AppRepositoryImpl implements AppRepository {
 
   @override
   Future<Either<Failure, AppEntity>> createApp(CreateAppRequest request) async {
-    print('🔧 AppRepositoryImpl: createApp called with request: $request');
+    Logger.debug('🔧 AppRepositoryImpl: createApp called with request: $request');
     
     try {
       final requestModel = CreateAppRequestModel(
@@ -71,12 +72,12 @@ class AppRepositoryImpl implements AppRepository {
         integrationConfig: request.integrationConfig,
       );
       
-      print('🔧 AppRepositoryImpl: Created requestModel: $requestModel');
-      print('🔧 AppRepositoryImpl: Calling remoteDataSource.createApp...');
+      Logger.debug('🔧 AppRepositoryImpl: Created requestModel: $requestModel');
+      Logger.debug('🔧 AppRepositoryImpl: Calling remoteDataSource.createApp...');
       
       final appModel = await _remoteDataSource.createApp(requestModel);
       
-      print('🔧 AppRepositoryImpl: Received appModel from remoteDataSource: $appModel');
+      Logger.debug('🔧 AppRepositoryImpl: Received appModel from remoteDataSource: $appModel');
       
       final appEntity = AppEntity(
         id: appModel.id,
@@ -94,24 +95,24 @@ class AppRepositoryImpl implements AppRepository {
         updatedAt: appModel.updatedAt,
       );
       
-      print('🔧 AppRepositoryImpl: Created appEntity: $appEntity');
-      print('🔧 AppRepositoryImpl: Returning Right(appEntity)');
+      Logger.debug('🔧 AppRepositoryImpl: Created appEntity: $appEntity');
+      Logger.debug('🔧 AppRepositoryImpl: Returning Right(appEntity)');
       
       return Right(appEntity);
     } on ServerException catch (e) {
-      print('🔧 AppRepositoryImpl: ServerException: ${e.message}');
+      Logger.debug('🔧 AppRepositoryImpl: ServerException: ${e.message}');
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
-      print('🔧 AppRepositoryImpl: NetworkException: ${e.message}');
+      Logger.debug('🔧 AppRepositoryImpl: NetworkException: ${e.message}');
       return Left(NetworkFailure(e.message));
     } on UnauthorizedException catch (e) {
-      print('🔧 AppRepositoryImpl: UnauthorizedException: ${e.message}');
+      Logger.debug('🔧 AppRepositoryImpl: UnauthorizedException: ${e.message}');
       return Left(UnauthorizedFailure(e.message));
     } on UnknownException catch (e) {
-      print('🔧 AppRepositoryImpl: UnknownException: ${e.message}');
+      Logger.debug('🔧 AppRepositoryImpl: UnknownException: ${e.message}');
       return Left(UnknownFailure(e.message));
     } catch (e) {
-      print('🔧 AppRepositoryImpl: General exception: $e');
+      Logger.debug('🔧 AppRepositoryImpl: General exception: $e');
       return Left(UnknownFailure('An unexpected error occurred: $e'));
     }
   }

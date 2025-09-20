@@ -66,8 +66,8 @@ class _DebugConnectionWidgetState extends State<DebugConnectionWidget> {
                 padding: EdgeInsets.all(ResponsiveSpacing.md),
                 decoration: BoxDecoration(
                   color: _result!.isConnected 
-                      ? Colors.green.withOpacity(0.1)
-                      : Colors.red.withOpacity(0.1),
+                      ? Colors.green.withValues(alpha: 0.1)
+                      : Colors.red.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: _result!.isConnected ? Colors.green : Colors.red,

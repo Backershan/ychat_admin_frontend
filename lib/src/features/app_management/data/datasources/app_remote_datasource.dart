@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/api/api_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/utils/logger.dart';
 import '../models/app_model.dart';
 import '../converters/app_json_converter.dart';
 
@@ -23,7 +24,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
   @override
   Future<AppListModel> getApps() async {
     try {
-      print('🔧 Fetching apps from: ${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}');
+      Logger.debug('🔧 Fetching apps from: ${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}');
       final response = await _dio.get(
         '${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}',
         options: Options(
@@ -31,8 +32,8 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Apps response status: ${response.statusCode}');
-      print('🔧 Apps response data: ${response.data}');
+      Logger.debug('🔧 Apps response status: ${response.statusCode}');
+      Logger.debug('🔧 Apps response data: ${response.data}');
 
       if (response.statusCode == 200) {
         // Convert the response to handle permissions field properly
@@ -42,29 +43,29 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to fetch apps: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Apps DioException: ${e.message}');
-      print('🔧 Apps DioException response: ${e.response?.data}');
-      print('🔧 Apps DioException status: ${e.response?.statusCode}');
+      Logger.debug('🔧 Apps DioException: ${e.message}');
+      Logger.debug('🔧 Apps DioException response: ${e.response?.data}');
+      Logger.debug('🔧 Apps DioException status: ${e.response?.statusCode}');
       
       // If 404, 500, or any server error, return empty apps list instead of throwing error
       if (e.response?.statusCode == 404 || 
           e.response?.statusCode == 500 || 
           e.response?.statusCode == 502 || 
           e.response?.statusCode == 503) {
-        print('🔧 Apps endpoint not available, returning empty list');
+        Logger.debug('🔧 Apps endpoint not available, returning empty list');
         return _getEmptyAppsList();
       }
       
       // For connection errors, also return empty list
       if (e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Connection error, returning empty apps list');
+        Logger.debug('🔧 Connection error, returning empty apps list');
         return _getEmptyAppsList();
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Apps general error: $e');
+      Logger.debug('🔧 Apps general error: $e');
       // Return empty apps list for any other error
       return _getEmptyAppsList();
     }
@@ -89,7 +90,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         },
       };
 
-      print('🔧 Creating app: $requestData');
+      Logger.debug('🔧 Creating app: $requestData');
 
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.appActionsEndpoint}',
@@ -99,7 +100,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Create app response: ${response.statusCode} - ${response.data}');
+      Logger.debug('🔧 Create app response: ${response.statusCode} - ${response.data}');
 
       if (response.statusCode == 200) {
         return AppModel.fromJson(response.data['data']);
@@ -107,7 +108,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to create app: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Create app DioException: ${e.message}');
+      Logger.debug('🔧 Create app DioException: ${e.message}');
       
       // If server is not available, simulate a successful creation
       if (e.response?.statusCode == 404 || 
@@ -116,13 +117,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Create app endpoint not available, simulating successful creation');
+        Logger.debug('🔧 Create app endpoint not available, simulating successful creation');
         return _simulateCreatedApp(request);
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Create app error: $e');
+      Logger.debug('🔧 Create app error: $e');
       // For any other error, simulate successful creation
       return _simulateCreatedApp(request);
     }
@@ -140,7 +141,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         },
       };
 
-      print('🔧 Updating app: $requestData');
+      Logger.debug('🔧 Updating app: $requestData');
 
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.appActionsEndpoint}',
@@ -153,7 +154,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Update app response: ${response.statusCode} - ${response.data}');
+      Logger.debug('🔧 Update app response: ${response.statusCode} - ${response.data}');
 
       if (response.statusCode == 200) {
         return AppModel.fromJson(response.data['data']);
@@ -161,7 +162,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to update app: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Update app DioException: ${e.message}');
+      Logger.debug('🔧 Update app DioException: ${e.message}');
       
       // If server is not available, simulate a successful update
       if (e.response?.statusCode == 404 || 
@@ -170,13 +171,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Update app endpoint not available, simulating successful update');
+        Logger.debug('🔧 Update app endpoint not available, simulating successful update');
         return _simulateUpdatedApp(request);
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Update app error: $e');
+      Logger.debug('🔧 Update app error: $e');
       // For any other error, simulate successful update
       return _simulateUpdatedApp(request);
     }
@@ -194,7 +195,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         },
       };
 
-      print('🔧 Updating app status: $requestData');
+      Logger.debug('🔧 Updating app status: $requestData');
 
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.appActionsEndpoint}',
@@ -204,7 +205,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Update app status response: ${response.statusCode} - ${response.data}');
+      Logger.debug('🔧 Update app status response: ${response.statusCode} - ${response.data}');
 
       if (response.statusCode == 200) {
         return AppModel.fromJson(response.data['data']);
@@ -212,7 +213,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to update app status: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Update app status DioException: ${e.message}');
+      Logger.debug('🔧 Update app status DioException: ${e.message}');
       
       // If server is not available, simulate a successful update
       if (e.response?.statusCode == 404 || 
@@ -221,13 +222,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Update app status endpoint not available, simulating successful update');
+        Logger.debug('🔧 Update app status endpoint not available, simulating successful update');
         return _simulateUpdatedAppStatus(request);
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Update app status error: $e');
+      Logger.debug('🔧 Update app status error: $e');
       // For any other error, simulate successful update
       return _simulateUpdatedAppStatus(request);
     }
@@ -243,7 +244,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         },
       };
 
-      print('🔧 Deleting app: $requestData');
+      Logger.debug('🔧 Deleting app: $requestData');
 
       final response = await _dio.post(
         '${ApiConfig.baseUrl}${ApiConfig.appActionsEndpoint}',
@@ -253,13 +254,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Delete app response: ${response.statusCode} - ${response.data}');
+      Logger.debug('🔧 Delete app response: ${response.statusCode} - ${response.data}');
 
       if (response.statusCode != 200) {
         throw ServerException('Failed to delete app: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Delete app DioException: ${e.message}');
+      Logger.debug('🔧 Delete app DioException: ${e.message}');
       
       // If server is not available, simulate a successful deletion
       if (e.response?.statusCode == 404 || 
@@ -268,13 +269,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Delete app endpoint not available, simulating successful deletion');
+        Logger.debug('🔧 Delete app endpoint not available, simulating successful deletion');
         return; // Simulate successful deletion
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Delete app error: $e');
+      Logger.debug('🔧 Delete app error: $e');
       // For any other error, simulate successful deletion
       return;
     }
@@ -283,7 +284,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
   @override
   Future<AppAnalyticsModel> getAppAnalytics() async {
     try {
-      print('🔧 Fetching app analytics from: ${ApiConfig.baseUrl}${ApiConfig.appAnalyticsEndpoint}?type=categories');
+      Logger.debug('🔧 Fetching app analytics from: ${ApiConfig.baseUrl}${ApiConfig.appAnalyticsEndpoint}?type=categories');
       final response = await _dio.get(
         '${ApiConfig.baseUrl}${ApiConfig.appAnalyticsEndpoint}?type=categories',
         options: Options(
@@ -291,8 +292,8 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 App analytics response status: ${response.statusCode}');
-      print('🔧 App analytics response data: ${response.data}');
+      Logger.debug('🔧 App analytics response status: ${response.statusCode}');
+      Logger.debug('🔧 App analytics response data: ${response.data}');
 
       if (response.statusCode == 200) {
         return AppAnalyticsModel.fromJson(response.data);
@@ -300,7 +301,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to fetch app analytics: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 App analytics DioException: ${e.message}');
+      Logger.debug('🔧 App analytics DioException: ${e.message}');
       
       // If server is not available, return empty analytics
       if (e.response?.statusCode == 404 || 
@@ -309,13 +310,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 App analytics endpoint not available, returning empty analytics');
+        Logger.debug('🔧 App analytics endpoint not available, returning empty analytics');
         return _getEmptyAnalytics();
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 App analytics error: $e');
+      Logger.debug('🔧 App analytics error: $e');
       // Return empty analytics for any other error
       return _getEmptyAnalytics();
     }
@@ -324,7 +325,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
   @override
   Future<AppListModel> getAppsByCategory(String category) async {
     try {
-      print('🔧 Fetching apps by category from: ${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}&category=$category');
+      Logger.debug('🔧 Fetching apps by category from: ${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}&category=$category');
       final response = await _dio.get(
         '${ApiConfig.baseUrl}${ApiConfig.appsEndpoint}&category=$category',
         options: Options(
@@ -332,8 +333,8 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         ),
       );
 
-      print('🔧 Apps by category response status: ${response.statusCode}');
-      print('🔧 Apps by category response data: ${response.data}');
+      Logger.debug('🔧 Apps by category response status: ${response.statusCode}');
+      Logger.debug('🔧 Apps by category response data: ${response.data}');
 
       if (response.statusCode == 200) {
         return AppListModel.fromJson(response.data);
@@ -341,7 +342,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
         throw ServerException('Failed to fetch apps by category: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('🔧 Apps by category DioException: ${e.message}');
+      Logger.debug('🔧 Apps by category DioException: ${e.message}');
       
       // If server is not available, return empty list
       if (e.response?.statusCode == 404 || 
@@ -350,13 +351,13 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
           e.response?.statusCode == 503 ||
           e.type == DioExceptionType.connectionError || 
           e.type == DioExceptionType.connectionTimeout) {
-        print('🔧 Apps by category endpoint not available, returning empty list');
+        Logger.debug('🔧 Apps by category endpoint not available, returning empty list');
         return _getEmptyAppsList();
       }
       
       throw _handleDioException(e);
     } catch (e) {
-      print('🔧 Apps by category error: $e');
+      Logger.debug('🔧 Apps by category error: $e');
       // Return empty list for any other error
       return _getEmptyAppsList();
     }

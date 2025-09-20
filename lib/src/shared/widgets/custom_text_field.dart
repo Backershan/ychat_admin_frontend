@@ -149,17 +149,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
         filled: true,
         fillColor: widget.enabled
             ? AppColors.surface
-            : AppColors.onBackground.withOpacity(0.1),
+            : AppColors.onBackground.withValues(alpha: 0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.onBackground.withOpacity(0.2),
+            color: AppColors.onBackground.withValues(alpha: 0.2),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.onBackground.withOpacity(0.2),
+            color: AppColors.onBackground.withValues(alpha: 0.2),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -186,7 +186,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.onBackground.withOpacity(0.1),
+            color: AppColors.onBackground.withValues(alpha: 0.1),
           ),
         ),
         contentPadding: EdgeInsets.symmetric(
@@ -195,7 +195,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         hintStyle: TextStyle(
           fontSize: 14.sp,
-          color: AppColors.onBackground.withOpacity(0.5),
+          color: AppColors.onBackground.withValues(alpha: 0.5),
         ),
       ),
     );
@@ -210,7 +210,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       return IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.onBackground.withOpacity(0.6),
+          color: AppColors.onBackground.withValues(alpha: 0.6),
         ),
         onPressed: () {
           setState(() {

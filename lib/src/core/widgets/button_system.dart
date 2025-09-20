@@ -209,10 +209,10 @@ class TextButton extends StatelessWidget {
       icon: icon,
       isLoading: isLoading,
       style: ButtonStyle(
-        foregroundColor: MaterialStateProperty.all(
+        foregroundColor: WidgetStateProperty.all(
           textColor ?? Theme.of(context).colorScheme.primary,
         ),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(
             horizontal: ResponsiveSpacing.md,
             vertical: ResponsiveSpacing.sm,

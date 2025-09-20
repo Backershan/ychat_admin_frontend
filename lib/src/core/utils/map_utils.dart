@@ -241,7 +241,7 @@ class MapUtils {
     final result = Map<K, V>.from(map1);
     map2.forEach((key, value) {
       if (result.containsKey(key)) {
-        result[key] = conflictResolver(result[key]!, value);
+        result[key] = conflictResolver(result[key] as V, value);
       } else {
         result[key] = value;
       }
@@ -264,7 +264,7 @@ class MapUtils {
     for (final map in maps) {
       map.forEach((key, value) {
         if (result.containsKey(key)) {
-          result[key] = conflictResolver(result[key]!, value);
+          result[key] = conflictResolver(result[key] as V, value);
         } else {
           result[key] = value;
         }

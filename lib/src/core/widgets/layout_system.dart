@@ -33,7 +33,7 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.background,
+      backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.surface,
       appBar: showAppBar
           ? AppBar(
               title: title != null ? Text(title!) : null,
@@ -142,7 +142,7 @@ class PageLayout extends StatelessWidget {
               ),
             ),
           Divider(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           ),
           SizedBox(height: ResponsiveSpacing.medium),
         ],
@@ -159,7 +159,7 @@ class PageLayout extends StatelessWidget {
         if (showFooter && footer != null) ...[
           SizedBox(height: ResponsiveSpacing.medium),
           Divider(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           ),
           SizedBox(height: ResponsiveSpacing.medium),
           footer!,
@@ -283,7 +283,7 @@ class SectionLayout extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
         border: showDivider
             ? Border.all(
-                color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
               )
             : null,
       ),

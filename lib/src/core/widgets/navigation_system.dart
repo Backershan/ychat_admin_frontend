@@ -47,7 +47,7 @@ class BottomNavigationBar extends StatelessWidget {
         color: backgroundColor ?? Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),
@@ -83,7 +83,7 @@ class BottomNavigationBar extends StatelessWidget {
                               size: 24.w,
                               color: isSelected
                                   ? (selectedItemColor ?? Theme.of(context).colorScheme.primary)
-                                  : (unselectedItemColor ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                                  : (unselectedItemColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                             ),
                             if (item.badge != null)
                               Positioned(
@@ -119,7 +119,7 @@ class BottomNavigationBar extends StatelessWidget {
                             fontSize: ResponsiveText.small.fontSize,
                             color: isSelected
                                 ? (selectedItemColor ?? Theme.of(context).colorScheme.primary)
-                                : (unselectedItemColor ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                                : (unselectedItemColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
                         ),
@@ -227,7 +227,7 @@ class DrawerNavigation extends StatelessWidget {
                         )
                       : null,
                   selected: isSelected,
-                  selectedTileColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  selectedTileColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   onTap: () => onItemTap?.call(item.route),
                 );
               },
@@ -274,7 +274,7 @@ class TabNavigation extends StatelessWidget {
       isScrollable: isScrollable,
       indicatorColor: indicatorColor ?? Theme.of(context).colorScheme.primary,
       labelColor: labelColor ?? Theme.of(context).colorScheme.primary,
-      unselectedLabelColor: unselectedLabelColor ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+      unselectedLabelColor: unselectedLabelColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
       labelStyle: TextStyle(
         fontSize: ResponsiveText.medium.fontSize,
         fontWeight: FontWeight.w600,
@@ -361,7 +361,7 @@ class BreadcrumbNavigation extends StatelessWidget {
                   fontSize: ResponsiveText.small.fontSize,
                   color: isActive
                       ? (activeColor ?? Theme.of(context).colorScheme.primary)
-                      : (textColor ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                      : (textColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
@@ -371,7 +371,7 @@ class BreadcrumbNavigation extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 size: 16.w,
-                color: separatorColor ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                color: separatorColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               ),
               SizedBox(width: ResponsiveSpacing.small),
             ],

@@ -8,8 +8,8 @@ class ApiConfig {
   // Base URL for the API - automatically detects platform and environment
   static String get baseUrl {
     // Check for environment variable first
-    const String? envUrl = String.fromEnvironment('API_BASE_URL');
-    if (envUrl != null && envUrl.isNotEmpty) {
+    const String envUrl = String.fromEnvironment('API_BASE_URL');
+    if (envUrl.isNotEmpty) {
       return envUrl;
     }
     

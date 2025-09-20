@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/app_entity.dart';
 import '../repositories/app_repository.dart';
+import 'package:y_chat_admin/src/core/utils/logger.dart';
 
 class CreateAppUseCase {
   final AppRepository _repository;
@@ -20,17 +21,17 @@ class CreateAppUseCase {
     required List<String> permissions,
     Map<String, dynamic>? integrationConfig,
   }) async {
-    print('🔧 CreateAppUseCase: called with params:');
-    print('  name: $name');
-    print('  appKey: $appKey');
-    print('  iconUrl: $iconUrl');
-    print('  category: $category');
-    print('  description: $description');
-    print('  isActive: $isActive');
-    print('  isIntegrated: $isIntegrated');
-    print('  version: $version');
-    print('  permissions: $permissions');
-    print('  integrationConfig: $integrationConfig');
+    Logger.debug('🔧 CreateAppUseCase: called with params:');
+    Logger.debug('  name: $name');
+    Logger.debug('  appKey: $appKey');
+    Logger.debug('  iconUrl: $iconUrl');
+    Logger.debug('  category: $category');
+    Logger.debug('  description: $description');
+    Logger.debug('  isActive: $isActive');
+    Logger.debug('  isIntegrated: $isIntegrated');
+    Logger.debug('  version: $version');
+    Logger.debug('  permissions: $permissions');
+    Logger.debug('  integrationConfig: $integrationConfig');
     
     final request = CreateAppRequest(
       name: name,
@@ -45,12 +46,12 @@ class CreateAppUseCase {
       integrationConfig: integrationConfig,
     );
     
-    print('🔧 CreateAppUseCase: Created request: $request');
-    print('🔧 CreateAppUseCase: Calling repository.createApp...');
+    Logger.debug('🔧 CreateAppUseCase: Created request: $request');
+    Logger.debug('🔧 CreateAppUseCase: Calling repository.createApp...');
     
     final result = await _repository.createApp(request);
     
-    print('🔧 CreateAppUseCase: Repository result: $result');
+    Logger.debug('🔧 CreateAppUseCase: Repository result: $result');
     
     return result;
   }

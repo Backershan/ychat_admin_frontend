@@ -6,6 +6,7 @@ import '../../domain/usecases/create_app_usecase.dart';
 import '../../domain/usecases/update_app_usecase.dart';
 import '../../domain/usecases/delete_app_usecase.dart';
 import '../../../../core/error/failures.dart';
+import 'package:y_chat_admin/src/core/utils/logger.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -40,26 +41,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     GetApps event,
     Emitter<AppState> emit,
   ) async {
-    print('🔧 AppBloc: _onGetApps called');
+    Logger.debug('🔧 AppBloc: _onGetApps called');
     emit(AppLoading());
 
     try {
-      print('🔧 AppBloc: Calling _getAppsUseCase...');
+      Logger.debug('🔧 AppBloc: Calling _getAppsUseCase...');
       final result = await _getAppsUseCase();
-      print('🔧 AppBloc: Got result from use case: $result');
+      Logger.debug('🔧 AppBloc: Got result from use case: $result');
 
       result.fold(
         (failure) {
-          print('🔧 AppBloc: GetApps failed with: ${failure.message}');
+          Logger.debug('🔧 AppBloc: GetApps failed with: ${failure.message}');
           emit(AppError(failure));
         },
         (apps) {
-          print('🔧 AppBloc: GetApps successful, got ${apps.apps.length} apps');
+          Logger.debug('🔧 AppBloc: GetApps successful, got ${apps.apps.length} apps');
           emit(AppsLoaded(apps));
         },
       );
     } catch (e) {
-      print('🔧 AppBloc: GetApps exception: $e');
+      Logger.debug('🔧 AppBloc: GetApps exception: $e');
       emit(AppError(UnknownFailure('An unexpected error occurred: $e')));
     }
   }
@@ -68,7 +69,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     CreateApp event,
     Emitter<AppState> emit,
   ) async {
-    print('🔧 AppBloc: _onCreateApp called with event: $event');
+    Logger.debug('🔧 AppBloc: _onCreateApp called with event: $event');
     emit(AppLoading());
 
     try {
@@ -85,20 +86,20 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         integrationConfig: event.integrationConfig,
       );
 
-      print('🔧 AppBloc: CreateAppUseCase result: $result');
+      Logger.debug('🔧 AppBloc: CreateAppUseCase result: $result');
 
       result.fold(
         (failure) {
-          print('🔧 AppBloc: CreateApp failed with: ${failure.message}');
+          Logger.debug('🔧 AppBloc: CreateApp failed with: ${failure.message}');
           emit(AppError(failure));
         },
         (app) {
-          print('🔧 AppBloc: CreateApp successful, created app: $app');
+          Logger.debug('🔧 AppBloc: CreateApp successful, created app: $app');
           emit(AppCreated(app));
         },
       );
     } catch (e) {
-      print('🔧 AppBloc: CreateApp exception: $e');
+      Logger.debug('🔧 AppBloc: CreateApp exception: $e');
       emit(AppError(UnknownFailure('An unexpected error occurred: $e')));
     }
   }

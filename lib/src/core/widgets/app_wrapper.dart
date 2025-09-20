@@ -62,7 +62,7 @@ class BackButtonHandler extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // Prevent back navigation
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         
         // Show confirmation dialog when back button is pressed
