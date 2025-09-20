@@ -25,12 +25,9 @@ class AppTheme {
         primary: _primaryColor,
         secondary: _secondaryColor,
         error: _errorColor,
-        surface: _surfaceColor,
-        background: _backgroundColor,
-        onPrimary: _onPrimaryColor,
+        surface: _surfaceColor,        onPrimary: _onPrimaryColor,
         onSecondary: _onSecondaryColor,
-        onSurface: _onSurfaceColor,
-        onBackground: _onBackgroundColor,
+        onSurface: _onBackgroundColor, // onBackground -> onSurface
         onError: _onErrorColor,
       ),
       appBarTheme: AppBarTheme(
@@ -171,7 +168,7 @@ class AppTheme {
         bodySmall: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.normal,
-          color: _onSurfaceColor.withOpacity(0.7),
+          color: _onSurfaceColor.withValues(alpha: 0.7),
         ),
         labelLarge: TextStyle(
           fontSize: 14.sp,
@@ -197,7 +194,7 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: _surfaceColor,
         selectedItemColor: _primaryColor,
-        unselectedItemColor: _onSurfaceColor.withOpacity(0.6),
+        unselectedItemColor: _onSurfaceColor.withValues(alpha: 0.6),
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
@@ -215,7 +212,7 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: _primaryColor.withOpacity(0.1),
+        backgroundColor: _primaryColor.withValues(alpha: 0.1),
         labelStyle: TextStyle(
           color: _primaryColor,
           fontSize: 12.sp,
@@ -226,8 +223,8 @@ class AppTheme {
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: _primaryColor,
-        linearTrackColor: _primaryColor.withOpacity(0.3),
-        circularTrackColor: _primaryColor.withOpacity(0.3),
+        linearTrackColor: _primaryColor.withValues(alpha: 0.3),
+        circularTrackColor: _primaryColor.withValues(alpha: 0.3),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -238,7 +235,7 @@ class AppTheme {
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return _primaryColor.withOpacity(0.5);
+            return _primaryColor.withValues(alpha: 0.5);
           }
           return Colors.grey.shade300;
         }),
@@ -275,11 +272,9 @@ class AppTheme {
         secondary: _secondaryColor,
         error: _errorColor,
         surface: Color(0xFF1E1E1E),
-        background: Color(0xFF121212),
         onPrimary: _onPrimaryColor,
         onSecondary: _onSecondaryColor,
-        onSurface: Color(0xFFFFFFFF),
-        onBackground: Color(0xFFFFFFFF),
+        onSurface: Color(0xFFFFFFFF), // onBackground -> onSurface
         onError: _onErrorColor,
       ),
       appBarTheme: AppBarTheme(
@@ -420,7 +415,7 @@ class AppTheme {
         bodySmall: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.normal,
-          color: const Color(0xFFFFFFFF).withOpacity(0.7),
+          color: const Color(0xFFFFFFFF).withValues(alpha: 0.7),
         ),
         labelLarge: TextStyle(
           fontSize: 14.sp,
@@ -446,7 +441,7 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: const Color(0xFF1E1E1E),
         selectedItemColor: _primaryColor,
-        unselectedItemColor: const Color(0xFFFFFFFF).withOpacity(0.6),
+        unselectedItemColor: const Color(0xFFFFFFFF).withValues(alpha: 0.6),
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
@@ -464,7 +459,7 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: _primaryColor.withOpacity(0.2),
+        backgroundColor: _primaryColor.withValues(alpha: 0.2),
         labelStyle: TextStyle(
           color: _primaryColor,
           fontSize: 12.sp,
@@ -475,8 +470,8 @@ class AppTheme {
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: _primaryColor,
-        linearTrackColor: _primaryColor.withOpacity(0.3),
-        circularTrackColor: _primaryColor.withOpacity(0.3),
+        linearTrackColor: _primaryColor.withValues(alpha: 0.3),
+        circularTrackColor: _primaryColor.withValues(alpha: 0.3),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -487,7 +482,7 @@ class AppTheme {
         }),
         trackColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return _primaryColor.withOpacity(0.5);
+            return _primaryColor.withValues(alpha: 0.5);
           }
           return Colors.grey.shade700;
         }),

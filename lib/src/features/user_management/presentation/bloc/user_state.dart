@@ -1,107 +1,32 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/user_entity.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
 
-abstract class UserState extends Equatable {
-  const UserState();
+part 'user_state.freezed.dart';
 
-  @override
-  List<Object> get props => [];
-}
+@freezed
+class UserState with _$UserState {
+  const factory UserState.initial() = UserInitial;
 
-class UserInitial extends UserState {}
+  const factory UserState.loading() = UserLoading;
 
-class UserLoading extends UserState {}
+  const factory UserState.loaded({
+    required UserListResponse userListResponse,
+    required List<UserEntity> users,
+    required int currentPage,
+    required int totalPages,
+    required int totalUsers,
+    String? searchQuery,
+    String? statusFilter,
+  }) = UserLoaded;
 
-class UsersLoaded extends UserState {
-  final UserListEntity users;
+  const factory UserState.error({
+    required String message,
+  }) = UserError;
 
-  const UsersLoaded(this.users);
+  const factory UserState.actionSuccess({
+    required String message,
+    UserEntity? updatedUser,
+  }) = UserActionSuccess;
 
-  @override
-  List<Object> get props => [users];
-}
-
-class UserCreated extends UserState {
-  final UserEntity user;
-
-  const UserCreated(this.user);
-
-  @override
-  List<Object> get props => [user];
-}
-
-class UserUpdated extends UserState {
-  final UserEntity user;
-
-  const UserUpdated(this.user);
-
-  @override
-  List<Object> get props => [user];
-}
-
-class UserDeleted extends UserState {
-  final int userId;
-
-  const UserDeleted(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
-class UserStatusUpdated extends UserState {
-  final int userId;
-  final String status;
-
-  const UserStatusUpdated({
-    required this.userId,
-    required this.status,
-  });
-
-  @override
-  List<Object> get props => [userId, status];
-}
-
-class UserBanned extends UserState {
-  final int userId;
-
-  const UserBanned(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
-class UserUnbanned extends UserState {
-  final int userId;
-
-  const UserUnbanned(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
-class UserActivated extends UserState {
-  final int userId;
-
-  const UserActivated(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
-class UserDeactivated extends UserState {
-  final int userId;
-
-  const UserDeactivated(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
-class UserError extends UserState {
-  final String message;
-
-  const UserError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  const factory UserState.actionLoading() = UserActionLoading;
 }

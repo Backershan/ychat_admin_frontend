@@ -1,287 +1,129 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/user_entity.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
 
-part 'user_model.freezed.dart';
-part 'user_model.g.dart';
+class UserModel {
+  final int id;
+  final String? name; // Changed from firstname to name to match API
+  final String? email;
+  final String? status;
+  final bool? isActive; // Changed from is_active to isActive
+  final String? createdAt; // Changed from created_at to createdAt
+  final String? lastSeen; // Changed from last_seen to lastSeen
+  // Keep additional fields for backward compatibility
+  final String? firstname;
+  final String? lastname;
+  final String? phone;
+  final String? uid;
+  final String? avatar;
+  final String? role;
+  final String? ipAddress;
+  final String? deviceInfo;
+  final String? lastLoginAt;
+  final String? updatedAt;
+  final String? banReason;
+  final String? banType;
+  final String? deactivationReason;
+  final bool? isBanned;
 
-@freezed
-class UserModel with _$UserModel {
-  const factory UserModel({
-    required int id,
-    required String firstname,
-    required String email,
-    required String status,
-    String? lastname,
-    String? phone,
-    String? avatar,
-    DateTime? lastLogin,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? banReason,
-    String? banType,
-    DateTime? bannedAt,
-    String? deactivationReason,
-    DateTime? deactivatedAt,
-  }) = _UserModel;
+  const UserModel({
+    required this.id,
+    this.name,
+    this.email,
+    this.status,
+    this.isActive,
+    this.createdAt,
+    this.lastSeen,
+    this.firstname,
+    this.lastname,
+    this.phone,
+    this.uid,
+    this.avatar,
+    this.role,
+    this.ipAddress,
+    this.deviceInfo,
+    this.lastLoginAt,
+    this.updatedAt,
+    this.banReason,
+    this.banType,
+    this.deactivationReason,
+    this.isBanned,
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
-}
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'] as int,
+      name: json['name'] as String?, // New API field
+      email: json['email'] as String?,
+      status: json['status'] as String?,
+      isActive: json['is_active'] as bool?, // API uses is_active
+      createdAt: json['created_at'] as String?, // API uses created_at
+      lastSeen: json['last_seen'] as String?, // API uses last_seen
+      // Keep additional fields for backward compatibility
+      firstname: json['firstname'] as String?,
+      lastname: json['lastname'] as String?,
+      phone: json['phone'] as String?,
+      uid: json['uid'] as String?,
+      avatar: json['avatar'] as String?,
+      role: json['role'] as String?,
+      ipAddress: json['ipAddress'] as String?,
+      deviceInfo: json['deviceInfo'] as String?,
+      lastLoginAt: json['lastLoginAt'] as String?,
+      updatedAt: json['updatedAt'] as String?,
+      banReason: json['banReason'] as String?,
+      banType: json['banType'] as String?,
+      deactivationReason: json['deactivationReason'] as String?,
+      isBanned: json['isBanned'] as bool?,
+    );
+  }
 
-@freezed
-class UserListModel with _$UserListModel {
-  const factory UserListModel({
-    required List<UserModel> users,
-    required UserPaginationModel pagination,
-  }) = _UserListModel;
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'status': status,
+      'is_active': isActive,
+      'created_at': createdAt,
+      'last_seen': lastSeen,
+      'firstname': firstname,
+      'lastname': lastname,
+      'phone': phone,
+      'uid': uid,
+      'avatar': avatar,
+      'role': role,
+      'ipAddress': ipAddress,
+      'deviceInfo': deviceInfo,
+      'lastLoginAt': lastLoginAt,
+      'updatedAt': updatedAt,
+      'banReason': banReason,
+      'banType': banType,
+      'deactivationReason': deactivationReason,
+      'isBanned': isBanned,
+    };
+  }
 
-  factory UserListModel.fromJson(Map<String, dynamic> json) =>
-      _$UserListModelFromJson(json);
-}
-
-@freezed
-class UserPaginationModel with _$UserPaginationModel {
-  const factory UserPaginationModel({
-    required int total,
-    required int page,
-    required int pages,
-    required int limit,
-  }) = _UserPaginationModel;
-
-  factory UserPaginationModel.fromJson(Map<String, dynamic> json) =>
-      _$UserPaginationModelFromJson(json);
-}
-
-@freezed
-class CreateUserRequestModel with _$CreateUserRequestModel {
-  const factory CreateUserRequestModel({
-    required String firstname,
-    required String email,
-    String? lastname,
-    String? phone,
-    String? password,
-    String? status,
-  }) = _CreateUserRequestModel;
-
-  factory CreateUserRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$CreateUserRequestModelFromJson(json);
-}
-
-@freezed
-class UpdateUserRequestModel with _$UpdateUserRequestModel {
-  const factory UpdateUserRequestModel({
-    required int userId,
-    String? firstname,
-    String? lastname,
-    String? email,
-    String? phone,
-    String? status,
-  }) = _UpdateUserRequestModel;
-
-  factory UpdateUserRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$UpdateUserRequestModelFromJson(json);
-}
-
-@freezed
-class UpdateUserStatusRequestModel with _$UpdateUserStatusRequestModel {
-  const factory UpdateUserStatusRequestModel({
-    required int userId,
-    required String status,
-  }) = _UpdateUserStatusRequestModel;
-
-  factory UpdateUserStatusRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$UpdateUserStatusRequestModelFromJson(json);
-}
-
-@freezed
-class BanUserRequestModel with _$BanUserRequestModel {
-  const factory BanUserRequestModel({
-    required String reason,
-    required String banType,
-  }) = _BanUserRequestModel;
-
-  factory BanUserRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$BanUserRequestModelFromJson(json);
-}
-
-@freezed
-class DeactivateUserRequestModel with _$DeactivateUserRequestModel {
-  const factory DeactivateUserRequestModel({
-    required String reason,
-  }) = _DeactivateUserRequestModel;
-
-  factory DeactivateUserRequestModel.fromJson(Map<String, dynamic> json) =>
-      _$DeactivateUserRequestModelFromJson(json);
-}
-
-@freezed
-class UserSearchParamsModel with _$UserSearchParamsModel {
-  const factory UserSearchParamsModel({
-    String? search,
-    String? status,
-    int? page,
-    int? limit,
-  }) = _UserSearchParamsModel;
-
-  factory UserSearchParamsModel.fromJson(Map<String, dynamic> json) =>
-      _$UserSearchParamsModelFromJson(json);
-}
-
-// Extensions to convert models to entities
-extension UserModelExtension on UserModel {
   UserEntity toEntity() {
     return UserEntity(
       id: id,
-      firstname: firstname,
+      name: name,
       email: email,
       status: status,
+      isActive: isActive,
+      createdAt: createdAt,
+      lastSeen: lastSeen,
+      firstname: firstname,
       lastname: lastname,
       phone: phone,
+      uid: uid,
       avatar: avatar,
-      lastLogin: lastLogin,
-      createdAt: createdAt,
+      role: role,
+      ipAddress: ipAddress,
+      deviceInfo: deviceInfo,
+      lastLoginAt: lastLoginAt,
       updatedAt: updatedAt,
       banReason: banReason,
       banType: banType,
-      bannedAt: bannedAt,
       deactivationReason: deactivationReason,
-      deactivatedAt: deactivatedAt,
-    );
-  }
-}
-
-extension UserListModelExtension on UserListModel {
-  UserListEntity toEntity() {
-    return UserListEntity(
-      users: users.map((user) => user.toEntity()).toList(),
-      pagination: pagination.toEntity(),
-    );
-  }
-}
-
-extension UserPaginationModelExtension on UserPaginationModel {
-  UserPaginationEntity toEntity() {
-    return UserPaginationEntity(
-      total: total,
-      page: page,
-      pages: pages,
-      limit: limit,
-    );
-  }
-}
-
-extension CreateUserRequestModelExtension on CreateUserRequestModel {
-  CreateUserRequest toEntity() {
-    return CreateUserRequest(
-      firstname: firstname,
-      email: email,
-      lastname: lastname,
-      phone: phone,
-      password: password,
-      status: status,
-    );
-  }
-}
-
-extension UpdateUserRequestModelExtension on UpdateUserRequestModel {
-  UpdateUserRequest toEntity() {
-    return UpdateUserRequest(
-      userId: userId,
-      firstname: firstname,
-      lastname: lastname,
-      email: email,
-      phone: phone,
-      status: status,
-    );
-  }
-}
-
-extension UpdateUserStatusRequestModelExtension on UpdateUserStatusRequestModel {
-  UpdateUserStatusRequest toEntity() {
-    return UpdateUserStatusRequest(
-      userId: userId,
-      status: status,
-    );
-  }
-}
-
-extension BanUserRequestModelExtension on BanUserRequestModel {
-  BanUserRequest toEntity() {
-    return BanUserRequest(
-      reason: reason,
-      banType: banType,
-    );
-  }
-}
-
-extension DeactivateUserRequestModelExtension on DeactivateUserRequestModel {
-  DeactivateUserRequest toEntity() {
-    return DeactivateUserRequest(
-      reason: reason,
-    );
-  }
-}
-
-extension UserSearchParamsModelExtension on UserSearchParamsModel {
-  UserSearchParams toEntity() {
-    return UserSearchParams(
-      search: search,
-      status: status,
-      page: page,
-      limit: limit,
-    );
-  }
-}
-
-// Extension methods to convert entities to models
-extension CreateUserRequestExtension on CreateUserRequest {
-  CreateUserRequestModel toModel() {
-    return CreateUserRequestModel(
-      firstname: firstname,
-      email: email,
-      lastname: lastname,
-      phone: phone,
-      password: password,
-      status: status,
-    );
-  }
-}
-
-extension UpdateUserRequestExtension on UpdateUserRequest {
-  UpdateUserRequestModel toModel() {
-    return UpdateUserRequestModel(
-      userId: userId,
-      firstname: firstname,
-      lastname: lastname,
-      email: email,
-      phone: phone,
-      status: status,
-    );
-  }
-}
-
-extension UpdateUserStatusRequestExtension on UpdateUserStatusRequest {
-  UpdateUserStatusRequestModel toModel() {
-    return UpdateUserStatusRequestModel(
-      userId: userId,
-      status: status,
-    );
-  }
-}
-
-extension BanUserRequestExtension on BanUserRequest {
-  BanUserRequestModel toModel() {
-    return BanUserRequestModel(
-      reason: reason,
-      banType: banType,
-    );
-  }
-}
-
-extension DeactivateUserRequestExtension on DeactivateUserRequest {
-  DeactivateUserRequestModel toModel() {
-    return DeactivateUserRequestModel(
-      reason: reason,
+      isBanned: isBanned,
     );
   }
 }

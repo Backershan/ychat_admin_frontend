@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:y_chat_admin/src/core/utils/responsive_utils.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
 
 /// Loading overlay widget that can be shown over any content
 /// Follows the project rule of using ScreenUtil for responsive design

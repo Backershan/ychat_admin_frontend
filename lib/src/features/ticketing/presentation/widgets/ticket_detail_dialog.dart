@@ -5,6 +5,7 @@ import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_blo
 import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_event.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_state.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import '../../../../core/constants/constants.dart';
 
 class TicketDetailDialog extends StatefulWidget {
@@ -462,9 +463,9 @@ class _TicketDetailDialogState extends State<TicketDetailDialog> {
 
   void _updateTicketStatus(String status) {
     context.read<TicketBloc>().add(
-          TicketEvent.updateTicketStatus(
+          TicketEvent.updateTicket(
             id: widget.ticket.id,
-            status: status,
+            request: TicketUpdateRequest(status: status),
           ),
         );
   }
@@ -474,8 +475,10 @@ class _TicketDetailDialogState extends State<TicketDetailDialog> {
       context.read<TicketBloc>().add(
             TicketEvent.addReplyToTicket(
               id: widget.ticket.id,
-              text: _replyController.text,
-              from: 'super_admin',
+              request: TicketReplyRequest(
+                text: _replyController.text,
+                from: 'super_admin',
+              ),
             ),
           );
       _replyController.clear();

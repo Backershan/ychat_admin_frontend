@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/repositories/ticket_repository.dart';
 import 'package:y_chat_admin/src/features/ticketing/data/datasources/ticket_remote_datasource.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 class TicketRepositoryImpl implements TicketRepository {
@@ -11,10 +12,13 @@ class TicketRepositoryImpl implements TicketRepository {
       : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, TicketListEntity>> getTickets({
+  Future<Either<Failure, TicketListResponse>> getTickets({
     String? category,
     String? status,
     String? priority,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
     int? page,
     int? limit,
   }) async {
@@ -23,6 +27,9 @@ class TicketRepositoryImpl implements TicketRepository {
         category: category,
         status: status,
         priority: priority,
+        search: search,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
         page: page,
         limit: limit,
       );
@@ -71,18 +78,14 @@ class TicketRepositoryImpl implements TicketRepository {
   }
 
   @override
-  Future<Either<Failure, TicketEntity>> updateTicketStatus({
+  Future<Either<Failure, TicketEntity>> updateTicket({
     required int id,
-    required String status,
-    int? assignedTo,
-    String? adminNotes,
+    required TicketUpdateRequest request,
   }) async {
     try {
-      final result = await _remoteDataSource.updateTicketStatus(
+      final result = await _remoteDataSource.updateTicket(
         id: id,
-        status: status,
-        assignedTo: assignedTo,
-        adminNotes: adminNotes,
+        request: request,
       );
       return Right(result);
     } on Failure catch (e) {
@@ -95,16 +98,12 @@ class TicketRepositoryImpl implements TicketRepository {
   @override
   Future<Either<Failure, TicketEntity>> addReplyToTicket({
     required int id,
-    required String text,
-    String? image,
-    required String from,
+    required TicketReplyRequest request,
   }) async {
     try {
       final result = await _remoteDataSource.addReplyToTicket(
         id: id,
-        text: text,
-        image: image,
-        from: from,
+        request: request,
       );
       return Right(result);
     } on Failure catch (e) {
@@ -115,7 +114,7 @@ class TicketRepositoryImpl implements TicketRepository {
   }
 
   @override
-  Future<Either<Failure, TicketStatsEntity>> getTicketStats() async {
+  Future<Either<Failure, TicketStatsResponse>> getTicketStats() async {
     try {
       final result = await _remoteDataSource.getTicketStats();
       return Right(result);

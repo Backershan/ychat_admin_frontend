@@ -49,7 +49,7 @@ class UserCard extends StatelessWidget {
           radius: 20.r,
           backgroundColor: AppColors.primary.withValues(alpha: 0.1),
           child: Text(
-            user.firstname.isNotEmpty ? user.firstname[0].toUpperCase() : 'U',
+            (user.name?.isNotEmpty == true) ? user.name![0].toUpperCase() : 'U',
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class UserCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${user.firstname} ${user.lastname ?? ''}'.trim(),
+                user.name ?? 'Unknown',
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class UserCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                user.email,
+                user.email ?? 'No email',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: AppColors.onSurface.withValues(alpha: 0.6),
@@ -95,11 +95,11 @@ class UserCard extends StatelessWidget {
           _buildInfoRow('Phone', user.phone!),
           SizedBox(height: 4.h),
         ],
-        if (user.lastLogin != null) ...[
-          _buildInfoRow('Last Login', _formatDate(user.lastLogin!)),
+        if (user.lastLoginAt != null) ...[
+          _buildInfoRow('Last Login', _formatDate(DateTime.parse(user.lastLoginAt!))),
           SizedBox(height: 4.h),
         ],
-        _buildInfoRow('Created', _formatDate(user.createdAt ?? DateTime.now())),
+        _buildInfoRow('Created', _formatDate(DateTime.parse(user.createdAt ?? DateTime.now().toIso8601String()))),
       ],
     );
   }
@@ -135,7 +135,7 @@ class UserCard extends StatelessWidget {
     Color statusColor;
     IconData statusIcon;
     
-    switch (user.status.toLowerCase()) {
+    switch ((user.status ?? '').toLowerCase()) {
       case 'active':
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;
@@ -177,7 +177,7 @@ class UserCard extends StatelessWidget {
           ),
           SizedBox(width: 4.w),
           Text(
-            user.status.toUpperCase(),
+            (user.status ?? 'unknown').toUpperCase(),
             style: TextStyle(
               fontSize: 10.sp,
               fontWeight: FontWeight.bold,

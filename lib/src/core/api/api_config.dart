@@ -1,24 +1,32 @@
 import 'package:flutter/foundation.dart';
 
 class ApiConfig {
-  // Base URL for the API - automatically detects platform
+  // Environment-based configuration
+  static const String _defaultWebUrl = 'http://localhost:3002/api';
+  static const String _defaultMobileUrl = 'http://10.0.2.2:3002/api';
+  
+  // Base URL for the API - automatically detects platform and environment
   static String get baseUrl {
+    // Check for environment variable first
+    const String? envUrl = String.fromEnvironment('API_BASE_URL');
+    if (envUrl != null && envUrl.isNotEmpty) {
+      return envUrl;
+    }
+    
+    // Platform-specific defaults
     if (kIsWeb) {
-      // For web development, use localhost
-      return 'http://localhost:3002/api';
-      // return 'http://localhost:300/api';
+      return _defaultWebUrl;
     } else {
-      // For mobile development, use Android emulator IP
-      return 'http://10.0.2.2:3002/api';
-      // return 'http://10.0.2.2:3000/api';
+      return _defaultMobileUrl;
     }
   }
   
-  // Alternative URLs for different backend setups
-  static const String alternativeBaseUrl1 = 'http://192.168.29.171:3002/api';
-  static const String alternativeBaseUrl2 = 'http://192.168.29.171:8000/api';
-  static const String alternativeBaseUrl3 = 'http://192.168.29.171:8080/api';
-  static const String alternativeBaseUrl4 = 'http://192.168.29.171:3000/api';
+  // Fallback URLs for connection testing (removed hardcoded IPs)
+  static List<String> get fallbackUrls => [
+    baseUrl, // Primary URL
+    _defaultWebUrl, // Web fallback
+    _defaultMobileUrl, // Mobile fallback
+  ];
   // API Endpoints
   //auth
   static const String registerEndpoint = '/admin/register';
@@ -31,9 +39,10 @@ class ApiConfig {
 
   //super admin management
   static const String dashboardEndpoint = '/admin/data?type=stats';
-  static const String settingsEndpoint = '/admin/settings';
+  static const String settingsEndpoint = '/admin/data?type=settings';
   static const String settingsUpdateEndpoint = '/admin/settings';
-
+  
+  // Actions and data endpoints
   static const String actionsEndpoint = '/admin/actions';
   static const String dataEndpoint = '/admin/data';
  
@@ -47,6 +56,9 @@ class ApiConfig {
   
   // Legacy ticket endpoints (for backward compatibility)
   static const String legacyTicketsEndpoint = '/admin/ticket';
+  // Additional ticket endpoints from API documentation
+  static const String ticketEndpoint = '/admin/ticket';
+  static const String ticketStatusUpdateEndpoint = '/admin/tickets';
   
   // App management endpoints
   static const String appsEndpoint = '/admin/data?type=apps';
@@ -54,7 +66,7 @@ class ApiConfig {
   static const String appAnalyticsEndpoint = '/admin/apps/analytics';
 
   // User management endpoints
-  static const String usersEndpoint = '/admin/users';
+  static const String usersEndpoint = '/admin/data?type=users';
   static const String userActionsEndpoint = '/admin/actions';
   static String userEndpoint(int userId) => '/admin/users/$userId';
   static String banUserEndpoint(int userId) => '/admin/users/$userId/ban';

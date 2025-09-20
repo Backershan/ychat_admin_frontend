@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:y_chat_admin/src/core/utils/responsive_utils.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
 
 /// Base button widget following project standards
 @immutable

@@ -7,9 +7,10 @@ import 'package:y_chat_admin/src/features/ticketing/presentation/bloc/ticket_sta
 import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_card.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_stats_widget.dart';
 import 'package:y_chat_admin/src/features/ticketing/presentation/widgets/ticket_detail_dialog.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import 'package:y_chat_admin/src/shared/widgets/loading_widget.dart';
 import '../../../../core/constants/constants.dart';
-import '../../../../core/utils/web_responsive.dart';
+import '../../../../core/utils/responsive.dart';
 
 class TicketingPage extends StatefulWidget {
   const TicketingPage({super.key});
@@ -27,11 +28,15 @@ class _TicketingPageState extends State<TicketingPage> {
   @override
   void initState() {
     super.initState();
-    _loadTickets();
-    _loadStats();
+    // Load data with a slight delay to improve perceived performance
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadTickets();
+      _loadStats();
+    });
   }
 
   void _loadTickets() {
+    // Add loading state before making the request
     context.read<TicketBloc>().add(
           TicketEvent.getTickets(
             status: _selectedFilter == 'all' ? null : _selectedFilter,
@@ -43,7 +48,12 @@ class _TicketingPageState extends State<TicketingPage> {
   }
 
   void _loadStats() {
-    context.read<TicketBloc>().add(const TicketEvent.getTicketStats());
+    // Load stats separately to avoid blocking the UI
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        context.read<TicketBloc>().add(const TicketEvent.getTicketStats());
+      }
+    });
   }
 
 
@@ -53,24 +63,112 @@ class _TicketingPageState extends State<TicketingPage> {
     
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Padding(
-        padding: WebResponsive.getWebPadding(context, all: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(isMobile),
-            SizedBox(height: WebResponsive.getWebHeight(24, context)),
-            _buildStats(),
-            SizedBox(height: WebResponsive.getWebHeight(24, context)),
-            _buildFilters(isMobile),
-            SizedBox(height: WebResponsive.getWebHeight(16, context)),
-            Expanded(
-              child: _buildContent(isMobile),
-            ),
-          ],
-        ),
-      ),
+      body: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
       floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return SafeArea(
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+        // Modern App Bar
+        SliverAppBar(
+          expandedHeight: 120.h,
+          floating: false,
+          pinned: true,
+          backgroundColor: AppColors.primary,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              'Tickets',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            background: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withValues(alpha: 0.8),
+                  ],
+                ),
+              ),
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 60.h, left: 16.w, right: 16.w),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: _loadTickets,
+                        icon: Icon(
+                          Icons.refresh,
+                          color: Colors.white,
+                          size: 24.w,
+                        ),
+                        tooltip: 'Refresh Tickets',
+                      ),
+                      const Spacer(),
+                      Text(
+                        '${_getTotalTickets()} tickets',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        
+        // Stats Section
+        SliverToBoxAdapter(
+          child: Container(
+            margin: EdgeInsets.all(16.w),
+            child: _buildStatsWithLoading(),
+          ),
+        ),
+        
+        // Modern Filter Section
+        SliverToBoxAdapter(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
+            child: _buildModernMobileFilters(),
+          ),
+        ),
+        
+        // Tickets List - Use SliverList for proper scrolling
+        _buildTicketsSliver(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Padding(
+      padding: WebResponsive.getWebPadding(context, all: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(false),
+          SizedBox(height: WebResponsive.getWebHeight(24, context)),
+          _buildStats(),
+          SizedBox(height: WebResponsive.getWebHeight(24, context)),
+          _buildFilters(false),
+          SizedBox(height: WebResponsive.getWebHeight(16, context)),
+          Expanded(
+            child: _buildContent(false),
+          ),
+        ],
+      ),
     );
   }
 
@@ -95,11 +193,33 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
+  Widget _buildStatsWithLoading() {
+    return BlocBuilder<TicketBloc, TicketState>(
+      builder: (context, state) {
+        if (state is TicketStatsLoadedState) {
+          return TicketStatsWidget(stats: state.stats.data);
+        } else if (state is TicketLoadingState) {
+          return Container(
+            height: 120.h,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: const Center(
+              child: LoadingWidget(message: 'Loading stats...'),
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
   Widget _buildStats() {
     return BlocBuilder<TicketBloc, TicketState>(
       builder: (context, state) {
         if (state is TicketStatsLoadedState) {
-          return TicketStatsWidget(stats: state.stats);
+          return TicketStatsWidget(stats: state.stats.data);
         }
         return const SizedBox.shrink();
       },
@@ -135,6 +255,273 @@ class _TicketingPageState extends State<TicketingPage> {
           isMobile ? _buildMobileFilters() : _buildDesktopFilters(),
         ],
       ),
+    );
+  }
+
+  Widget _buildModernMobileFilters() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Filter Header
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.filter_list,
+                  color: AppColors.primary,
+                  size: 20.w,
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Filters',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onBackground,
+                  ),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: _clearFilters,
+                  child: Text(
+                    'Clear All',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Filter Content
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
+                // Search Field
+                _buildModernSearchField(),
+                SizedBox(height: 16.h),
+                
+                // Status Filter Chips
+                _buildStatusChips(),
+                SizedBox(height: 16.h),
+                
+                // Priority Filter Chips
+                _buildPriorityChips(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernSearchField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: AppColors.onSurface.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search tickets...',
+          hintStyle: TextStyle(
+            color: AppColors.onSurface.withValues(alpha: 0.5),
+            fontSize: 14.sp,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppColors.primary,
+            size: 20.w,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
+        ),
+        onChanged: (value) {
+          // TODO: Implement search functionality
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatusChips() {
+    final statuses = [
+      {'key': 'all', 'label': 'All', 'color': Colors.grey, 'icon': Icons.all_inclusive},
+      {'key': 'opened', 'label': 'Opened', 'color': Colors.blue, 'icon': Icons.lock_open},
+      {'key': 'pending', 'label': 'Pending', 'color': Colors.orange, 'icon': Icons.schedule},
+      {'key': 'closed', 'label': 'Closed', 'color': Colors.green, 'icon': Icons.check_circle},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Status',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.onBackground,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: statuses.map((status) {
+            final isSelected = _selectedFilter == status['key'];
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedFilter = status['key'] as String;
+                  _currentPage = 1;
+                });
+                _loadTickets();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: isSelected 
+                    ? (status['color'] as Color).withValues(alpha: 0.1)
+                    : AppColors.background,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: isSelected 
+                      ? status['color'] as Color
+                      : AppColors.onSurface.withValues(alpha: 0.2),
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      status['icon'] as IconData,
+                      size: 16.w,
+                      color: isSelected 
+                        ? status['color'] as Color
+                        : AppColors.onSurface.withValues(alpha: 0.6),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      status['label'] as String,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        color: isSelected 
+                          ? status['color'] as Color
+                          : AppColors.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriorityChips() {
+    final priorities = [
+      {'key': 'all', 'label': 'All Priority', 'color': Colors.grey, 'icon': Icons.flag},
+      {'key': 'high', 'label': 'High', 'color': Colors.red, 'icon': Icons.priority_high},
+      {'key': 'medium', 'label': 'Medium', 'color': Colors.orange, 'icon': Icons.remove},
+      {'key': 'low', 'label': 'Low', 'color': Colors.green, 'icon': Icons.keyboard_arrow_down},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Priority',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.onBackground,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: priorities.map((priority) {
+            final isSelected = _selectedPriority == priority['key'];
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedPriority = priority['key'] as String;
+                  _currentPage = 1;
+                });
+                _loadTickets();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: isSelected 
+                    ? (priority['color'] as Color).withValues(alpha: 0.1)
+                    : AppColors.background,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: isSelected 
+                      ? priority['color'] as Color
+                      : AppColors.onSurface.withValues(alpha: 0.2),
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      priority['icon'] as IconData,
+                      size: 16.w,
+                      color: isSelected 
+                        ? priority['color'] as Color
+                        : AppColors.onSurface.withValues(alpha: 0.6),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      priority['label'] as String,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        color: isSelected 
+                          ? priority['color'] as Color
+                          : AppColors.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -285,6 +672,102 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
+  Widget _buildTicketsSliver() {
+    return BlocBuilder<TicketBloc, TicketState>(
+      builder: (context, state) {
+        if (state is TicketLoadingState) {
+          return SliverToBoxAdapter(
+            child: Container(
+              height: 200.h,
+              margin: EdgeInsets.all(16.w),
+              child: const Center(
+                child: LoadingWidget(message: 'Loading tickets...'),
+              ),
+            ),
+          );
+        }
+
+        if (state is TicketErrorState) {
+          return SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.all(16.w),
+              child: _buildErrorState(state.failure.message),
+            ),
+          );
+        }
+
+        if (state is TicketLoadedState) {
+          return _buildTicketsSliverList(state.tickets);
+        }
+
+        return SliverToBoxAdapter(
+          child: Container(
+            margin: EdgeInsets.all(16.w),
+            child: _buildEmptyState(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTicketsSliverList(TicketListResponse tickets) {
+    final allTickets = <dynamic>[];
+    
+    // Use allTickets from the API response if available, otherwise combine from groups
+    if (tickets.data.allTickets.isNotEmpty) {
+      allTickets.addAll(tickets.data.allTickets);
+    } else {
+      // Fallback to combining from groups
+      allTickets.addAll(tickets.data.tickets.opened);
+      allTickets.addAll(tickets.data.tickets.pending);
+      allTickets.addAll(tickets.data.tickets.closed);
+    }
+
+    if (allTickets.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Container(
+          margin: EdgeInsets.all(16.w),
+          child: _buildEmptyState(),
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: 16.h,
+        bottom: 110.h, // Bottom padding for FAB + overflow safety margin
+      ),
+      sliver: SliverList.separated(
+        itemCount: allTickets.length,
+        separatorBuilder: (context, index) => SizedBox(height: 12.h),
+        itemBuilder: (context, index) {
+          final ticket = allTickets[index];
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TicketCard(
+              ticket: ticket,
+              onTap: () => _showTicketDetail(ticket),
+              onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
+              onDelete: () => _deleteTicket(ticket.id),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildContent(bool isMobile) {
     return BlocBuilder<TicketBloc, TicketState>(
       builder: (context, state) {
@@ -357,26 +840,49 @@ class _TicketingPageState extends State<TicketingPage> {
     );
   }
 
-  Widget _buildTicketsList(tickets, bool isMobile) {
+  Widget _buildTicketsList(TicketListResponse tickets, bool isMobile) {
     final allTickets = <dynamic>[];
-    tickets.tickets.forEach((status, ticketList) {
-      allTickets.addAll(ticketList);
-    });
+    
+    // Use allTickets from the API response if available, otherwise combine from groups
+    if (tickets.data.allTickets.isNotEmpty) {
+      allTickets.addAll(tickets.data.allTickets);
+    } else {
+      // Fallback to combining from groups
+      allTickets.addAll(tickets.data.tickets.opened);
+      allTickets.addAll(tickets.data.tickets.pending);
+      allTickets.addAll(tickets.data.tickets.closed);
+    }
 
     if (allTickets.isEmpty) {
       return _buildEmptyState();
     }
 
     if (isMobile) {
-      return ListView.builder(
+      return ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         itemCount: allTickets.length,
+        separatorBuilder: (context, index) => SizedBox(height: 12.h),
         itemBuilder: (context, index) {
           final ticket = allTickets[index];
-          return TicketCard(
-            ticket: ticket,
-            onTap: () => _showTicketDetail(ticket),
-            onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
-            onDelete: () => _deleteTicket(ticket.id),
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TicketCard(
+              ticket: ticket,
+              onTap: () => _showTicketDetail(ticket),
+              onStatusUpdate: (status) => _updateTicketStatus(ticket.id, status),
+              onDelete: () => _deleteTicket(ticket.id),
+            ),
           );
         },
       );
@@ -477,9 +983,9 @@ class _TicketingPageState extends State<TicketingPage> {
 
   void _updateTicketStatus(int ticketId, String status) {
     context.read<TicketBloc>().add(
-          TicketEvent.updateTicketStatus(
+          TicketEvent.updateTicket(
             id: ticketId,
-            status: status,
+            request: TicketUpdateRequest(status: status),
           ),
         );
   }
@@ -594,5 +1100,20 @@ class _TicketingPageState extends State<TicketingPage> {
         ],
       ),
     );
+  }
+
+  int _getTotalTickets() {
+    // This would typically come from the bloc state
+    // For now, return a placeholder
+    return 0;
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _selectedFilter = 'all';
+      _selectedPriority = 'all';
+      _currentPage = 1;
+    });
+    _loadTickets();
   }
 }

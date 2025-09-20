@@ -58,8 +58,8 @@ import 'package:y_chat_admin/src/features/user_management/domain/repositories/us
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/get_users_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/create_user_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_usecase.dart';
-import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_status_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/delete_user_usecase.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/usecases/update_user_status_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/ban_user_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/unban_user_usecase.dart';
 import 'package:y_chat_admin/src/features/user_management/domain/usecases/activate_user_usecase.dart';
@@ -115,6 +115,10 @@ Future<void> configureDependencies() async {
     () => DashboardRemoteDataSourceImpl(dio: getIt<Dio>()),
   );
 
+  getIt.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(getIt<Dio>()),
+  );
+
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(remoteDataSource: getIt<AuthRemoteDataSource>()),
@@ -126,6 +130,10 @@ Future<void> configureDependencies() async {
 
   getIt.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(remoteDataSource: getIt<DashboardRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(getIt<UserRemoteDataSource>()),
   );
 
   // Use cases
@@ -157,6 +165,43 @@ Future<void> configureDependencies() async {
     () => GetDashboardDataUseCase(repository: getIt<DashboardRepository>()),
   );
 
+  // User Management Use Cases
+  getIt.registerLazySingleton<GetUsersUseCase>(
+    () => GetUsersUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateUserUseCase>(
+    () => CreateUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateUserUseCase>(
+    () => UpdateUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteUserUseCase>(
+    () => DeleteUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateUserStatusUseCase>(
+    () => UpdateUserStatusUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<BanUserUseCase>(
+    () => BanUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<UnbanUserUseCase>(
+    () => UnbanUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<ActivateUserUseCase>(
+    () => ActivateUserUseCase(getIt<UserRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeactivateUserUseCase>(
+    () => DeactivateUserUseCase(getIt<UserRepository>()),
+  );
+
   // Settings
   getIt.registerLazySingleton<SettingsRemoteDataSource>(
     () => SettingsRemoteDataSourceImpl(dio: getIt<Dio>()),
@@ -165,7 +210,6 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<TicketRemoteDataSource>(
     () => TicketRemoteDataSourceImpl(
       dio: getIt<Dio>(),
-      authService: getIt<AuthService>(),
     ),
   );
 
@@ -292,62 +336,17 @@ Future<void> configureDependencies() async {
     ),
   );
 
-  // User Management
-  getIt.registerLazySingleton<UserRemoteDataSource>(
-    () => UserRemoteDataSourceImpl(getIt<Dio>()),
-  );
-
-  getIt.registerLazySingleton<UserRepository>(
-    () => UserRepositoryImpl(getIt<UserRemoteDataSource>()),
-  );
-
-  getIt.registerLazySingleton<GetUsersUseCase>(
-    () => GetUsersUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<CreateUserUseCase>(
-    () => CreateUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdateUserUseCase>(
-    () => UpdateUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdateUserStatusUseCase>(
-    () => UpdateUserStatusUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<DeleteUserUseCase>(
-    () => DeleteUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<BanUserUseCase>(
-    () => BanUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<UnbanUserUseCase>(
-    () => UnbanUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<ActivateUserUseCase>(
-    () => ActivateUserUseCase(getIt<UserRepository>()),
-  );
-
-  getIt.registerLazySingleton<DeactivateUserUseCase>(
-    () => DeactivateUserUseCase(getIt<UserRepository>()),
-  );
-
   getIt.registerFactory<UserBloc>(
     () => UserBloc(
-      getUsersUseCase: getIt<GetUsersUseCase>(),
-      createUserUseCase: getIt<CreateUserUseCase>(),
-      updateUserUseCase: getIt<UpdateUserUseCase>(),
-      deleteUserUseCase: getIt<DeleteUserUseCase>(),
-      updateUserStatusUseCase: getIt<UpdateUserStatusUseCase>(),
-      banUserUseCase: getIt<BanUserUseCase>(),
-      unbanUserUseCase: getIt<UnbanUserUseCase>(),
-      activateUserUseCase: getIt<ActivateUserUseCase>(),
-      deactivateUserUseCase: getIt<DeactivateUserUseCase>(),
+      getIt<GetUsersUseCase>(),
+      getIt<CreateUserUseCase>(),
+      getIt<UpdateUserUseCase>(),
+      getIt<DeleteUserUseCase>(),
+      getIt<UpdateUserStatusUseCase>(),
+      getIt<BanUserUseCase>(),
+      getIt<UnbanUserUseCase>(),
+      getIt<ActivateUserUseCase>(),
+      getIt<DeactivateUserUseCase>(),
     ),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/repositories/ticket_repository.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 class UpdateTicketStatusUseCase {
@@ -11,15 +12,11 @@ class UpdateTicketStatusUseCase {
 
   Future<Either<Failure, TicketEntity>> call({
     required int id,
-    required String status,
-    int? assignedTo,
-    String? adminNotes,
+    required TicketUpdateRequest request,
   }) async {
-    return await _repository.updateTicketStatus(
+    return await _repository.updateTicket(
       id: id,
-      status: status,
-      assignedTo: assignedTo,
-      adminNotes: adminNotes,
+      request: request,
     );
   }
 }

@@ -18,17 +18,17 @@ class SettingsModel with _$SettingsModel {
 @freezed
 class SettingsDataModel with _$SettingsDataModel {
   const factory SettingsDataModel({
-    required bool enableScreenShare,
-    required bool enableAppInApp,
-    required bool pushNotifications,
-    required String defaultLanguage,
-    required bool maintenanceMode,
-    required bool registrationEnabled,
-    required String maxFileSize,
-    required int maxUsersPerGroup,
-    required bool autoBackupEnabled,
-    required SecurityFeaturesModel securityFeatures,
-    required SystemInfoModel systemInfo,
+    @JsonKey(name: 'enable_screen_share') required bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') required bool pushNotifications,
+    @JsonKey(name: 'default_language') String? defaultLanguage,
+    @JsonKey(name: 'maintenance_mode') bool? maintenanceMode,
+    @JsonKey(name: 'registration_enabled') bool? registrationEnabled,
+    @JsonKey(name: 'max_file_size') String? maxFileSize,
+    @JsonKey(name: 'max_users_per_group') int? maxUsersPerGroup,
+    @JsonKey(name: 'auto_backup_enabled') bool? autoBackupEnabled,
+    @JsonKey(name: 'security_features') SecurityFeaturesModel? securityFeatures,
+    @JsonKey(name: 'system_info') SystemInfoModel? systemInfo,
   }) = _SettingsDataModel;
 
   factory SettingsDataModel.fromJson(Map<String, dynamic> json) =>
@@ -59,6 +59,18 @@ class SystemInfoModel with _$SystemInfoModel {
       _$SystemInfoModelFromJson(json);
 }
 
+@freezed
+class SettingsUpdateRequest with _$SettingsUpdateRequest {
+  const factory SettingsUpdateRequest({
+    @JsonKey(name: 'enable_screen_share') required bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') required bool pushNotifications,
+  }) = _SettingsUpdateRequest;
+
+  factory SettingsUpdateRequest.fromJson(Map<String, dynamic> json) =>
+      _$SettingsUpdateRequestFromJson(json);
+}
+
 // Extension to convert models to entities
 extension SettingsModelToEntity on SettingsModel {
   SettingsEntity toEntity() {
@@ -66,14 +78,22 @@ extension SettingsModelToEntity on SettingsModel {
       enableScreenShare: data.enableScreenShare,
       enableAppInApp: data.enableAppInApp,
       pushNotifications: data.pushNotifications,
-      defaultLanguage: data.defaultLanguage,
-      maintenanceMode: data.maintenanceMode,
-      registrationEnabled: data.registrationEnabled,
-      maxFileSize: data.maxFileSize,
-      maxUsersPerGroup: data.maxUsersPerGroup,
-      autoBackupEnabled: data.autoBackupEnabled,
-      securityFeatures: data.securityFeatures.toEntity(),
-      systemInfo: data.systemInfo.toEntity(),
+      defaultLanguage: data.defaultLanguage ?? 'en',
+      maintenanceMode: data.maintenanceMode ?? false,
+      registrationEnabled: data.registrationEnabled ?? true,
+      maxFileSize: data.maxFileSize ?? '10485760',
+      maxUsersPerGroup: data.maxUsersPerGroup ?? 100,
+      autoBackupEnabled: data.autoBackupEnabled ?? true,
+      securityFeatures: data.securityFeatures?.toEntity() ?? SecurityFeatures(
+        twoFactorRequired: false,
+        passwordPolicy: 'medium',
+        sessionTimeout: 3600,
+      ),
+      systemInfo: data.systemInfo?.toEntity() ?? SystemInfo(
+        version: '1.0.0',
+        lastUpdated: DateTime.now().toIso8601String(),
+        uptime: 0.0,
+      ),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/constants.dart';
-import '../../../../core/utils/web_responsive.dart';
+import '../../../../core/utils/responsive.dart';
 import '../bloc/app_bloc.dart';
 import '../widgets/app_card.dart';
 import '../widgets/create_app_dialog.dart';
@@ -80,7 +80,100 @@ class _AppManagementPageState extends State<AppManagementPage>
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
       ),
-      body: BlocListener<AppBloc, AppState>(
+      body: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return BlocListener<AppBloc, AppState>(
+        listener: (context, state) {
+          if (state is AppCreated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('App created successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            context.read<AppBloc>().add(const GetApps());
+          } else if (state is AppUpdated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('App updated successfully'),
+                backgroundColor: Colors.blue,
+              ),
+            );
+            context.read<AppBloc>().add(const GetApps());
+          } else if (state is AppDeleted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('App deleted successfully'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+            context.read<AppBloc>().add(const GetApps());
+          } else if (state is AppError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.failure.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // Mobile App Bar
+            SliverAppBar(
+              expandedHeight: 100.h,
+              floating: false,
+              pinned: true,
+              backgroundColor: AppColors.primary,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  'App Management',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary,
+                        AppColors.primary.withValues(alpha: 0.8),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Content
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCategoryFilter(),
+                    SizedBox(height: 16.h),
+                    _buildContent(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+  }
+
+  Widget _buildDesktopLayout() {
+    return BlocListener<AppBloc, AppState>(
         listener: (context, state) {
           if (state is AppCreated) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -125,12 +218,14 @@ class _AppManagementPageState extends State<AppManagementPage>
                 child: Padding(
                   padding: WebResponsive.getWebPadding(
                     context,
-                    all: isMobile ? 16 : 32,
+                    all: 32,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildHeader(),
+                      SizedBox(height: 24.h),
+                      _buildCategoryFilter(),
                       SizedBox(height: 24.h),
                       Expanded(
                         child: _buildContent(),
@@ -142,8 +237,7 @@ class _AppManagementPageState extends State<AppManagementPage>
             );
           },
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader() {
@@ -276,11 +370,7 @@ class _AppManagementPageState extends State<AppManagementPage>
             ),
             SizedBox(height: 8.h),
             Text(
-              message.contains('404')
-                  ? 'Apps API is not available. Please check if the backend server is running and the app endpoints are implemented.'
-                  : message.contains('500')
-                  ? 'Internal server error. The backend server is running but there\'s an issue with the app endpoints. Please check the server logs.'
-                  : message,
+              message,
               style: TextStyle(
                 fontSize: 14.sp,
                 color: AppColors.onBackground.withValues(alpha: 0.6),
@@ -326,11 +416,8 @@ class _AppManagementPageState extends State<AppManagementPage>
             setState(() {
               _selectedCategory = newValue;
             });
-            if (newValue == 'All') {
-              context.read<AppBloc>().add(const GetApps());
-            } else {
-              context.read<AppBloc>().add(GetAppsByCategory(category: newValue));
-            }
+            // Always get all apps and filter locally since API returns categories as lists
+            context.read<AppBloc>().add(const GetApps());
           }
         },
       ),
@@ -341,7 +428,18 @@ class _AppManagementPageState extends State<AppManagementPage>
     // Filter apps by category if not "All"
     List<dynamic> filteredApps = apps.apps;
     if (_selectedCategory != 'All') {
-      filteredApps = apps.apps.where((app) => app.category.contains(_selectedCategory)).toList();
+      filteredApps = apps.apps.where((app) {
+        if (app.category == null) return false;
+        
+        // Handle both string and list categories
+        if (app.category is List) {
+          return (app.category as List).any((cat) => 
+            cat.toString().toLowerCase() == _selectedCategory.toLowerCase()
+          );
+        } else {
+          return app.category.toString().toLowerCase() == _selectedCategory.toLowerCase();
+        }
+      }).toList();
     }
     
     if (filteredApps.isEmpty) {
@@ -372,66 +470,55 @@ class _AppManagementPageState extends State<AppManagementPage>
               ),
             ),
             SizedBox(height: 16.h),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
-              padding: WebResponsive.getWebPadding(context, all: 16),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: Colors.blue.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.cloud_off,
-                    color: Colors.blue,
-                    size: 20.w,
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: Text(
-                      'Apps API is not available. Working in offline mode.',
-                      style: TextStyle(
-                        color: Colors.blue.shade700,
-                        fontSize: 12.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       );
     }
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: WebResponsive.getWebGridColumns(
-          context,
-          mobileColumns: 1,
-          tabletColumns: 2,
-          desktopColumns: 3,
-          largeDesktopColumns: 4,
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    
+    if (isMobile) {
+      // Mobile: Use ListView for better scrolling
+      return ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.only(bottom: 100.h), // Bottom padding for FAB
+        itemCount: filteredApps.length,
+        separatorBuilder: (context, index) => SizedBox(height: 12.h),
+        itemBuilder: (context, index) {
+          final app = filteredApps[index];
+          return AppCard(
+            app: app,
+            onEdit: () => _showEditAppDialog(app),
+            onDelete: () => _showDeleteConfirmation(app),
+          );
+        },
+      );
+    } else {
+      // Desktop: Use GridView
+      return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: WebResponsive.getWebGridColumns(
+            context,
+            mobileColumns: 1,
+            tabletColumns: 2,
+            desktopColumns: 3,
+            largeDesktopColumns: 4,
+          ),
+          crossAxisSpacing: WebResponsive.getWebSpacing(16, context),
+          mainAxisSpacing: WebResponsive.getWebHeight(16, context),
+          childAspectRatio: 1.2,
         ),
-        crossAxisSpacing: WebResponsive.getWebSpacing(16, context),
-        mainAxisSpacing: WebResponsive.getWebHeight(16, context),
-        childAspectRatio: 1.2,
-      ),
-      itemCount: filteredApps.length,
-      itemBuilder: (context, index) {
-        final app = filteredApps[index];
-        return AppCard(
-          app: app,
-          onEdit: () => _showEditAppDialog(app),
-          onDelete: () => _showDeleteConfirmation(app),
-        );
-      },
-    );
+        itemCount: filteredApps.length,
+        itemBuilder: (context, index) {
+          final app = filteredApps[index];
+          return AppCard(
+            app: app,
+            onEdit: () => _showEditAppDialog(app),
+            onDelete: () => _showDeleteConfirmation(app),
+          );
+        },
+      );
+    }
   }
 
   void _showCreateAppDialog() {

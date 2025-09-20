@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:y_chat_admin/src/core/utils/responsive_utils.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
 
 /// Error display widget for showing error messages
 /// Follows the project rule of using ScreenUtil for responsive design
@@ -94,7 +94,7 @@ class EmptyStateDisplay extends StatelessWidget {
             Icon(
               icon ?? Icons.inbox_outlined,
               size: 64.w,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             ),
             SizedBox(height: ResponsiveSpacing.medium),
             Text(

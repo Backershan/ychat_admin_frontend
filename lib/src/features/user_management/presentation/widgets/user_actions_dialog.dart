@@ -38,11 +38,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if (state is UserStatusUpdated || 
-            state is UserBanned || 
-            state is UserUnbanned || 
-            state is UserActivated || 
-            state is UserDeactivated) {
+        if (state is UserActionSuccess) {
           Navigator.of(context).pop();
         } else if (state is UserError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -119,7 +115,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
             radius: 24.r,
             backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             child: Text(
-              widget.user.firstname.isNotEmpty ? widget.user.firstname[0].toUpperCase() : 'U',
+                    (widget.user.name?.isNotEmpty == true) ? widget.user.name![0].toUpperCase() : 'U',
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
@@ -141,7 +137,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
                   ),
                 ),
                 Text(
-                  widget.user.email,
+                  widget.user.email ?? 'No email',
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: AppColors.onSurface.withValues(alpha: 0.6),
@@ -161,7 +157,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
     Color statusColor;
     IconData statusIcon;
     
-    switch (widget.user.status.toLowerCase()) {
+    switch ((widget.user.status ?? '').toLowerCase()) {
       case 'active':
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;
@@ -203,7 +199,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
           ),
           SizedBox(width: 4.w),
           Text(
-            widget.user.status.toUpperCase(),
+            (widget.user.status ?? 'unknown').toUpperCase(),
             style: TextStyle(
               fontSize: 10.sp,
               fontWeight: FontWeight.bold,
@@ -286,12 +282,12 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
   }
 
   void _activateUser() {
-    context.read<UserBloc>().add(ActivateUser(widget.user.id));
+    context.read<UserBloc>().add(UserEvent.activateUser(widget.user.id));
   }
 
   void _suspendUser() {
     context.read<UserBloc>().add(
-          UpdateUserStatus(
+          UserEvent.updateUserStatus(
             userId: widget.user.id,
             status: 'suspended',
           ),
@@ -299,7 +295,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
   }
 
   void _unbanUser() {
-    context.read<UserBloc>().add(UnbanUser(widget.user.id));
+    context.read<UserBloc>().add(UserEvent.unbanUser(widget.user.id));
   }
 
   void _showDeactivateDialog() {
@@ -332,7 +328,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
               if (_reasonController.text.isNotEmpty) {
                 Navigator.of(context).pop();
                 context.read<UserBloc>().add(
-                      DeactivateUser(
+                      UserEvent.deactivateUser(
                         userId: widget.user.id,
                         reason: _reasonController.text,
                       ),
@@ -402,7 +398,7 @@ class _UserActionsDialogState extends State<UserActionsDialog> {
               if (_reasonController.text.isNotEmpty) {
                 Navigator.of(context).pop();
                 context.read<UserBloc>().add(
-                      BanUser(
+                      UserEvent.banUser(
                         userId: widget.user.id,
                         reason: _reasonController.text,
                         banType: _selectedBanType,

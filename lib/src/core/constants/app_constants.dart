@@ -9,7 +9,6 @@ class AppConstants {
   static const String appDescription = 'Admin panel for Y Chat application';
   
   // API Configuration
-  static const String baseUrl = 'http://localhost:3002/api';
   static const Duration apiTimeout = Duration(seconds: 30);
   static const Duration refreshTokenTimeout = Duration(seconds: 10);
   
@@ -147,10 +146,10 @@ class AppConstants {
     Color(0xFF795548), // Brown
   ];
   
-  // Responsive Breakpoints
-  static const double mobileBreakpoint = 600;
-  static const double tabletBreakpoint = 1200;
-  static const double desktopBreakpoint = 1920;
+  // Responsive Breakpoints (use Breakpoints class from constants.dart)
+  // static const double mobileBreakpoint = 600;
+  // static const double tabletBreakpoint = 1200;
+  // static const double desktopBreakpoint = 1920;
   
   // Grid Configuration
   static const int mobileGridColumns = 1;
@@ -189,45 +188,5 @@ class AppConstants {
   static const bool enableErrorLogs = true;
 }
 
-/// Responsive spacing constants
-class ResponsiveSpacing {
-  static double get xs => 4.w;
-  static double get sm => 8.w;
-  static double get md => 16.w;
-  static double get lg => 24.w;
-  static double get xl => 32.w;
-  static double get xxl => 48.w;
-  
-  static double get verticalXs => 4.h;
-  static double get verticalSm => 8.h;
-  static double get verticalMd => 16.h;
-  static double get verticalLg => 24.h;
-  static double get verticalXl => 32.h;
-  static double get verticalXxl => 48.h;
-}
-
-/// Responsive text sizes
-class ResponsiveText {
-  static double get xs => 10.sp;
-  static double get sm => 12.sp;
-  static double get md => 14.sp;
-  static double get lg => 16.sp;
-  static double get xl => 18.sp;
-  static double get xxl => 20.sp;
-  static double get title => 24.sp;
-  static double get heading => 28.sp;
-  static double get display => 32.sp;
-}
-
-/// Responsive icon sizes
-class ResponsiveIcon {
-  static double get xs => 16.w;
-  static double get sm => 20.w;
-  static double get md => 24.w;
-  static double get lg => 28.w;
-  static double get xl => 32.w;
-  static double get xxl => 40.w;
-  static double get title => 48.w;
-  static double get heading => 56.w;
-  static double get display => 64.w;
-}
+// Responsive classes moved to core/utils/responsive.dart
+// Use ResponsiveUtils, ResponsiveSpacing, ResponsiveText from responsive.dart

@@ -37,7 +37,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     on<GetTicketsEvent>(_onGetTickets);
     on<GetTicketByIdEvent>(_onGetTicketById);
     on<CreateTicketEvent>(_onCreateTicket);
-    on<UpdateTicketStatusEvent>(_onUpdateTicketStatus);
+    on<UpdateTicketEvent>(_onUpdateTicket);
     on<AddReplyToTicketEvent>(_onAddReplyToTicket);
     on<GetTicketStatsEvent>(_onGetTicketStats);
     on<DeleteTicketEvent>(_onDeleteTicket);
@@ -54,6 +54,9 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
       category: event.category,
       status: event.status,
       priority: event.priority,
+      search: event.search,
+      sortBy: event.sortBy,
+      sortOrder: event.sortOrder,
       page: event.page,
       limit: event.limit,
     );
@@ -98,17 +101,15 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     );
   }
 
-  Future<void> _onUpdateTicketStatus(
-    UpdateTicketStatusEvent event,
+  Future<void> _onUpdateTicket(
+    UpdateTicketEvent event,
     Emitter<TicketState> emit,
   ) async {
     emit(const TicketState.loading());
 
     final result = await _updateTicketStatusUseCase(
       id: event.id,
-      status: event.status,
-      assignedTo: event.assignedTo,
-      adminNotes: event.adminNotes,
+      request: event.request,
     );
 
     result.fold(
@@ -125,9 +126,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
 
     final result = await _addReplyToTicketUseCase(
       id: event.id,
-      text: event.text,
-      image: event.image,
-      from: event.from,
+      request: event.request,
     );
 
     result.fold(

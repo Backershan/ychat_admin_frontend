@@ -3,14 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y_chat_admin/src/features/app_management/presentation/pages/app_management_page.dart';
 import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page.dart';
+import 'package:y_chat_admin/src/features/settings/presentation/pages/settings_page_refactored.dart';
+import 'package:y_chat_admin/src/features/ticketing/presentation/pages/ticketing_page_new.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/utils/web_responsive.dart';
+import '../../../../core/utils/responsive.dart';
 import '../../../app_management/presentation/bloc/app_bloc.dart';
 import 'dashboard_page.dart';
 import '../../../user_management/presentation/pages/user_management_page.dart';
 import '../../../user_management/presentation/bloc/user_bloc.dart';
-import '../../../ticketing/presentation/pages/ticketing_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../profile/presentation/bloc/profile_bloc.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -64,13 +65,14 @@ class _MainDashboardPageState extends State<MainDashboardPage>
       title: 'Tickets',
       icon: Icons.support_agent_outlined,
       selectedIcon: Icons.support_agent,
-      page: const TicketingPage(),
+      page: const TicketingPageNew(),
     ),
     DashboardPageItem(
       title: 'Settings',
       icon: Icons.settings_outlined,
       selectedIcon: Icons.settings,
       page: const SettingsPage(),
+    // page: const SettingsPageRefactored(),
     ),
     DashboardPageItem(
       title: 'Profile',

@@ -1,10 +1,8 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../domain/entities/user_entity.dart';
-import '../../domain/repositories/user_repository.dart';
-import '../datasources/user_remote_datasource.dart';
-import '../models/user_model.dart';
+import 'package:y_chat_admin/src/features/user_management/data/datasources/user_remote_datasource.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/repositories/user_repository.dart';
+import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource _remoteDataSource;
@@ -12,180 +10,166 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, UserListEntity>> getUsers({
+  Future<Either<Failure, UserListResponse>> getUsers({
     String? search,
     String? status,
-    int? page,
-    int? limit,
+    int page = 1,
+    int limit = 20,
   }) async {
     try {
-      final userListModel = await _remoteDataSource.getUsers(
+      final result = await _remoteDataSource.getUsers(
         search: search,
         status: status,
         page: page,
         limit: limit,
       );
-      return Right(userListModel.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
-    } on ConflictException catch (e) {
-      return Left(ConflictFailure(e.message));
-    } on ForbiddenException catch (e) {
-      return Left(ForbiddenFailure(e.message));
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> createUser(CreateUserRequest request) async {
+  Future<Either<Failure, UserActionResponse>> createUser({
+    required String firstname,
+    required String email,
+    String? lastname,
+    String? phone,
+    String? role,
+  }) async {
     try {
-      final userModel = await _remoteDataSource.createUser(
-        request.toModel(),
+      final result = await _remoteDataSource.createUser(
+        firstname: firstname,
+        email: email,
+        lastname: lastname,
+        phone: phone,
+        role: role,
       );
-      return Right(userModel.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
-    } on ConflictException catch (e) {
-      return Left(ConflictFailure(e.message));
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> updateUser(UpdateUserRequest request) async {
+  Future<Either<Failure, UserActionResponse>> updateUser({
+    required int userId,
+    String? firstname,
+    String? lastname,
+    String? email,
+    String? phone,
+    String? role,
+  }) async {
     try {
-      final userModel = await _remoteDataSource.updateUser(
-        request.toModel(),
+      final result = await _remoteDataSource.updateUser(
+        userId: userId,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        phone: phone,
+        role: role,
       );
-      return Right(userModel.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> deleteUser(int userId) async {
+  Future<Either<Failure, UserActionResponse>> deleteUser(int userId) async {
     try {
-      await _remoteDataSource.deleteUser(userId);
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ForbiddenException catch (e) {
-      return Left(ForbiddenFailure(e.message));
+      final result = await _remoteDataSource.deleteUser(userId);
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> updateUserStatus(UpdateUserStatusRequest request) async {
+  Future<Either<Failure, UserActionResponse>> updateUserStatus({
+    required int userId,
+    required String status,
+  }) async {
     try {
-      await _remoteDataSource.updateUserStatus(
-        request.toModel(),
+      final result = await _remoteDataSource.updateUserStatus(
+        userId: userId,
+        status: status,
       );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> banUser(int userId, BanUserRequest request) async {
+  Future<Either<Failure, UserActionResponse>> banUser({
+    required int userId,
+    required String reason,
+    required String banType,
+  }) async {
     try {
-      await _remoteDataSource.banUser(userId, request.toModel());
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
+      final result = await _remoteDataSource.banUser(
+        userId: userId,
+        reason: reason,
+        banType: banType,
+      );
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> unbanUser(int userId) async {
+  Future<Either<Failure, UserActionResponse>> unbanUser(int userId) async {
     try {
-      await _remoteDataSource.unbanUser(userId);
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
+      final result = await _remoteDataSource.unbanUser(userId);
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> activateUser(int userId) async {
+  Future<Either<Failure, UserActionResponse>> activateUser(int userId) async {
     try {
-      await _remoteDataSource.activateUser(userId);
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
+      final result = await _remoteDataSource.activateUser(userId);
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, void>> deactivateUser(int userId, DeactivateUserRequest request) async {
+  Future<Either<Failure, UserActionResponse>> deactivateUser({
+    required int userId,
+    required String reason,
+  }) async {
     try {
-      await _remoteDataSource.deactivateUser(userId, request.toModel());
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message));
-    } on ValidationException catch (e) {
-      return Left(ValidationFailure(e.message));
+      final result = await _remoteDataSource.deactivateUser(
+        userId: userId,
+        reason: reason,
+      );
+      return Right(result);
+    } on Failure catch (failure) {
+      return Left(failure);
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      return Left(UnknownFailure(message: 'Unexpected error: $e'));
     }
   }
 }

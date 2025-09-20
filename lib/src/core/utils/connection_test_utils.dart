@@ -9,19 +9,7 @@ class ConnectionTestUtils {
 
   /// Test connection to the backend server
   static Future<ConnectionTestResult> testConnection() async {
-    final List<String> urlsToTest = [
-      ApiConfig.baseUrl,
-      ApiConfig.alternativeBaseUrl1,
-      ApiConfig.alternativeBaseUrl2,
-      ApiConfig.alternativeBaseUrl3,
-      // Also test localhost for web development
-      'http://localhost:3002/api',
-      'http://localhost:3002/api',
-      // Android emulator specific URLs
-      'http://10.0.2.2:3002/api',
-      'http://10.0.2.2:3002/api',
-      'http://10.0.2.2:8000/api',
-    ];
+    final List<String> urlsToTest = ApiConfig.fallbackUrls;
 
     for (final url in urlsToTest) {
       try {

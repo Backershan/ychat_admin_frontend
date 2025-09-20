@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/constants.dart';
-import '../../../../core/routes/app_routes.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../core/utils/web_responsive.dart';
+import '../../../../core/utils/responsive.dart';
 import '../bloc/dashboard_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -233,9 +231,13 @@ class _DashboardViewState extends State<_DashboardView>
 
   Widget _buildMobileLayout(BuildContext context, dashboardData) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 80.h, // Add bottom navigation height
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
    
           
           // User Metrics - 2 cards per row
@@ -344,7 +346,8 @@ class _DashboardViewState extends State<_DashboardView>
           ),
           SizedBox(height: 12.h),
           _buildGeographicalCard(dashboardData.geographicalDistribution),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1115,131 +1118,5 @@ class _DashboardViewState extends State<_DashboardView>
     );
   }
 
-  Widget _buildQuickNavigationSidebar(BuildContext context) {
-    final quickNavItems = [
-      {
-        'title': 'Ticketing',
-        'icon': Icons.support_agent,
-        'route': AppRoutes.ticketing,
-        'color': Colors.blue,
-      },
-      {
-        'title': 'App Management',
-        'icon': Icons.apps,
-        'route': AppRoutes.appManagement,
-        'color': Colors.purple,
-      },
-      {
-        'title': 'Users',
-        'icon': Icons.people,
-        'route': AppRoutes.userManagement,
-        'color': Colors.green,
-      },
-      {
-        'title': 'Settings',
-        'icon': Icons.settings,
-        'route': AppRoutes.settings,
-        'color': Colors.orange,
-      },
-    ];
-
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Quick Navigation',
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.onBackground,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 16.h),
-          ...quickNavItems.map((item) => _buildQuickNavItem(
-            context,
-            title: item['title'] as String,
-            icon: item['icon'] as IconData,
-            route: item['route'] as String,
-            color: item['color'] as Color,
-          )).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickNavItem(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required String route,
-    required Color color,
-  }) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => context.go(route),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: EdgeInsets.only(bottom: 8.h),
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(
-              color: AppColors.outline.withValues(alpha: 0.1),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(6.w),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6.r),
-                ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 16.w,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.onBackground,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 12.w,
-                color: AppColors.onBackground.withValues(alpha: 0.5),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
 }

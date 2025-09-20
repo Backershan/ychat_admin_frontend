@@ -34,5 +34,68 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Comprehensive Flutter web debug service suppression
+    (function() {
+      // Disable debug service immediately
+      if (window.flutterWebDebugService) {
+        window.flutterWebDebugService = null;
+      }
+      
+      // Override console methods to suppress debug service errors
+      const originalConsoleError = console.error;
+      const originalConsoleWarn = console.warn;
+      const originalConsoleLog = console.log;
+      
+      console.error = function(...args) {
+        const message = args[0]?.toString() || '';
+        if (message.includes('Cannot send Null') || 
+            message.includes('DebugService') ||
+            message.includes('Unsupported operation')) {
+          return; // Suppress debug service errors
+        }
+        originalConsoleError.apply(console, args);
+      };
+      
+      console.warn = function(...args) {
+        const message = args[0]?.toString() || '';
+        if (message.includes('Cannot send Null') || 
+            message.includes('DebugService') ||
+            message.includes('Unsupported operation')) {
+          return; // Suppress debug service warnings
+        }
+        originalConsoleWarn.apply(console, args);
+      };
+      
+      console.log = function(...args) {
+        const message = args[0]?.toString() || '';
+        if (message.includes('Cannot send Null') || 
+            message.includes('DebugService') ||
+            message.includes('Unsupported operation')) {
+          return; // Suppress debug service logs
+        }
+        originalConsoleLog.apply(console, args);
+      };
+      
+      // Disable debug service on load
+      window.addEventListener('load', function() {
+        if (window.flutterWebDebugService) {
+          window.flutterWebDebugService = null;
+        }
+        
+        // Override Flutter debug service if it exists
+        if (window.flutter) {
+          window.flutter.debugService = null;
+        }
+      });
+      
+      // Disable debug service on DOM ready
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.flutterWebDebugService) {
+          window.flutterWebDebugService = null;
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

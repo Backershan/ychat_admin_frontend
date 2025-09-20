@@ -87,6 +87,32 @@ class _SettingsViewState extends State<_SettingsView>
                 duration: const Duration(seconds: 2),
               ),
             );
+          } else if (state is SettingsOfflineMode) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.cloud_off, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Settings working in offline mode: ${state.message}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.orange,
+                duration: const Duration(seconds: 4),
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  textColor: Colors.white,
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                ),
+              ),
+            );
           } else if (state is SettingsError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -103,6 +129,8 @@ class _SettingsViewState extends State<_SettingsView>
               return _buildLoadingState();
             } else if (state is SettingsError) {
               return _buildErrorState(context, state.message);
+            } else if (state is SettingsOfflineMode) {
+              return _buildOfflineModeState(context, state.settings, state.message);
             } else if (state is SettingsLoaded || state is SettingsUpdated) {
               final settings = state is SettingsLoaded 
                   ? state.settings 
@@ -117,39 +145,7 @@ class _SettingsViewState extends State<_SettingsView>
                     position: _slideAnimation,
                     child: Column(
                       children: [
-                        // Show banner only if using default settings (API not available)
-                        if (settings.systemInfo.version == '1.0.0')
-                          Container(
-                            margin: EdgeInsets.all(isMobile ? 16.w : 32.w),
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(
-                                color: Colors.blue.withValues(alpha: 0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.cloud_off,
-                                  color: Colors.blue,
-                                  size: 20.w,
-                                ),
-                                SizedBox(width: 12.w),
-                                Expanded(
-                                  child: Text(
-                                    'Settings API is not available. Using offline mode with local settings.',
-                                    style: TextStyle(
-                                      color: Colors.blue.shade700,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        // Removed incorrect API availability banner
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.all(isMobile ? 16.w : 32.w),
@@ -296,11 +292,91 @@ class _SettingsViewState extends State<_SettingsView>
     );
   }
 
+  Widget _buildOfflineModeState(BuildContext context, SettingsEntity settings, String message) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Column(
+        children: [
+          // Offline mode banner
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.1),
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.orange.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.cloud_off,
+                  color: Colors.orange,
+                  size: 20.w,
+                ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    'Settings working in offline mode: $message',
+                    style: TextStyle(
+                      color: Colors.orange.shade800,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    context.read<SettingsBloc>().add(const GetSettings());
+                  },
+                  icon: Icon(
+                    Icons.refresh,
+                    color: Colors.orange.shade800,
+                    size: 20.w,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Settings content
+          Expanded(
+            child: AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: Padding(
+                      padding: EdgeInsets.all(isMobile ? 16.w : 32.w),
+                      child: isMobile 
+                        ? _buildMobileLayout(context, settings)
+                        : _buildWebLayout(context, settings),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMobileLayout(BuildContext context, SettingsEntity settings) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 80.h, // Add bottom navigation height
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
         
           // Core Settings Section
           _buildSectionHeader('Core Settings'),
@@ -431,7 +507,8 @@ class _SettingsViewState extends State<_SettingsView>
             icon: Icons.timer,
             color: Colors.green,
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

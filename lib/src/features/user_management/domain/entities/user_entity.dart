@@ -7,121 +7,131 @@ part 'user_entity.g.dart';
 class UserEntity with _$UserEntity {
   const factory UserEntity({
     required int id,
-    required String firstname,
-    required String email,
-    required String status,
+    String? name, // Changed from firstname to name to match API
+    String? email,
+    String? status,
+    bool? isActive, // Changed from is_active to isActive for consistency
+    String? createdAt, // Changed from created_at to createdAt
+    String? lastSeen, // Changed from last_seen to lastSeen
+    // Keep additional fields for backward compatibility
+    String? firstname,
     String? lastname,
     String? phone,
+    String? uid,
     String? avatar,
-    DateTime? lastLogin,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? role,
+    String? ipAddress,
+    String? deviceInfo,
+    String? lastLoginAt,
+    String? updatedAt,
     String? banReason,
     String? banType,
-    DateTime? bannedAt,
     String? deactivationReason,
-    DateTime? deactivatedAt,
+    bool? isBanned,
   }) = _UserEntity;
 
-  factory UserEntity.fromJson(Map<String, dynamic> json) =>
-      _$UserEntityFromJson(json);
+  factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
 }
 
 @freezed
-class UserListEntity with _$UserListEntity {
-  const factory UserListEntity({
+class UserListResponse with _$UserListResponse {
+  const factory UserListResponse({
+    required bool success,
+    required UserListData data,
+    String? message, // Make message optional as it's not in the API response
+  }) = _UserListResponse;
+
+  factory UserListResponse.fromJson(Map<String, dynamic> json) => _$UserListResponseFromJson(json);
+}
+
+@freezed
+class UserListData with _$UserListData {
+  const factory UserListData({
     required List<UserEntity> users,
-    required UserPaginationEntity pagination,
-  }) = _UserListEntity;
+    required UserPagination pagination,
+  }) = _UserListData;
 
-  factory UserListEntity.fromJson(Map<String, dynamic> json) =>
-      _$UserListEntityFromJson(json);
+  factory UserListData.fromJson(Map<String, dynamic> json) => _$UserListDataFromJson(json);
 }
 
 @freezed
-class UserPaginationEntity with _$UserPaginationEntity {
-  const factory UserPaginationEntity({
+class UserPagination with _$UserPagination {
+  const factory UserPagination({
     required int total,
     required int page,
     required int pages,
     required int limit,
-  }) = _UserPaginationEntity;
+  }) = _UserPagination;
 
-  factory UserPaginationEntity.fromJson(Map<String, dynamic> json) =>
-      _$UserPaginationEntityFromJson(json);
+  factory UserPagination.fromJson(Map<String, dynamic> json) => _$UserPaginationFromJson(json);
 }
 
 @freezed
-class CreateUserRequest with _$CreateUserRequest {
-  const factory CreateUserRequest({
-    required String firstname,
-    required String email,
-    String? lastname,
-    String? phone,
-    String? password,
-    String? status,
-  }) = _CreateUserRequest;
+class UserActionResponse with _$UserActionResponse {
+  const factory UserActionResponse({
+    required bool success,
+    required String message,
+    UserEntity? data,
+  }) = _UserActionResponse;
 
-  factory CreateUserRequest.fromJson(Map<String, dynamic> json) =>
-      _$CreateUserRequestFromJson(json);
+  factory UserActionResponse.fromJson(Map<String, dynamic> json) => _$UserActionResponseFromJson(json);
 }
 
 @freezed
-class UpdateUserRequest with _$UpdateUserRequest {
-  const factory UpdateUserRequest({
-    required int userId,
-    String? firstname,
-    String? lastname,
-    String? email,
-    String? phone,
-    String? status,
-  }) = _UpdateUserRequest;
+class UserStatusUpdateRequest with _$UserStatusUpdateRequest {
+  const factory UserStatusUpdateRequest({
+    required String action,
+    required UserStatusData data,
+  }) = _UserStatusUpdateRequest;
 
-  factory UpdateUserRequest.fromJson(Map<String, dynamic> json) =>
-      _$UpdateUserRequestFromJson(json);
+  factory UserStatusUpdateRequest.fromJson(Map<String, dynamic> json) => _$UserStatusUpdateRequestFromJson(json);
 }
 
 @freezed
-class UpdateUserStatusRequest with _$UpdateUserStatusRequest {
-  const factory UpdateUserStatusRequest({
+class UserStatusData with _$UserStatusData {
+  const factory UserStatusData({
     required int userId,
     required String status,
-  }) = _UpdateUserStatusRequest;
+  }) = _UserStatusData;
 
-  factory UpdateUserStatusRequest.fromJson(Map<String, dynamic> json) =>
-      _$UpdateUserStatusRequestFromJson(json);
+  factory UserStatusData.fromJson(Map<String, dynamic> json) => _$UserStatusDataFromJson(json);
 }
 
 @freezed
-class BanUserRequest with _$BanUserRequest {
-  const factory BanUserRequest({
+class UserBanRequest with _$UserBanRequest {
+  const factory UserBanRequest({
     required String reason,
     required String banType,
-  }) = _BanUserRequest;
+  }) = _UserBanRequest;
 
-  factory BanUserRequest.fromJson(Map<String, dynamic> json) =>
-      _$BanUserRequestFromJson(json);
+  factory UserBanRequest.fromJson(Map<String, dynamic> json) => _$UserBanRequestFromJson(json);
 }
 
 @freezed
-class DeactivateUserRequest with _$DeactivateUserRequest {
-  const factory DeactivateUserRequest({
+class UserDeactivationRequest with _$UserDeactivationRequest {
+  const factory UserDeactivationRequest({
     required String reason,
-  }) = _DeactivateUserRequest;
+  }) = _UserDeactivationRequest;
 
-  factory DeactivateUserRequest.fromJson(Map<String, dynamic> json) =>
-      _$DeactivateUserRequestFromJson(json);
+  factory UserDeactivationRequest.fromJson(Map<String, dynamic> json) => _$UserDeactivationRequestFromJson(json);
 }
 
-@freezed
-class UserSearchParams with _$UserSearchParams {
-  const factory UserSearchParams({
-    String? search,
-    String? status,
-    int? page,
-    int? limit,
-  }) = _UserSearchParams;
+enum UserStatus {
+  active,
+  inactive,
+  suspended,
+  banned,
+  pending,
+}
 
-  factory UserSearchParams.fromJson(Map<String, dynamic> json) =>
-      _$UserSearchParamsFromJson(json);
+enum UserRole {
+  user,
+  admin,
+  superAdmin,
+  moderator,
+}
+
+enum BanType {
+  temporary,
+  permanent,
 }

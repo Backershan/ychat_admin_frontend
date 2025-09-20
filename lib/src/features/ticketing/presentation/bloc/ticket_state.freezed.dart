@@ -22,41 +22,41 @@ mixin _$TicketState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -167,15 +167,15 @@ class _$TicketInitialStateImpl implements TicketInitialState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return initial();
@@ -186,13 +186,13 @@ class _$TicketInitialStateImpl implements TicketInitialState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return initial?.call();
@@ -203,13 +203,13 @@ class _$TicketInitialStateImpl implements TicketInitialState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -322,15 +322,15 @@ class _$TicketLoadingStateImpl implements TicketLoadingState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return loading();
@@ -341,13 +341,13 @@ class _$TicketLoadingStateImpl implements TicketLoadingState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return loading?.call();
@@ -358,13 +358,13 @@ class _$TicketLoadingStateImpl implements TicketLoadingState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -438,10 +438,10 @@ abstract class _$$TicketLoadedStateImplCopyWith<$Res> {
     $Res Function(_$TicketLoadedStateImpl) then,
   ) = __$$TicketLoadedStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({TicketListEntity tickets, TicketStatsEntity? stats});
+  $Res call({TicketListResponse tickets, TicketStatsResponse? stats});
 
-  $TicketListEntityCopyWith<$Res> get tickets;
-  $TicketStatsEntityCopyWith<$Res>? get stats;
+  $TicketListResponseCopyWith<$Res> get tickets;
+  $TicketStatsResponseCopyWith<$Res>? get stats;
 }
 
 /// @nodoc
@@ -463,11 +463,11 @@ class __$$TicketLoadedStateImplCopyWithImpl<$Res>
         tickets: null == tickets
             ? _value.tickets
             : tickets // ignore: cast_nullable_to_non_nullable
-                  as TicketListEntity,
+                  as TicketListResponse,
         stats: freezed == stats
             ? _value.stats
             : stats // ignore: cast_nullable_to_non_nullable
-                  as TicketStatsEntity?,
+                  as TicketStatsResponse?,
       ),
     );
   }
@@ -476,8 +476,8 @@ class __$$TicketLoadedStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TicketListEntityCopyWith<$Res> get tickets {
-    return $TicketListEntityCopyWith<$Res>(_value.tickets, (value) {
+  $TicketListResponseCopyWith<$Res> get tickets {
+    return $TicketListResponseCopyWith<$Res>(_value.tickets, (value) {
       return _then(_value.copyWith(tickets: value));
     });
   }
@@ -486,12 +486,12 @@ class __$$TicketLoadedStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TicketStatsEntityCopyWith<$Res>? get stats {
+  $TicketStatsResponseCopyWith<$Res>? get stats {
     if (_value.stats == null) {
       return null;
     }
 
-    return $TicketStatsEntityCopyWith<$Res>(_value.stats!, (value) {
+    return $TicketStatsResponseCopyWith<$Res>(_value.stats!, (value) {
       return _then(_value.copyWith(stats: value));
     });
   }
@@ -503,9 +503,9 @@ class _$TicketLoadedStateImpl implements TicketLoadedState {
   const _$TicketLoadedStateImpl({required this.tickets, this.stats});
 
   @override
-  final TicketListEntity tickets;
+  final TicketListResponse tickets;
   @override
-  final TicketStatsEntity? stats;
+  final TicketStatsResponse? stats;
 
   @override
   String toString() {
@@ -541,15 +541,15 @@ class _$TicketLoadedStateImpl implements TicketLoadedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return loaded(tickets, stats);
@@ -560,13 +560,13 @@ class _$TicketLoadedStateImpl implements TicketLoadedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return loaded?.call(tickets, stats);
@@ -577,13 +577,13 @@ class _$TicketLoadedStateImpl implements TicketLoadedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -648,12 +648,12 @@ class _$TicketLoadedStateImpl implements TicketLoadedState {
 
 abstract class TicketLoadedState implements TicketState {
   const factory TicketLoadedState({
-    required final TicketListEntity tickets,
-    final TicketStatsEntity? stats,
+    required final TicketListResponse tickets,
+    final TicketStatsResponse? stats,
   }) = _$TicketLoadedStateImpl;
 
-  TicketListEntity get tickets;
-  TicketStatsEntity? get stats;
+  TicketListResponse get tickets;
+  TicketStatsResponse? get stats;
 
   /// Create a copy of TicketState
   /// with the given fields replaced by the non-null parameter values.
@@ -750,15 +750,15 @@ class _$TicketDetailLoadedStateImpl implements TicketDetailLoadedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return ticketDetailLoaded(ticket);
@@ -769,13 +769,13 @@ class _$TicketDetailLoadedStateImpl implements TicketDetailLoadedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return ticketDetailLoaded?.call(ticket);
@@ -786,13 +786,13 @@ class _$TicketDetailLoadedStateImpl implements TicketDetailLoadedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -956,15 +956,15 @@ class _$TicketCreatedStateImpl implements TicketCreatedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return ticketCreated(ticket);
@@ -975,13 +975,13 @@ class _$TicketCreatedStateImpl implements TicketCreatedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return ticketCreated?.call(ticket);
@@ -992,13 +992,13 @@ class _$TicketCreatedStateImpl implements TicketCreatedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -1162,15 +1162,15 @@ class _$TicketUpdatedStateImpl implements TicketUpdatedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return ticketUpdated(ticket);
@@ -1181,13 +1181,13 @@ class _$TicketUpdatedStateImpl implements TicketUpdatedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return ticketUpdated?.call(ticket);
@@ -1198,13 +1198,13 @@ class _$TicketUpdatedStateImpl implements TicketUpdatedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -1326,15 +1326,15 @@ class _$TicketDeletedStateImpl implements TicketDeletedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return ticketDeleted();
@@ -1345,13 +1345,13 @@ class _$TicketDeletedStateImpl implements TicketDeletedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return ticketDeleted?.call();
@@ -1362,13 +1362,13 @@ class _$TicketDeletedStateImpl implements TicketDeletedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -1442,9 +1442,9 @@ abstract class _$$TicketStatsLoadedStateImplCopyWith<$Res> {
     $Res Function(_$TicketStatsLoadedStateImpl) then,
   ) = __$$TicketStatsLoadedStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({TicketStatsEntity stats});
+  $Res call({TicketStatsResponse stats});
 
-  $TicketStatsEntityCopyWith<$Res> get stats;
+  $TicketStatsResponseCopyWith<$Res> get stats;
 }
 
 /// @nodoc
@@ -1466,7 +1466,7 @@ class __$$TicketStatsLoadedStateImplCopyWithImpl<$Res>
         stats: null == stats
             ? _value.stats
             : stats // ignore: cast_nullable_to_non_nullable
-                  as TicketStatsEntity,
+                  as TicketStatsResponse,
       ),
     );
   }
@@ -1475,8 +1475,8 @@ class __$$TicketStatsLoadedStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TicketStatsEntityCopyWith<$Res> get stats {
-    return $TicketStatsEntityCopyWith<$Res>(_value.stats, (value) {
+  $TicketStatsResponseCopyWith<$Res> get stats {
+    return $TicketStatsResponseCopyWith<$Res>(_value.stats, (value) {
       return _then(_value.copyWith(stats: value));
     });
   }
@@ -1488,7 +1488,7 @@ class _$TicketStatsLoadedStateImpl implements TicketStatsLoadedState {
   const _$TicketStatsLoadedStateImpl({required this.stats});
 
   @override
-  final TicketStatsEntity stats;
+  final TicketStatsResponse stats;
 
   @override
   String toString() {
@@ -1524,15 +1524,15 @@ class _$TicketStatsLoadedStateImpl implements TicketStatsLoadedState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return statsLoaded(stats);
@@ -1543,13 +1543,13 @@ class _$TicketStatsLoadedStateImpl implements TicketStatsLoadedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return statsLoaded?.call(stats);
@@ -1560,13 +1560,13 @@ class _$TicketStatsLoadedStateImpl implements TicketStatsLoadedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -1631,10 +1631,10 @@ class _$TicketStatsLoadedStateImpl implements TicketStatsLoadedState {
 
 abstract class TicketStatsLoadedState implements TicketState {
   const factory TicketStatsLoadedState({
-    required final TicketStatsEntity stats,
+    required final TicketStatsResponse stats,
   }) = _$TicketStatsLoadedStateImpl;
 
-  TicketStatsEntity get stats;
+  TicketStatsResponse get stats;
 
   /// Create a copy of TicketState
   /// with the given fields replaced by the non-null parameter values.
@@ -1731,15 +1731,15 @@ class _$TicketErrorStateImpl implements TicketErrorState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-      TicketListEntity tickets,
-      TicketStatsEntity? stats,
+      TicketListResponse tickets,
+      TicketStatsResponse? stats,
     )
     loaded,
     required TResult Function(TicketEntity ticket) ticketDetailLoaded,
     required TResult Function(TicketEntity ticket) ticketCreated,
     required TResult Function(TicketEntity ticket) ticketUpdated,
     required TResult Function() ticketDeleted,
-    required TResult Function(TicketStatsEntity stats) statsLoaded,
+    required TResult Function(TicketStatsResponse stats) statsLoaded,
     required TResult Function(Failure failure) error,
   }) {
     return error(failure);
@@ -1750,13 +1750,13 @@ class _$TicketErrorStateImpl implements TicketErrorState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult? Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult? Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult? Function(TicketEntity ticket)? ticketCreated,
     TResult? Function(TicketEntity ticket)? ticketUpdated,
     TResult? Function()? ticketDeleted,
-    TResult? Function(TicketStatsEntity stats)? statsLoaded,
+    TResult? Function(TicketStatsResponse stats)? statsLoaded,
     TResult? Function(Failure failure)? error,
   }) {
     return error?.call(failure);
@@ -1767,13 +1767,13 @@ class _$TicketErrorStateImpl implements TicketErrorState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(TicketListEntity tickets, TicketStatsEntity? stats)?
+    TResult Function(TicketListResponse tickets, TicketStatsResponse? stats)?
     loaded,
     TResult Function(TicketEntity ticket)? ticketDetailLoaded,
     TResult Function(TicketEntity ticket)? ticketCreated,
     TResult Function(TicketEntity ticket)? ticketUpdated,
     TResult Function()? ticketDeleted,
-    TResult Function(TicketStatsEntity stats)? statsLoaded,
+    TResult Function(TicketStatsResponse stats)? statsLoaded,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {

@@ -1,12 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 abstract class TicketRepository {
-  Future<Either<Failure, TicketListEntity>> getTickets({
+  Future<Either<Failure, TicketListResponse>> getTickets({
     String? category,
     String? status,
     String? priority,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
     int? page,
     int? limit,
   });
@@ -21,21 +25,17 @@ abstract class TicketRepository {
     List<TicketAttachmentEntity>? attachments,
   });
 
-  Future<Either<Failure, TicketEntity>> updateTicketStatus({
+  Future<Either<Failure, TicketEntity>> updateTicket({
     required int id,
-    required String status,
-    int? assignedTo,
-    String? adminNotes,
+    required TicketUpdateRequest request,
   });
 
   Future<Either<Failure, TicketEntity>> addReplyToTicket({
     required int id,
-    required String text,
-    String? image,
-    required String from,
+    required TicketReplyRequest request,
   });
 
-  Future<Either<Failure, TicketStatsEntity>> getTicketStats();
+  Future<Either<Failure, TicketStatsResponse>> getTicketStats();
 
   Future<Either<Failure, void>> deleteTicket(int id);
 }

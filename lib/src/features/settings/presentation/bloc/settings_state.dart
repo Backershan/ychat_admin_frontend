@@ -37,3 +37,13 @@ class SettingsError extends SettingsState {
   @override
   List<Object> get props => [message];
 }
+
+class SettingsOfflineMode extends SettingsState {
+  final SettingsEntity settings;
+  final String message;
+
+  const SettingsOfflineMode(this.settings, this.message);
+
+  @override
+  List<Object> get props => [settings, message];
+}

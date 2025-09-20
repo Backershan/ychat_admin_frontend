@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:y_chat_admin/src/core/api/api_config.dart';
+import 'package:y_chat_admin/src/core/utils/logger.dart';
 
 /// Utility class for debugging API calls
 class DebugApiUtils {
@@ -9,8 +10,8 @@ class DebugApiUtils {
 
   /// Test the register endpoint with detailed logging
   static Future<void> testRegisterEndpoint() async {
-    print('🔍 Testing register endpoint...');
-    print('URL: ${ApiConfig.baseUrl}${ApiConfig.registerEndpoint}');
+    Logger.debug('🔍 Testing register endpoint...');
+    Logger.debug('URL: ${ApiConfig.baseUrl}${ApiConfig.registerEndpoint}');
     
     try {
       final response = await _dio.post(
@@ -28,22 +29,22 @@ class DebugApiUtils {
         ),
       );
       
-      print('✅ Success! Status: ${response.statusCode}');
-      print('Response data: ${response.data}');
+      Logger.debug('✅ Success! Status: ${response.statusCode}');
+      Logger.debug('Response data: ${response.data}');
     } on DioException catch (e) {
-      print('❌ DioException: ${e.type}');
-      print('Status code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
-      print('Error message: ${e.message}');
+      Logger.debug('❌ DioException: ${e.type}');
+      Logger.debug('Status code: ${e.response?.statusCode}');
+      Logger.debug('Response data: ${e.response?.data}');
+      Logger.debug('Error message: ${e.message}');
     } catch (e) {
-      print('❌ Other error: $e');
+      Logger.debug('❌ Other error: $e');
     }
   }
 
   /// Test the login endpoint with detailed logging
   static Future<void> testLoginEndpoint() async {
-    print('🔍 Testing login endpoint...');
-    print('URL: ${ApiConfig.baseUrl}${ApiConfig.loginEndpoint}');
+    Logger.debug('🔍 Testing login endpoint...');
+    Logger.debug('URL: ${ApiConfig.baseUrl}${ApiConfig.loginEndpoint}');
     
     try {
       final response = await _dio.post(
@@ -57,34 +58,34 @@ class DebugApiUtils {
         ),
       );
       
-      print('✅ Success! Status: ${response.statusCode}');
-      print('Response data: ${response.data}');
+      Logger.debug('✅ Success! Status: ${response.statusCode}');
+      Logger.debug('Response data: ${response.data}');
     } on DioException catch (e) {
-      print('❌ DioException: ${e.type}');
-      print('Status code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
-      print('Error message: ${e.message}');
+      Logger.debug('❌ DioException: ${e.type}');
+      Logger.debug('Status code: ${e.response?.statusCode}');
+      Logger.debug('Response data: ${e.response?.data}');
+      Logger.debug('Error message: ${e.message}');
     } catch (e) {
-      print('❌ Other error: $e');
+      Logger.debug('❌ Other error: $e');
     }
   }
 
   /// Test basic connectivity
   static Future<void> testBasicConnectivity() async {
-    print('🔍 Testing basic connectivity...');
-    print('Base URL: ${ApiConfig.baseUrl}');
+    Logger.debug('🔍 Testing basic connectivity...');
+    Logger.debug('Base URL: ${ApiConfig.baseUrl}');
     
     try {
       final response = await _dio.get(ApiConfig.baseUrl);
-      print('✅ Basic connectivity works! Status: ${response.statusCode}');
-      print('Response data: ${response.data}');
+      Logger.debug('✅ Basic connectivity works! Status: ${response.statusCode}');
+      Logger.debug('Response data: ${response.data}');
     } on DioException catch (e) {
-      print('❌ DioException: ${e.type}');
-      print('Status code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
-      print('Error message: ${e.message}');
+      Logger.debug('❌ DioException: ${e.type}');
+      Logger.debug('Status code: ${e.response?.statusCode}');
+      Logger.debug('Response data: ${e.response?.data}');
+      Logger.debug('Error message: ${e.message}');
     } catch (e) {
-      print('❌ Other error: $e');
+      Logger.debug('❌ Other error: $e');
     }
   }
 }

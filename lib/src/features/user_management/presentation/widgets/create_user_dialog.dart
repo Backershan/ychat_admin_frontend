@@ -42,7 +42,7 @@ class _CreateUserDialogState extends State<CreateUserDialog> {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if (state is UserCreated) {
+        if (state is UserActionSuccess) {
           Navigator.of(context).pop();
         } else if (state is UserError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -277,13 +277,12 @@ class _CreateUserDialogState extends State<CreateUserDialog> {
   void _createUser() {
     if (_formKey.currentState!.validate()) {
       context.read<UserBloc>().add(
-            CreateUser(
+            UserEvent.createUser(
               firstname: _firstnameController.text,
               lastname: _lastnameController.text.isNotEmpty ? _lastnameController.text : null,
               email: _emailController.text,
               phone: _phoneController.text.isNotEmpty ? _phoneController.text : null,
-              password: _passwordController.text,
-              status: _selectedStatus,
+              role: _selectedStatus,
             ),
           );
     }

@@ -23,6 +23,9 @@ mixin _$TicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -36,14 +39,8 @@ mixin _$TicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -55,6 +52,9 @@ mixin _$TicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -68,15 +68,8 @@ mixin _$TicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -87,6 +80,9 @@ mixin _$TicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -100,15 +96,8 @@ mixin _$TicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -119,7 +108,7 @@ mixin _$TicketEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -130,7 +119,7 @@ mixin _$TicketEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -141,7 +130,7 @@ mixin _$TicketEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -183,6 +172,9 @@ abstract class _$$GetTicketsEventImplCopyWith<$Res> {
     String? category,
     String? status,
     String? priority,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
     int? page,
     int? limit,
   });
@@ -205,6 +197,9 @@ class __$$GetTicketsEventImplCopyWithImpl<$Res>
     Object? category = freezed,
     Object? status = freezed,
     Object? priority = freezed,
+    Object? search = freezed,
+    Object? sortBy = freezed,
+    Object? sortOrder = freezed,
     Object? page = freezed,
     Object? limit = freezed,
   }) {
@@ -221,6 +216,18 @@ class __$$GetTicketsEventImplCopyWithImpl<$Res>
         priority: freezed == priority
             ? _value.priority
             : priority // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        search: freezed == search
+            ? _value.search
+            : search // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        sortBy: freezed == sortBy
+            ? _value.sortBy
+            : sortBy // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        sortOrder: freezed == sortOrder
+            ? _value.sortOrder
+            : sortOrder // ignore: cast_nullable_to_non_nullable
                   as String?,
         page: freezed == page
             ? _value.page
@@ -242,6 +249,9 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
     this.category,
     this.status,
     this.priority,
+    this.search,
+    this.sortBy,
+    this.sortOrder,
     this.page,
     this.limit,
   });
@@ -253,13 +263,19 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
   @override
   final String? priority;
   @override
+  final String? search;
+  @override
+  final String? sortBy;
+  @override
+  final String? sortOrder;
+  @override
   final int? page;
   @override
   final int? limit;
 
   @override
   String toString() {
-    return 'TicketEvent.getTickets(category: $category, status: $status, priority: $priority, page: $page, limit: $limit)';
+    return 'TicketEvent.getTickets(category: $category, status: $status, priority: $priority, search: $search, sortBy: $sortBy, sortOrder: $sortOrder, page: $page, limit: $limit)';
   }
 
   @override
@@ -272,13 +288,26 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.priority, priority) ||
                 other.priority == priority) &&
+            (identical(other.search, search) || other.search == search) &&
+            (identical(other.sortBy, sortBy) || other.sortBy == sortBy) &&
+            (identical(other.sortOrder, sortOrder) ||
+                other.sortOrder == sortOrder) &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.limit, limit) || other.limit == limit));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, category, status, priority, page, limit);
+  int get hashCode => Object.hash(
+    runtimeType,
+    category,
+    status,
+    priority,
+    search,
+    sortBy,
+    sortOrder,
+    page,
+    limit,
+  );
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -298,6 +327,9 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -311,20 +343,23 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
     required TResult Function() clearError,
   }) {
-    return getTickets(category, status, priority, page, limit);
+    return getTickets(
+      category,
+      status,
+      priority,
+      search,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    );
   }
 
   @override
@@ -334,6 +369,9 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -347,20 +385,22 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
   }) {
-    return getTickets?.call(category, status, priority, page, limit);
+    return getTickets?.call(
+      category,
+      status,
+      priority,
+      search,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    );
   }
 
   @override
@@ -370,6 +410,9 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -383,22 +426,24 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
     required TResult orElse(),
   }) {
     if (getTickets != null) {
-      return getTickets(category, status, priority, page, limit);
+      return getTickets(
+        category,
+        status,
+        priority,
+        search,
+        sortBy,
+        sortOrder,
+        page,
+        limit,
+      );
     }
     return orElse();
   }
@@ -409,7 +454,7 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -424,7 +469,7 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -439,7 +484,7 @@ class _$GetTicketsEventImpl implements GetTicketsEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -458,6 +503,9 @@ abstract class GetTicketsEvent implements TicketEvent {
     final String? category,
     final String? status,
     final String? priority,
+    final String? search,
+    final String? sortBy,
+    final String? sortOrder,
     final int? page,
     final int? limit,
   }) = _$GetTicketsEventImpl;
@@ -465,6 +513,9 @@ abstract class GetTicketsEvent implements TicketEvent {
   String? get category;
   String? get status;
   String? get priority;
+  String? get search;
+  String? get sortBy;
+  String? get sortOrder;
   int? get page;
   int? get limit;
 
@@ -552,6 +603,9 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -565,14 +619,8 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -588,6 +636,9 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -601,15 +652,8 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -624,6 +668,9 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -637,15 +684,8 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -663,7 +703,7 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -678,7 +718,7 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -693,7 +733,7 @@ class _$GetTicketByIdEventImpl implements GetTicketByIdEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -861,6 +901,9 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -874,14 +917,8 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -897,6 +934,9 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -910,15 +950,8 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -939,6 +972,9 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -952,15 +988,8 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -978,7 +1007,7 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -993,7 +1022,7 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -1008,7 +1037,7 @@ class _$CreateTicketEventImpl implements CreateTicketEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -1045,108 +1074,93 @@ abstract class CreateTicketEvent implements TicketEvent {
 }
 
 /// @nodoc
-abstract class _$$UpdateTicketStatusEventImplCopyWith<$Res> {
-  factory _$$UpdateTicketStatusEventImplCopyWith(
-    _$UpdateTicketStatusEventImpl value,
-    $Res Function(_$UpdateTicketStatusEventImpl) then,
-  ) = __$$UpdateTicketStatusEventImplCopyWithImpl<$Res>;
+abstract class _$$UpdateTicketEventImplCopyWith<$Res> {
+  factory _$$UpdateTicketEventImplCopyWith(
+    _$UpdateTicketEventImpl value,
+    $Res Function(_$UpdateTicketEventImpl) then,
+  ) = __$$UpdateTicketEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int id, String status, int? assignedTo, String? adminNotes});
+  $Res call({int id, TicketUpdateRequest request});
+
+  $TicketUpdateRequestCopyWith<$Res> get request;
 }
 
 /// @nodoc
-class __$$UpdateTicketStatusEventImplCopyWithImpl<$Res>
-    extends _$TicketEventCopyWithImpl<$Res, _$UpdateTicketStatusEventImpl>
-    implements _$$UpdateTicketStatusEventImplCopyWith<$Res> {
-  __$$UpdateTicketStatusEventImplCopyWithImpl(
-    _$UpdateTicketStatusEventImpl _value,
-    $Res Function(_$UpdateTicketStatusEventImpl) _then,
+class __$$UpdateTicketEventImplCopyWithImpl<$Res>
+    extends _$TicketEventCopyWithImpl<$Res, _$UpdateTicketEventImpl>
+    implements _$$UpdateTicketEventImplCopyWith<$Res> {
+  __$$UpdateTicketEventImplCopyWithImpl(
+    _$UpdateTicketEventImpl _value,
+    $Res Function(_$UpdateTicketEventImpl) _then,
   ) : super(_value, _then);
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? id = null,
-    Object? status = null,
-    Object? assignedTo = freezed,
-    Object? adminNotes = freezed,
-  }) {
+  $Res call({Object? id = null, Object? request = null}) {
     return _then(
-      _$UpdateTicketStatusEventImpl(
+      _$UpdateTicketEventImpl(
         id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as int,
-        status: null == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String,
-        assignedTo: freezed == assignedTo
-            ? _value.assignedTo
-            : assignedTo // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        adminNotes: freezed == adminNotes
-            ? _value.adminNotes
-            : adminNotes // ignore: cast_nullable_to_non_nullable
-                  as String?,
+        request: null == request
+            ? _value.request
+            : request // ignore: cast_nullable_to_non_nullable
+                  as TicketUpdateRequest,
       ),
     );
+  }
+
+  /// Create a copy of TicketEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TicketUpdateRequestCopyWith<$Res> get request {
+    return $TicketUpdateRequestCopyWith<$Res>(_value.request, (value) {
+      return _then(_value.copyWith(request: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
-  const _$UpdateTicketStatusEventImpl({
-    required this.id,
-    required this.status,
-    this.assignedTo,
-    this.adminNotes,
-  });
+class _$UpdateTicketEventImpl implements UpdateTicketEvent {
+  const _$UpdateTicketEventImpl({required this.id, required this.request});
 
   @override
   final int id;
   @override
-  final String status;
-  @override
-  final int? assignedTo;
-  @override
-  final String? adminNotes;
+  final TicketUpdateRequest request;
 
   @override
   String toString() {
-    return 'TicketEvent.updateTicketStatus(id: $id, status: $status, assignedTo: $assignedTo, adminNotes: $adminNotes)';
+    return 'TicketEvent.updateTicket(id: $id, request: $request)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UpdateTicketStatusEventImpl &&
+            other is _$UpdateTicketEventImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.assignedTo, assignedTo) ||
-                other.assignedTo == assignedTo) &&
-            (identical(other.adminNotes, adminNotes) ||
-                other.adminNotes == adminNotes));
+            (identical(other.request, request) || other.request == request));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, status, assignedTo, adminNotes);
+  int get hashCode => Object.hash(runtimeType, id, request);
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$UpdateTicketStatusEventImplCopyWith<_$UpdateTicketStatusEventImpl>
-  get copyWith =>
-      __$$UpdateTicketStatusEventImplCopyWithImpl<
-        _$UpdateTicketStatusEventImpl
-      >(this, _$identity);
+  _$$UpdateTicketEventImplCopyWith<_$UpdateTicketEventImpl> get copyWith =>
+      __$$UpdateTicketEventImplCopyWithImpl<_$UpdateTicketEventImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -1155,6 +1169,9 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -1168,20 +1185,14 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
     required TResult Function() clearError,
   }) {
-    return updateTicketStatus(id, status, assignedTo, adminNotes);
+    return updateTicket(id, request);
   }
 
   @override
@@ -1191,6 +1202,9 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1204,20 +1218,13 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
   }) {
-    return updateTicketStatus?.call(id, status, assignedTo, adminNotes);
+    return updateTicket?.call(id, request);
   }
 
   @override
@@ -1227,6 +1234,9 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1240,22 +1250,15 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
     required TResult orElse(),
   }) {
-    if (updateTicketStatus != null) {
-      return updateTicketStatus(id, status, assignedTo, adminNotes);
+    if (updateTicket != null) {
+      return updateTicket(id, request);
     }
     return orElse();
   }
@@ -1266,13 +1269,13 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
     required TResult Function(ClearErrorEvent value) clearError,
   }) {
-    return updateTicketStatus(this);
+    return updateTicket(this);
   }
 
   @override
@@ -1281,13 +1284,13 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
     TResult? Function(ClearErrorEvent value)? clearError,
   }) {
-    return updateTicketStatus?.call(this);
+    return updateTicket?.call(this);
   }
 
   @override
@@ -1296,38 +1299,34 @@ class _$UpdateTicketStatusEventImpl implements UpdateTicketStatusEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
     TResult Function(ClearErrorEvent value)? clearError,
     required TResult orElse(),
   }) {
-    if (updateTicketStatus != null) {
-      return updateTicketStatus(this);
+    if (updateTicket != null) {
+      return updateTicket(this);
     }
     return orElse();
   }
 }
 
-abstract class UpdateTicketStatusEvent implements TicketEvent {
-  const factory UpdateTicketStatusEvent({
+abstract class UpdateTicketEvent implements TicketEvent {
+  const factory UpdateTicketEvent({
     required final int id,
-    required final String status,
-    final int? assignedTo,
-    final String? adminNotes,
-  }) = _$UpdateTicketStatusEventImpl;
+    required final TicketUpdateRequest request,
+  }) = _$UpdateTicketEventImpl;
 
   int get id;
-  String get status;
-  int? get assignedTo;
-  String? get adminNotes;
+  TicketUpdateRequest get request;
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UpdateTicketStatusEventImplCopyWith<_$UpdateTicketStatusEventImpl>
-  get copyWith => throw _privateConstructorUsedError;
+  _$$UpdateTicketEventImplCopyWith<_$UpdateTicketEventImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1337,7 +1336,9 @@ abstract class _$$AddReplyToTicketEventImplCopyWith<$Res> {
     $Res Function(_$AddReplyToTicketEventImpl) then,
   ) = __$$AddReplyToTicketEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int id, String text, String? image, String from});
+  $Res call({int id, TicketReplyRequest request});
+
+  $TicketReplyRequestCopyWith<$Res> get request;
 }
 
 /// @nodoc
@@ -1353,57 +1354,45 @@ class __$$AddReplyToTicketEventImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? id = null,
-    Object? text = null,
-    Object? image = freezed,
-    Object? from = null,
-  }) {
+  $Res call({Object? id = null, Object? request = null}) {
     return _then(
       _$AddReplyToTicketEventImpl(
         id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as int,
-        text: null == text
-            ? _value.text
-            : text // ignore: cast_nullable_to_non_nullable
-                  as String,
-        image: freezed == image
-            ? _value.image
-            : image // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        from: null == from
-            ? _value.from
-            : from // ignore: cast_nullable_to_non_nullable
-                  as String,
+        request: null == request
+            ? _value.request
+            : request // ignore: cast_nullable_to_non_nullable
+                  as TicketReplyRequest,
       ),
     );
+  }
+
+  /// Create a copy of TicketEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TicketReplyRequestCopyWith<$Res> get request {
+    return $TicketReplyRequestCopyWith<$Res>(_value.request, (value) {
+      return _then(_value.copyWith(request: value));
+    });
   }
 }
 
 /// @nodoc
 
 class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
-  const _$AddReplyToTicketEventImpl({
-    required this.id,
-    required this.text,
-    this.image,
-    required this.from,
-  });
+  const _$AddReplyToTicketEventImpl({required this.id, required this.request});
 
   @override
   final int id;
   @override
-  final String text;
-  @override
-  final String? image;
-  @override
-  final String from;
+  final TicketReplyRequest request;
 
   @override
   String toString() {
-    return 'TicketEvent.addReplyToTicket(id: $id, text: $text, image: $image, from: $from)';
+    return 'TicketEvent.addReplyToTicket(id: $id, request: $request)';
   }
 
   @override
@@ -1412,13 +1401,11 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
         (other.runtimeType == runtimeType &&
             other is _$AddReplyToTicketEventImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.text, text) || other.text == text) &&
-            (identical(other.image, image) || other.image == image) &&
-            (identical(other.from, from) || other.from == from));
+            (identical(other.request, request) || other.request == request));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, text, image, from);
+  int get hashCode => Object.hash(runtimeType, id, request);
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1439,6 +1426,9 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -1452,20 +1442,14 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
     required TResult Function() clearError,
   }) {
-    return addReplyToTicket(id, text, image, from);
+    return addReplyToTicket(id, request);
   }
 
   @override
@@ -1475,6 +1459,9 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1488,20 +1475,13 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
   }) {
-    return addReplyToTicket?.call(id, text, image, from);
+    return addReplyToTicket?.call(id, request);
   }
 
   @override
@@ -1511,6 +1491,9 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1524,22 +1507,15 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
     required TResult orElse(),
   }) {
     if (addReplyToTicket != null) {
-      return addReplyToTicket(id, text, image, from);
+      return addReplyToTicket(id, request);
     }
     return orElse();
   }
@@ -1550,7 +1526,7 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -1565,7 +1541,7 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -1580,7 +1556,7 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -1597,15 +1573,11 @@ class _$AddReplyToTicketEventImpl implements AddReplyToTicketEvent {
 abstract class AddReplyToTicketEvent implements TicketEvent {
   const factory AddReplyToTicketEvent({
     required final int id,
-    required final String text,
-    final String? image,
-    required final String from,
+    required final TicketReplyRequest request,
   }) = _$AddReplyToTicketEventImpl;
 
   int get id;
-  String get text;
-  String? get image;
-  String get from;
+  TicketReplyRequest get request;
 
   /// Create a copy of TicketEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1662,6 +1634,9 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -1675,14 +1650,8 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -1698,6 +1667,9 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1711,15 +1683,8 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -1734,6 +1699,9 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1747,15 +1715,8 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -1773,7 +1734,7 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -1788,7 +1749,7 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -1803,7 +1764,7 @@ class _$GetTicketStatsEventImpl implements GetTicketStatsEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -1898,6 +1859,9 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -1911,14 +1875,8 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -1934,6 +1892,9 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1947,15 +1908,8 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -1970,6 +1924,9 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -1983,15 +1940,8 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -2009,7 +1959,7 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -2024,7 +1974,7 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -2039,7 +1989,7 @@ class _$DeleteTicketEventImpl implements DeleteTicketEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,
@@ -2112,6 +2062,9 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )
@@ -2125,14 +2078,8 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       List<TicketAttachmentEntity>? attachments,
     )
     createTicket,
-    required TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )
-    updateTicketStatus,
-    required TResult Function(int id, String text, String? image, String from)
+    required TResult Function(int id, TicketUpdateRequest request) updateTicket,
+    required TResult Function(int id, TicketReplyRequest request)
     addReplyToTicket,
     required TResult Function() getTicketStats,
     required TResult Function(int id) deleteTicket,
@@ -2148,6 +2095,9 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -2161,15 +2111,8 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult? Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult? Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult? Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult? Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult? Function()? getTicketStats,
     TResult? Function(int id)? deleteTicket,
     TResult? Function()? clearError,
@@ -2184,6 +2127,9 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       String? category,
       String? status,
       String? priority,
+      String? search,
+      String? sortBy,
+      String? sortOrder,
       int? page,
       int? limit,
     )?
@@ -2197,15 +2143,8 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
       List<TicketAttachmentEntity>? attachments,
     )?
     createTicket,
-    TResult Function(
-      int id,
-      String status,
-      int? assignedTo,
-      String? adminNotes,
-    )?
-    updateTicketStatus,
-    TResult Function(int id, String text, String? image, String from)?
-    addReplyToTicket,
+    TResult Function(int id, TicketUpdateRequest request)? updateTicket,
+    TResult Function(int id, TicketReplyRequest request)? addReplyToTicket,
     TResult Function()? getTicketStats,
     TResult Function(int id)? deleteTicket,
     TResult Function()? clearError,
@@ -2223,7 +2162,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     required TResult Function(GetTicketsEvent value) getTickets,
     required TResult Function(GetTicketByIdEvent value) getTicketById,
     required TResult Function(CreateTicketEvent value) createTicket,
-    required TResult Function(UpdateTicketStatusEvent value) updateTicketStatus,
+    required TResult Function(UpdateTicketEvent value) updateTicket,
     required TResult Function(AddReplyToTicketEvent value) addReplyToTicket,
     required TResult Function(GetTicketStatsEvent value) getTicketStats,
     required TResult Function(DeleteTicketEvent value) deleteTicket,
@@ -2238,7 +2177,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     TResult? Function(GetTicketsEvent value)? getTickets,
     TResult? Function(GetTicketByIdEvent value)? getTicketById,
     TResult? Function(CreateTicketEvent value)? createTicket,
-    TResult? Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult? Function(UpdateTicketEvent value)? updateTicket,
     TResult? Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult? Function(GetTicketStatsEvent value)? getTicketStats,
     TResult? Function(DeleteTicketEvent value)? deleteTicket,
@@ -2253,7 +2192,7 @@ class _$ClearErrorEventImpl implements ClearErrorEvent {
     TResult Function(GetTicketsEvent value)? getTickets,
     TResult Function(GetTicketByIdEvent value)? getTicketById,
     TResult Function(CreateTicketEvent value)? createTicket,
-    TResult Function(UpdateTicketStatusEvent value)? updateTicketStatus,
+    TResult Function(UpdateTicketEvent value)? updateTicket,
     TResult Function(AddReplyToTicketEvent value)? addReplyToTicket,
     TResult Function(GetTicketStatsEvent value)? getTicketStats,
     TResult Function(DeleteTicketEvent value)? deleteTicket,

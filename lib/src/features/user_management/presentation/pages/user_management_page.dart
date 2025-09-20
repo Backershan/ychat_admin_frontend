@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constants/constants.dart';
-import '../bloc/user_bloc.dart';
-import '../bloc/user_event.dart';
-import '../bloc/user_state.dart';
-import '../widgets/user_card.dart';
-import '../widgets/create_user_dialog.dart';
-import '../widgets/user_actions_dialog.dart';
+import 'package:y_chat_admin/src/core/constants/constants.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_bloc.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_event.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/bloc/user_state.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/widgets/user_table_widget.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/widgets/user_create_dialog.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/widgets/user_edit_dialog.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/widgets/user_ban_dialog.dart';
+import 'package:y_chat_admin/src/features/user_management/presentation/widgets/user_deactivate_dialog.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -17,25 +21,15 @@ class UserManagementPage extends StatefulWidget {
 }
 
 class _UserManagementPageState extends State<UserManagementPage> {
-  String _selectedStatus = 'All';
-  String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-
-  final List<String> _statusOptions = [
-    'All',
-    'active',
-    'inactive',
-    'suspended',
-    'banned',
-  ];
+  String _selectedStatus = 'all';
+  int _currentPage = 1;
+  final int _limit = 20;
 
   @override
   void initState() {
     super.initState();
-    // Load users on page initialization
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserBloc>().add(const GetUsers());
-    });
+    _loadUsers();
   }
 
   @override
@@ -44,414 +38,349 @@ class _UserManagementPageState extends State<UserManagementPage> {
     super.dispose();
   }
 
+  void _loadUsers() {
+    context.read<UserBloc>().add(UserEvent.getUsers(
+      search: _searchController.text.isNotEmpty ? _searchController.text : null,
+      status: _selectedStatus != 'all' ? _selectedStatus : null,
+      page: _currentPage,
+      limit: _limit,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          if (state is UserError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
+      body: Padding(
+        padding: WebResponsive.getWebPadding(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(isMobile),
+            SizedBox(height: 24.h),
+            _buildFilters(isMobile),
+            SizedBox(height: 24.h),
+            Expanded(
+              child: BlocConsumer<UserBloc, UserState>(
+                listener: (context, state) {
+                  state.when(
+                    initial: () {},
+                    loading: () {},
+                    loaded: (userListResponse, users, currentPage, totalPages, totalUsers, searchQuery, statusFilter) {},
+                    error: (message) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(message),
+                          backgroundColor: AppColors.error,
+                        ),
+                      );
+                    },
+                    actionSuccess: (message, updatedUser) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(message),
+                          backgroundColor: AppColors.success,
+                        ),
+                      );
+                      _loadUsers(); // Refresh the list
+                    },
+                    actionLoading: () {},
+                  );
+                },
+                builder: (context, state) {
+                  return state.when(
+                    initial: () => _buildLoadingState(),
+                    loading: () => _buildLoadingState(),
+                    loaded: (userListResponse, users, currentPage, totalPages, totalUsers, searchQuery, statusFilter) {
+                      if (users.isEmpty) {
+                        return _buildEmptyState();
+                      }
+                      return Column(
+                        children: [
+                          _buildStats(totalUsers, currentPage, totalPages),
+                          SizedBox(height: 16.h),
+                          Expanded(
+                            child: UserTableWidget(
+                              users: users,
+                              onStatusChanged: _onStatusChanged,
+                              onDeleteUser: _onDeleteUser,
+                              onEditUser: _onEditUser,
+                              onBanUser: _onBanUser,
+                              onUnbanUser: _onUnbanUser,
+                              onActivateUser: _onActivateUser,
+                              onDeactivateUser: _onDeactivateUser,
+                            ),
+                          ),
+                          if (totalPages > 1) _buildPagination(currentPage, totalPages),
+                        ],
+                      );
+                    },
+                    error: (message) => _buildErrorState(message),
+                    actionSuccess: (message, updatedUser) => const SizedBox(),
+                    actionLoading: () => const Center(child: CircularProgressIndicator()),
+                  );
+                },
               ),
-            );
-          } else if (state is UserCreated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User created successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User updated successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User deleted successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserStatusUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('User status updated to ${state.status}'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserBanned) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User banned successfully'),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          } else if (state is UserUnbanned) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User unbanned successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserActivated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User activated successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is UserDeactivated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User deactivated successfully'),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
-        },
-        child: MediaQuery.of(context).size.width < 900 
-          ? _buildMobileLayout()
-          : _buildDesktopLayout(),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showCreateUserDialog,
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  Widget _buildMobileLayout() {
-    return Column(
+  Widget _buildHeader(bool isMobile) {
+    return Row(
       children: [
-        _buildHeader(),
-        Expanded(
-          child: BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-              print('🔧 UserManagementPage: Current state: $state');
-              
-              if (state is UserLoading) {
-                print('🔧 UserManagementPage: Showing loading state');
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is UsersLoaded) {
-                print('🔧 UserManagementPage: Showing users loaded state with ${state.users.users.length} users');
-                return _buildUsersList(state.users);
-              } else if (state is UserError) {
-                print('🔧 UserManagementPage: Showing error state: ${state.message}');
-                return _buildErrorState(state.message);
-              } else {
-                print('🔧 UserManagementPage: Showing initial state');
-                return const Center(
-                  child: Text('No users loaded. Pull to refresh.'),
-                );
-              }
-            },
+        Icon(
+          Icons.people,
+          size: isMobile ? 24.r : 32.r,
+          color: AppColors.primary,
+        ),
+        SizedBox(width: 12.w),
+        Text(
+          'User Management',
+          style: TextStyle(
+            fontSize: WebResponsive.getWebFontSize(isMobile ? 24 : 32, context),
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDesktopLayout() {
-    return Padding(
-      padding: EdgeInsets.all(24.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          SizedBox(height: 24.h),
-          Expanded(
-            child: BlocBuilder<UserBloc, UserState>(
-              builder: (context, state) {
-                print('🔧 UserManagementPage: Current state: $state');
-                
-                if (state is UserLoading) {
-                  print('🔧 UserManagementPage: Showing loading state');
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is UsersLoaded) {
-                  print('🔧 UserManagementPage: Showing users loaded state with ${state.users.users.length} users');
-                  return _buildUsersList(state.users);
-                } else if (state is UserError) {
-                  print('🔧 UserManagementPage: Showing error state: ${state.message}');
-                  return _buildErrorState(state.message);
-                } else {
-                  print('🔧 UserManagementPage: Showing initial state');
-                  return const Center(
-                    child: Text('No users loaded. Click refresh to load users.'),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
+  Widget _buildFilters(bool isMobile) {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: WebResponsive.getWebPadding(context),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border),
       ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.people_outline,
-                size: 24.sp,
-                color: AppColors.primary,
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                'User Management',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.onSurface,
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  context.read<UserBloc>().add(const RefreshUsers());
-                },
-                icon: const Icon(Icons.refresh),
-                tooltip: 'Refresh',
-              ),
-              SizedBox(width: 8.w),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _showCreateUserDialog();
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Add User'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search users...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                    _performSearch();
-                  },
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: _selectedStatus,
-                  decoration: InputDecoration(
-                    labelText: 'Status',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                  ),
-                  items: _statusOptions.map((String status) {
-                    return DropdownMenuItem<String>(
-                      value: status,
-                      child: Text(status),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        _selectedStatus = newValue;
-                      });
-                      _performSearch();
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      child: isMobile ? _buildMobileFilters() : _buildDesktopFilters(),
     );
   }
 
-  Widget _buildUsersList(users) {
-    List<dynamic> filteredUsers = users.users;
-    
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      filteredUsers = users.users.where((user) {
-        return user.firstname.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               user.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               (user.lastname?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
-      }).toList();
-    }
-    
-    // Apply status filter
-    if (_selectedStatus != 'All') {
-      filteredUsers = filteredUsers.where((user) => user.status == _selectedStatus).toList();
-    }
+  Widget _buildMobileFilters() {
+    return Column(
+      children: [
+        _buildSearchField(),
+        SizedBox(height: 12.h),
+        _buildStatusFilter(),
+        SizedBox(height: 12.h),
+        _buildFilterButtons(),
+      ],
+    );
+  }
 
-    if (filteredUsers.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.people_outline,
-              size: 64.sp,
-              color: Colors.grey[400],
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'No users found',
-              style: TextStyle(
-                fontSize: 18.sp,
-                color: Colors.grey[600],
-              ),
-            ),
-            if (_searchQuery.isNotEmpty || _selectedStatus != 'All')
-              Text(
-                'Try adjusting your search criteria',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey[500],
-                ),
-              ),
-          ],
+  Widget _buildDesktopFilters() {
+    return Row(
+      children: [
+        Expanded(flex: 2, child: _buildSearchField()),
+        SizedBox(width: 16.w),
+        Expanded(flex: 1, child: _buildStatusFilter()),
+        SizedBox(width: 16.w),
+        _buildFilterButtons(),
+      ],
+    );
+  }
+
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchController,
+      decoration: InputDecoration(
+        hintText: 'Search users...',
+        prefixIcon: const Icon(Icons.search),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.border),
         ),
-      );
-    }
-
-    return GridView.builder(
-      padding: EdgeInsets.all(16.w),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).size.width > 1200 ? 3 : 2,
-        childAspectRatio: 1.2,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.primary),
+        ),
       ),
-      itemCount: filteredUsers.length,
-      itemBuilder: (context, index) {
-        final user = filteredUsers[index];
-        return UserCard(
-          user: user,
-          onEdit: () => _showEditUserDialog(user),
-          onDelete: () => _showDeleteUserDialog(user),
-          onActions: () => _showUserActionsDialog(user),
-        );
+      onSubmitted: (_) => _loadUsers(),
+    );
+  }
+
+  Widget _buildStatusFilter() {
+    return DropdownButtonFormField<String>(
+      value: _selectedStatus,
+      decoration: InputDecoration(
+        labelText: 'Status',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(color: AppColors.primary),
+        ),
+      ),
+      items: const [
+        DropdownMenuItem(value: 'all', child: Text('All Status')),
+        DropdownMenuItem(value: 'active', child: Text('Active')),
+        DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
+        DropdownMenuItem(value: 'suspended', child: Text('Suspended')),
+        DropdownMenuItem(value: 'banned', child: Text('Banned')),
+      ],
+      onChanged: (value) {
+        setState(() {
+          _selectedStatus = value ?? 'all';
+        });
+        _loadUsers();
       },
     );
   }
 
-  Widget _buildErrorState(String message) {
-    return Center(
-      child: Column(
+  Widget _buildFilterButtons() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton.icon(
+          onPressed: _loadUsers,
+          icon: const Icon(Icons.refresh),
+          label: const Text('Refresh'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        OutlinedButton.icon(
+          onPressed: _clearFilters,
+          icon: const Icon(Icons.clear),
+          label: const Text('Clear'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStats(int totalUsers, int currentPage, int totalPages) {
+    return Container(
+      padding: WebResponsive.getWebPadding(context),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          _buildStatItem('Total Users', totalUsers.toString(), AppColors.primary),
+          SizedBox(width: 24.w),
+          _buildStatItem('Current Page', '$currentPage of $totalPages', AppColors.textSecondary),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: WebResponsive.getWebFontSize(14, context),
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: WebResponsive.getWebFontSize(20, context),
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPagination(int currentPage, int totalPages) {
+    return Container(
+      padding: WebResponsive.getWebPadding(context),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64.sp,
-            color: Colors.red[400],
+          IconButton(
+            onPressed: currentPage > 1 ? () => _changePage(currentPage - 1) : null,
+            icon: const Icon(Icons.chevron_left),
           ),
-          SizedBox(height: 16.h),
-          Text(
-            'Error loading users',
-            style: TextStyle(
-              fontSize: 18.sp,
-              color: Colors.red[600],
+          ...List.generate(
+            totalPages,
+            (index) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: GestureDetector(
+                onTap: () => _changePage(index + 1),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                  decoration: BoxDecoration(
+                    color: currentPage == index + 1 ? AppColors.primary : AppColors.background,
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Text(
+                    '${index + 1}',
+                    style: TextStyle(
+                      color: currentPage == index + 1 ? Colors.white : AppColors.textPrimary,
+                      fontWeight: currentPage == index + 1 ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            message,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16.h),
-          ElevatedButton(
-            onPressed: () {
-              context.read<UserBloc>().add(const GetUsers());
-            },
-            child: const Text('Retry'),
+          IconButton(
+            onPressed: currentPage < totalPages ? () => _changePage(currentPage + 1) : null,
+            icon: const Icon(Icons.chevron_right),
           ),
         ],
       ),
     );
   }
 
-  void _performSearch() {
-    context.read<UserBloc>().add(
-          GetUsers(
-            search: _searchQuery.isNotEmpty ? _searchQuery : null,
-            status: _selectedStatus != 'All' ? _selectedStatus : null,
-          ),
-        );
+  void _clearFilters() {
+    setState(() {
+      _searchController.clear();
+      _selectedStatus = 'all';
+      _currentPage = 1;
+    });
+    _loadUsers();
   }
 
-  void _showCreateUserDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => const CreateUserDialog(),
-    );
+  void _changePage(int page) {
+    setState(() {
+      _currentPage = page;
+    });
+    _loadUsers();
   }
 
-  void _showEditUserDialog(user) {
-    // TODO: Implement edit user dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Edit user functionality coming soon'),
-        backgroundColor: Colors.orange,
-      ),
-    );
+  void _onStatusChanged(UserEntity user, String status) {
+    context.read<UserBloc>().add(UserEvent.updateUserStatus(
+      userId: user.id,
+      status: status,
+    ));
   }
 
-  void _showDeleteUserDialog(user) {
-    // Check if user can be deleted based on status
-    if (user.status == 'active') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Cannot delete active users. Please deactivate or suspend first.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
+  void _onDeleteUser(UserEntity user) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -465,12 +394,9 @@ class _UserManagementPageState extends State<UserManagementPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
-              context.read<UserBloc>().add(DeleteUser(user.id));
+              context.read<UserBloc>().add(UserEvent.deleteUser(user.id));
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Delete'),
           ),
         ],
@@ -478,10 +404,150 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  void _showUserActionsDialog(user) {
+  void _onEditUser(UserEntity user) {
     showDialog(
       context: context,
-      builder: (context) => UserActionsDialog(user: user),
+      builder: (context) => UserEditDialog(
+        user: user,
+        onUserUpdated: () => _loadUsers(),
+      ),
+    );
+  }
+
+  void _onBanUser(UserEntity user) {
+    showDialog(
+      context: context,
+      builder: (context) => UserBanDialog(
+        user: user,
+        onUserBanned: () => _loadUsers(),
+      ),
+    );
+  }
+
+  void _onUnbanUser(UserEntity user) {
+    context.read<UserBloc>().add(UserEvent.unbanUser(user.id));
+  }
+
+  void _onActivateUser(UserEntity user) {
+    context.read<UserBloc>().add(UserEvent.activateUser(user.id));
+  }
+
+  void _onDeactivateUser(UserEntity user) {
+    showDialog(
+      context: context,
+      builder: (context) => UserDeactivateDialog(
+        user: user,
+        onUserDeactivated: () => _loadUsers(),
+      ),
+    );
+  }
+
+  void _showCreateUserDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => UserCreateDialog(
+        onUserCreated: () => _loadUsers(),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'Loading users...',
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(16, context),
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.people_outline,
+            size: 64.r,
+            color: AppColors.textSecondary.withValues(alpha: 0.5),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No users found',
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(18, context),
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'Try adjusting your search or filter criteria',
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(14, context),
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64.r,
+            color: AppColors.error,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'Something went wrong',
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(18, context),
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: WebResponsive.getWebFontSize(14, context),
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 24.h),
+          ElevatedButton.icon(
+            onPressed: _loadUsers,
+            icon: Icon(Icons.refresh),
+            label: Text('Retry'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

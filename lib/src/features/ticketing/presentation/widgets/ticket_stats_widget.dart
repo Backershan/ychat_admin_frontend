@@ -1,150 +1,166 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
-import '../../../../core/constants/constants.dart';
+import 'package:y_chat_admin/src/core/constants/constants.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 
 class TicketStatsWidget extends StatelessWidget {
-  final TicketStatsEntity stats;
+  final TicketStatsData stats;
+  final bool isLoading;
 
   const TicketStatsWidget({
     super.key,
     required this.stats,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return _buildLoadingState();
+    }
+
+    return _buildStatsGrid(context);
+  }
+
+  Widget _buildLoadingState() {
+    return GridView.count(
+      crossAxisCount: 3,
+      crossAxisSpacing: 16.w,
+      mainAxisSpacing: 16.h,
+      childAspectRatio: 2.5,
+      children: List.generate(6, (index) => _buildShimmerCard()),
+    );
+  }
+
+  Widget _buildShimmerCard() {
     return Container(
-      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.2)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Ticket Statistics',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.onBackground,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          Wrap(
-            spacing: 12.w,
-            runSpacing: 12.h,
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  'Total',
-                  stats.total.toString(),
-                  Icons.support_agent,
-                  AppColors.primary,
-                ),
-              ),
-              Expanded(
-                child: _buildStatCard(
-                  'Opened',
-                  stats.opened.toString(),
-                  Icons.lock_open,
-                  Colors.orange,
-                ),
-              ),
-              Expanded(
-                child: _buildStatCard(
-                  'Pending',
-                  stats.pending.toString(),
-                  Icons.schedule,
-                  Colors.blue,
-                ),
-              ),
-              Expanded(
-                child: _buildStatCard(
-                  'Closed',
-                  stats.closed.toString(),
-                  Icons.check_circle,
-                  Colors.green,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Wrap(
-            spacing: 12.w,
-            runSpacing: 12.h,
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  'High Priority',
-                  stats.highPriority.toString(),
-                  Icons.priority_high,
-                  Colors.red,
-                ),
-              ),
-              Expanded(
-                child: _buildStatCard(
-                  'Urgent',
-                  stats.urgent.toString(),
-                  Icons.warning,
-                  Colors.deepOrange,
-                ),
-              ),
-            ],
-          ),
-        ],
+      child: Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primary,
+          strokeWidth: 2.w,
+        ),
       ),
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatsGrid(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 3,
+      crossAxisSpacing: 16.w,
+      mainAxisSpacing: 16.h,
+      childAspectRatio: 2.5,
+      children: [
+        _buildStatCard(
+          context,
+          title: 'Total Tickets',
+          value: stats.total.toString(),
+          icon: Icons.assignment,
+          color: AppColors.primary,
+        ),
+        _buildStatCard(
+          context,
+          title: 'Opened',
+          value: stats.opened.toString(),
+          icon: Icons.open_in_new,
+          color: AppColors.info,
+        ),
+        _buildStatCard(
+          context,
+          title: 'Pending',
+          value: stats.pending.toString(),
+          icon: Icons.schedule,
+          color: AppColors.warning,
+        ),
+        _buildStatCard(
+          context,
+          title: 'Closed',
+          value: stats.closed.toString(),
+          icon: Icons.check_circle,
+          color: AppColors.success,
+        ),
+        _buildStatCard(
+          context,
+          title: 'High Priority',
+          value: stats.highPriority.toString(),
+          icon: Icons.priority_high,
+          color: AppColors.error,
+        ),
+        _buildStatCard(
+          context,
+          title: 'Urgent',
+          value: stats.urgent.toString(),
+          icon: Icons.warning,
+          color: AppColors.error,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(BuildContext context, {
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: color.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow.withValues(alpha: 0.08),
+            blurRadius: 8.r,
+            offset: Offset(0, 2.h),
+          ),
+        ],
       ),
-      child: Column(
+      child: Row(
         children: [
-          Icon(
-            icon,
-            size: 24.w,
-            color: color,
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(
+              icon,
               color: color,
+              size: 24.r,
             ),
           ),
-          SizedBox(height: 4.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.onBackground.withValues(alpha: 0.7),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: WebResponsive.getWebFontSize(24, context),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: WebResponsive.getWebFontSize(14, context),
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),

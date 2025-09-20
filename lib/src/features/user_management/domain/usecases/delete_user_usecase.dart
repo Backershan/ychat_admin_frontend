@@ -1,13 +1,14 @@
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../repositories/user_repository.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/repositories/user_repository.dart';
+import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 class DeleteUserUseCase {
   final UserRepository _repository;
 
   DeleteUserUseCase(this._repository);
 
-  Future<Either<Failure, void>> call(int userId) async {
+  Future<Either<Failure, UserActionResponse>> call(int userId) async {
     return await _repository.deleteUser(userId);
   }
 }

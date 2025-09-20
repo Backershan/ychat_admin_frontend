@@ -10,29 +10,29 @@ class ErrorHandler {
     String title = 'Error';
     
     if (error is Failure) {
-      switch (error.runtimeType) {
-        case NetworkFailure:
+      switch (error) {
+        case NetworkFailure _:
           message = AppConstants.networkErrorMessage;
           title = 'Network Error';
           break;
-        case ServerFailure:
+        case ServerFailure _:
           message = AppConstants.serverErrorMessage;
           title = 'Server Error';
           break;
-        case ValidationFailure:
-          message = error.message ?? AppConstants.validationErrorMessage;
+        case ValidationFailure _:
+          message = error.message;
           title = 'Validation Error';
           break;
-        case UnauthorizedFailure:
+        case UnauthorizedFailure _:
           message = AppConstants.authenticationErrorMessage;
           title = 'Authentication Error';
           break;
-        case ForbiddenFailure:
+        case ForbiddenFailure _:
           message = AppConstants.authorizationErrorMessage;
           title = 'Authorization Error';
           break;
         default:
-          message = error.message ?? AppConstants.unknownErrorMessage;
+          message = error.message;
           title = 'Error';
       }
     } else if (error is Exception) {

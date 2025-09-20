@@ -204,18 +204,29 @@ SettingsDataModel _$SettingsDataModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SettingsDataModel {
+  @JsonKey(name: 'enable_screen_share')
   bool get enableScreenShare => throw _privateConstructorUsedError;
+  @JsonKey(name: 'enable_app_in_app')
   bool get enableAppInApp => throw _privateConstructorUsedError;
+  @JsonKey(name: 'push_notifications')
   bool get pushNotifications => throw _privateConstructorUsedError;
-  String get defaultLanguage => throw _privateConstructorUsedError;
-  bool get maintenanceMode => throw _privateConstructorUsedError;
-  bool get registrationEnabled => throw _privateConstructorUsedError;
-  String get maxFileSize => throw _privateConstructorUsedError;
-  int get maxUsersPerGroup => throw _privateConstructorUsedError;
-  bool get autoBackupEnabled => throw _privateConstructorUsedError;
-  SecurityFeaturesModel get securityFeatures =>
+  @JsonKey(name: 'default_language')
+  String? get defaultLanguage => throw _privateConstructorUsedError;
+  @JsonKey(name: 'maintenance_mode')
+  bool? get maintenanceMode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'registration_enabled')
+  bool? get registrationEnabled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'max_file_size')
+  String? get maxFileSize => throw _privateConstructorUsedError;
+  @JsonKey(name: 'max_users_per_group')
+  int? get maxUsersPerGroup => throw _privateConstructorUsedError;
+  @JsonKey(name: 'auto_backup_enabled')
+  bool? get autoBackupEnabled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'security_features')
+  SecurityFeaturesModel? get securityFeatures =>
       throw _privateConstructorUsedError;
-  SystemInfoModel get systemInfo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'system_info')
+  SystemInfoModel? get systemInfo => throw _privateConstructorUsedError;
 
   /// Serializes this SettingsDataModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -235,21 +246,21 @@ abstract class $SettingsDataModelCopyWith<$Res> {
   ) = _$SettingsDataModelCopyWithImpl<$Res, SettingsDataModel>;
   @useResult
   $Res call({
-    bool enableScreenShare,
-    bool enableAppInApp,
-    bool pushNotifications,
-    String defaultLanguage,
-    bool maintenanceMode,
-    bool registrationEnabled,
-    String maxFileSize,
-    int maxUsersPerGroup,
-    bool autoBackupEnabled,
-    SecurityFeaturesModel securityFeatures,
-    SystemInfoModel systemInfo,
+    @JsonKey(name: 'enable_screen_share') bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') bool pushNotifications,
+    @JsonKey(name: 'default_language') String? defaultLanguage,
+    @JsonKey(name: 'maintenance_mode') bool? maintenanceMode,
+    @JsonKey(name: 'registration_enabled') bool? registrationEnabled,
+    @JsonKey(name: 'max_file_size') String? maxFileSize,
+    @JsonKey(name: 'max_users_per_group') int? maxUsersPerGroup,
+    @JsonKey(name: 'auto_backup_enabled') bool? autoBackupEnabled,
+    @JsonKey(name: 'security_features') SecurityFeaturesModel? securityFeatures,
+    @JsonKey(name: 'system_info') SystemInfoModel? systemInfo,
   });
 
-  $SecurityFeaturesModelCopyWith<$Res> get securityFeatures;
-  $SystemInfoModelCopyWith<$Res> get systemInfo;
+  $SecurityFeaturesModelCopyWith<$Res>? get securityFeatures;
+  $SystemInfoModelCopyWith<$Res>? get systemInfo;
 }
 
 /// @nodoc
@@ -270,14 +281,14 @@ class _$SettingsDataModelCopyWithImpl<$Res, $Val extends SettingsDataModel>
     Object? enableScreenShare = null,
     Object? enableAppInApp = null,
     Object? pushNotifications = null,
-    Object? defaultLanguage = null,
-    Object? maintenanceMode = null,
-    Object? registrationEnabled = null,
-    Object? maxFileSize = null,
-    Object? maxUsersPerGroup = null,
-    Object? autoBackupEnabled = null,
-    Object? securityFeatures = null,
-    Object? systemInfo = null,
+    Object? defaultLanguage = freezed,
+    Object? maintenanceMode = freezed,
+    Object? registrationEnabled = freezed,
+    Object? maxFileSize = freezed,
+    Object? maxUsersPerGroup = freezed,
+    Object? autoBackupEnabled = freezed,
+    Object? securityFeatures = freezed,
+    Object? systemInfo = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -293,38 +304,38 @@ class _$SettingsDataModelCopyWithImpl<$Res, $Val extends SettingsDataModel>
                 ? _value.pushNotifications
                 : pushNotifications // ignore: cast_nullable_to_non_nullable
                       as bool,
-            defaultLanguage: null == defaultLanguage
+            defaultLanguage: freezed == defaultLanguage
                 ? _value.defaultLanguage
                 : defaultLanguage // ignore: cast_nullable_to_non_nullable
-                      as String,
-            maintenanceMode: null == maintenanceMode
+                      as String?,
+            maintenanceMode: freezed == maintenanceMode
                 ? _value.maintenanceMode
                 : maintenanceMode // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            registrationEnabled: null == registrationEnabled
+                      as bool?,
+            registrationEnabled: freezed == registrationEnabled
                 ? _value.registrationEnabled
                 : registrationEnabled // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            maxFileSize: null == maxFileSize
+                      as bool?,
+            maxFileSize: freezed == maxFileSize
                 ? _value.maxFileSize
                 : maxFileSize // ignore: cast_nullable_to_non_nullable
-                      as String,
-            maxUsersPerGroup: null == maxUsersPerGroup
+                      as String?,
+            maxUsersPerGroup: freezed == maxUsersPerGroup
                 ? _value.maxUsersPerGroup
                 : maxUsersPerGroup // ignore: cast_nullable_to_non_nullable
-                      as int,
-            autoBackupEnabled: null == autoBackupEnabled
+                      as int?,
+            autoBackupEnabled: freezed == autoBackupEnabled
                 ? _value.autoBackupEnabled
                 : autoBackupEnabled // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            securityFeatures: null == securityFeatures
+                      as bool?,
+            securityFeatures: freezed == securityFeatures
                 ? _value.securityFeatures
                 : securityFeatures // ignore: cast_nullable_to_non_nullable
-                      as SecurityFeaturesModel,
-            systemInfo: null == systemInfo
+                      as SecurityFeaturesModel?,
+            systemInfo: freezed == systemInfo
                 ? _value.systemInfo
                 : systemInfo // ignore: cast_nullable_to_non_nullable
-                      as SystemInfoModel,
+                      as SystemInfoModel?,
           )
           as $Val,
     );
@@ -334,8 +345,12 @@ class _$SettingsDataModelCopyWithImpl<$Res, $Val extends SettingsDataModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $SecurityFeaturesModelCopyWith<$Res> get securityFeatures {
-    return $SecurityFeaturesModelCopyWith<$Res>(_value.securityFeatures, (
+  $SecurityFeaturesModelCopyWith<$Res>? get securityFeatures {
+    if (_value.securityFeatures == null) {
+      return null;
+    }
+
+    return $SecurityFeaturesModelCopyWith<$Res>(_value.securityFeatures!, (
       value,
     ) {
       return _then(_value.copyWith(securityFeatures: value) as $Val);
@@ -346,8 +361,12 @@ class _$SettingsDataModelCopyWithImpl<$Res, $Val extends SettingsDataModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $SystemInfoModelCopyWith<$Res> get systemInfo {
-    return $SystemInfoModelCopyWith<$Res>(_value.systemInfo, (value) {
+  $SystemInfoModelCopyWith<$Res>? get systemInfo {
+    if (_value.systemInfo == null) {
+      return null;
+    }
+
+    return $SystemInfoModelCopyWith<$Res>(_value.systemInfo!, (value) {
       return _then(_value.copyWith(systemInfo: value) as $Val);
     });
   }
@@ -363,23 +382,23 @@ abstract class _$$SettingsDataModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    bool enableScreenShare,
-    bool enableAppInApp,
-    bool pushNotifications,
-    String defaultLanguage,
-    bool maintenanceMode,
-    bool registrationEnabled,
-    String maxFileSize,
-    int maxUsersPerGroup,
-    bool autoBackupEnabled,
-    SecurityFeaturesModel securityFeatures,
-    SystemInfoModel systemInfo,
+    @JsonKey(name: 'enable_screen_share') bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') bool pushNotifications,
+    @JsonKey(name: 'default_language') String? defaultLanguage,
+    @JsonKey(name: 'maintenance_mode') bool? maintenanceMode,
+    @JsonKey(name: 'registration_enabled') bool? registrationEnabled,
+    @JsonKey(name: 'max_file_size') String? maxFileSize,
+    @JsonKey(name: 'max_users_per_group') int? maxUsersPerGroup,
+    @JsonKey(name: 'auto_backup_enabled') bool? autoBackupEnabled,
+    @JsonKey(name: 'security_features') SecurityFeaturesModel? securityFeatures,
+    @JsonKey(name: 'system_info') SystemInfoModel? systemInfo,
   });
 
   @override
-  $SecurityFeaturesModelCopyWith<$Res> get securityFeatures;
+  $SecurityFeaturesModelCopyWith<$Res>? get securityFeatures;
   @override
-  $SystemInfoModelCopyWith<$Res> get systemInfo;
+  $SystemInfoModelCopyWith<$Res>? get systemInfo;
 }
 
 /// @nodoc
@@ -399,14 +418,14 @@ class __$$SettingsDataModelImplCopyWithImpl<$Res>
     Object? enableScreenShare = null,
     Object? enableAppInApp = null,
     Object? pushNotifications = null,
-    Object? defaultLanguage = null,
-    Object? maintenanceMode = null,
-    Object? registrationEnabled = null,
-    Object? maxFileSize = null,
-    Object? maxUsersPerGroup = null,
-    Object? autoBackupEnabled = null,
-    Object? securityFeatures = null,
-    Object? systemInfo = null,
+    Object? defaultLanguage = freezed,
+    Object? maintenanceMode = freezed,
+    Object? registrationEnabled = freezed,
+    Object? maxFileSize = freezed,
+    Object? maxUsersPerGroup = freezed,
+    Object? autoBackupEnabled = freezed,
+    Object? securityFeatures = freezed,
+    Object? systemInfo = freezed,
   }) {
     return _then(
       _$SettingsDataModelImpl(
@@ -422,38 +441,38 @@ class __$$SettingsDataModelImplCopyWithImpl<$Res>
             ? _value.pushNotifications
             : pushNotifications // ignore: cast_nullable_to_non_nullable
                   as bool,
-        defaultLanguage: null == defaultLanguage
+        defaultLanguage: freezed == defaultLanguage
             ? _value.defaultLanguage
             : defaultLanguage // ignore: cast_nullable_to_non_nullable
-                  as String,
-        maintenanceMode: null == maintenanceMode
+                  as String?,
+        maintenanceMode: freezed == maintenanceMode
             ? _value.maintenanceMode
             : maintenanceMode // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        registrationEnabled: null == registrationEnabled
+                  as bool?,
+        registrationEnabled: freezed == registrationEnabled
             ? _value.registrationEnabled
             : registrationEnabled // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        maxFileSize: null == maxFileSize
+                  as bool?,
+        maxFileSize: freezed == maxFileSize
             ? _value.maxFileSize
             : maxFileSize // ignore: cast_nullable_to_non_nullable
-                  as String,
-        maxUsersPerGroup: null == maxUsersPerGroup
+                  as String?,
+        maxUsersPerGroup: freezed == maxUsersPerGroup
             ? _value.maxUsersPerGroup
             : maxUsersPerGroup // ignore: cast_nullable_to_non_nullable
-                  as int,
-        autoBackupEnabled: null == autoBackupEnabled
+                  as int?,
+        autoBackupEnabled: freezed == autoBackupEnabled
             ? _value.autoBackupEnabled
             : autoBackupEnabled // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        securityFeatures: null == securityFeatures
+                  as bool?,
+        securityFeatures: freezed == securityFeatures
             ? _value.securityFeatures
             : securityFeatures // ignore: cast_nullable_to_non_nullable
-                  as SecurityFeaturesModel,
-        systemInfo: null == systemInfo
+                  as SecurityFeaturesModel?,
+        systemInfo: freezed == systemInfo
             ? _value.systemInfo
             : systemInfo // ignore: cast_nullable_to_non_nullable
-                  as SystemInfoModel,
+                  as SystemInfoModel?,
       ),
     );
   }
@@ -463,44 +482,55 @@ class __$$SettingsDataModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SettingsDataModelImpl implements _SettingsDataModel {
   const _$SettingsDataModelImpl({
-    required this.enableScreenShare,
-    required this.enableAppInApp,
-    required this.pushNotifications,
-    required this.defaultLanguage,
-    required this.maintenanceMode,
-    required this.registrationEnabled,
-    required this.maxFileSize,
-    required this.maxUsersPerGroup,
-    required this.autoBackupEnabled,
-    required this.securityFeatures,
-    required this.systemInfo,
+    @JsonKey(name: 'enable_screen_share') required this.enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required this.enableAppInApp,
+    @JsonKey(name: 'push_notifications') required this.pushNotifications,
+    @JsonKey(name: 'default_language') this.defaultLanguage,
+    @JsonKey(name: 'maintenance_mode') this.maintenanceMode,
+    @JsonKey(name: 'registration_enabled') this.registrationEnabled,
+    @JsonKey(name: 'max_file_size') this.maxFileSize,
+    @JsonKey(name: 'max_users_per_group') this.maxUsersPerGroup,
+    @JsonKey(name: 'auto_backup_enabled') this.autoBackupEnabled,
+    @JsonKey(name: 'security_features') this.securityFeatures,
+    @JsonKey(name: 'system_info') this.systemInfo,
   });
 
   factory _$SettingsDataModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$SettingsDataModelImplFromJson(json);
 
   @override
+  @JsonKey(name: 'enable_screen_share')
   final bool enableScreenShare;
   @override
+  @JsonKey(name: 'enable_app_in_app')
   final bool enableAppInApp;
   @override
+  @JsonKey(name: 'push_notifications')
   final bool pushNotifications;
   @override
-  final String defaultLanguage;
+  @JsonKey(name: 'default_language')
+  final String? defaultLanguage;
   @override
-  final bool maintenanceMode;
+  @JsonKey(name: 'maintenance_mode')
+  final bool? maintenanceMode;
   @override
-  final bool registrationEnabled;
+  @JsonKey(name: 'registration_enabled')
+  final bool? registrationEnabled;
   @override
-  final String maxFileSize;
+  @JsonKey(name: 'max_file_size')
+  final String? maxFileSize;
   @override
-  final int maxUsersPerGroup;
+  @JsonKey(name: 'max_users_per_group')
+  final int? maxUsersPerGroup;
   @override
-  final bool autoBackupEnabled;
+  @JsonKey(name: 'auto_backup_enabled')
+  final bool? autoBackupEnabled;
   @override
-  final SecurityFeaturesModel securityFeatures;
+  @JsonKey(name: 'security_features')
+  final SecurityFeaturesModel? securityFeatures;
   @override
-  final SystemInfoModel systemInfo;
+  @JsonKey(name: 'system_info')
+  final SystemInfoModel? systemInfo;
 
   @override
   String toString() {
@@ -572,44 +602,56 @@ class _$SettingsDataModelImpl implements _SettingsDataModel {
 
 abstract class _SettingsDataModel implements SettingsDataModel {
   const factory _SettingsDataModel({
-    required final bool enableScreenShare,
-    required final bool enableAppInApp,
-    required final bool pushNotifications,
-    required final String defaultLanguage,
-    required final bool maintenanceMode,
-    required final bool registrationEnabled,
-    required final String maxFileSize,
-    required final int maxUsersPerGroup,
-    required final bool autoBackupEnabled,
-    required final SecurityFeaturesModel securityFeatures,
-    required final SystemInfoModel systemInfo,
+    @JsonKey(name: 'enable_screen_share') required final bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required final bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') required final bool pushNotifications,
+    @JsonKey(name: 'default_language') final String? defaultLanguage,
+    @JsonKey(name: 'maintenance_mode') final bool? maintenanceMode,
+    @JsonKey(name: 'registration_enabled') final bool? registrationEnabled,
+    @JsonKey(name: 'max_file_size') final String? maxFileSize,
+    @JsonKey(name: 'max_users_per_group') final int? maxUsersPerGroup,
+    @JsonKey(name: 'auto_backup_enabled') final bool? autoBackupEnabled,
+    @JsonKey(name: 'security_features')
+    final SecurityFeaturesModel? securityFeatures,
+    @JsonKey(name: 'system_info') final SystemInfoModel? systemInfo,
   }) = _$SettingsDataModelImpl;
 
   factory _SettingsDataModel.fromJson(Map<String, dynamic> json) =
       _$SettingsDataModelImpl.fromJson;
 
   @override
+  @JsonKey(name: 'enable_screen_share')
   bool get enableScreenShare;
   @override
+  @JsonKey(name: 'enable_app_in_app')
   bool get enableAppInApp;
   @override
+  @JsonKey(name: 'push_notifications')
   bool get pushNotifications;
   @override
-  String get defaultLanguage;
+  @JsonKey(name: 'default_language')
+  String? get defaultLanguage;
   @override
-  bool get maintenanceMode;
+  @JsonKey(name: 'maintenance_mode')
+  bool? get maintenanceMode;
   @override
-  bool get registrationEnabled;
+  @JsonKey(name: 'registration_enabled')
+  bool? get registrationEnabled;
   @override
-  String get maxFileSize;
+  @JsonKey(name: 'max_file_size')
+  String? get maxFileSize;
   @override
-  int get maxUsersPerGroup;
+  @JsonKey(name: 'max_users_per_group')
+  int? get maxUsersPerGroup;
   @override
-  bool get autoBackupEnabled;
+  @JsonKey(name: 'auto_backup_enabled')
+  bool? get autoBackupEnabled;
   @override
-  SecurityFeaturesModel get securityFeatures;
+  @JsonKey(name: 'security_features')
+  SecurityFeaturesModel? get securityFeatures;
   @override
-  SystemInfoModel get systemInfo;
+  @JsonKey(name: 'system_info')
+  SystemInfoModel? get systemInfo;
 
   /// Create a copy of SettingsDataModel
   /// with the given fields replaced by the non-null parameter values.
@@ -1037,4 +1079,234 @@ abstract class _SystemInfoModel implements SystemInfoModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SystemInfoModelImplCopyWith<_$SystemInfoModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+SettingsUpdateRequest _$SettingsUpdateRequestFromJson(
+  Map<String, dynamic> json,
+) {
+  return _SettingsUpdateRequest.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SettingsUpdateRequest {
+  @JsonKey(name: 'enable_screen_share')
+  bool get enableScreenShare => throw _privateConstructorUsedError;
+  @JsonKey(name: 'enable_app_in_app')
+  bool get enableAppInApp => throw _privateConstructorUsedError;
+  @JsonKey(name: 'push_notifications')
+  bool get pushNotifications => throw _privateConstructorUsedError;
+
+  /// Serializes this SettingsUpdateRequest to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SettingsUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SettingsUpdateRequestCopyWith<SettingsUpdateRequest> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SettingsUpdateRequestCopyWith<$Res> {
+  factory $SettingsUpdateRequestCopyWith(
+    SettingsUpdateRequest value,
+    $Res Function(SettingsUpdateRequest) then,
+  ) = _$SettingsUpdateRequestCopyWithImpl<$Res, SettingsUpdateRequest>;
+  @useResult
+  $Res call({
+    @JsonKey(name: 'enable_screen_share') bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') bool pushNotifications,
+  });
+}
+
+/// @nodoc
+class _$SettingsUpdateRequestCopyWithImpl<
+  $Res,
+  $Val extends SettingsUpdateRequest
+>
+    implements $SettingsUpdateRequestCopyWith<$Res> {
+  _$SettingsUpdateRequestCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SettingsUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? enableScreenShare = null,
+    Object? enableAppInApp = null,
+    Object? pushNotifications = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            enableScreenShare: null == enableScreenShare
+                ? _value.enableScreenShare
+                : enableScreenShare // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            enableAppInApp: null == enableAppInApp
+                ? _value.enableAppInApp
+                : enableAppInApp // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            pushNotifications: null == pushNotifications
+                ? _value.pushNotifications
+                : pushNotifications // ignore: cast_nullable_to_non_nullable
+                      as bool,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$SettingsUpdateRequestImplCopyWith<$Res>
+    implements $SettingsUpdateRequestCopyWith<$Res> {
+  factory _$$SettingsUpdateRequestImplCopyWith(
+    _$SettingsUpdateRequestImpl value,
+    $Res Function(_$SettingsUpdateRequestImpl) then,
+  ) = __$$SettingsUpdateRequestImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    @JsonKey(name: 'enable_screen_share') bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') bool pushNotifications,
+  });
+}
+
+/// @nodoc
+class __$$SettingsUpdateRequestImplCopyWithImpl<$Res>
+    extends
+        _$SettingsUpdateRequestCopyWithImpl<$Res, _$SettingsUpdateRequestImpl>
+    implements _$$SettingsUpdateRequestImplCopyWith<$Res> {
+  __$$SettingsUpdateRequestImplCopyWithImpl(
+    _$SettingsUpdateRequestImpl _value,
+    $Res Function(_$SettingsUpdateRequestImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of SettingsUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? enableScreenShare = null,
+    Object? enableAppInApp = null,
+    Object? pushNotifications = null,
+  }) {
+    return _then(
+      _$SettingsUpdateRequestImpl(
+        enableScreenShare: null == enableScreenShare
+            ? _value.enableScreenShare
+            : enableScreenShare // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        enableAppInApp: null == enableAppInApp
+            ? _value.enableAppInApp
+            : enableAppInApp // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        pushNotifications: null == pushNotifications
+            ? _value.pushNotifications
+            : pushNotifications // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SettingsUpdateRequestImpl implements _SettingsUpdateRequest {
+  const _$SettingsUpdateRequestImpl({
+    @JsonKey(name: 'enable_screen_share') required this.enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required this.enableAppInApp,
+    @JsonKey(name: 'push_notifications') required this.pushNotifications,
+  });
+
+  factory _$SettingsUpdateRequestImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SettingsUpdateRequestImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'enable_screen_share')
+  final bool enableScreenShare;
+  @override
+  @JsonKey(name: 'enable_app_in_app')
+  final bool enableAppInApp;
+  @override
+  @JsonKey(name: 'push_notifications')
+  final bool pushNotifications;
+
+  @override
+  String toString() {
+    return 'SettingsUpdateRequest(enableScreenShare: $enableScreenShare, enableAppInApp: $enableAppInApp, pushNotifications: $pushNotifications)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SettingsUpdateRequestImpl &&
+            (identical(other.enableScreenShare, enableScreenShare) ||
+                other.enableScreenShare == enableScreenShare) &&
+            (identical(other.enableAppInApp, enableAppInApp) ||
+                other.enableAppInApp == enableAppInApp) &&
+            (identical(other.pushNotifications, pushNotifications) ||
+                other.pushNotifications == pushNotifications));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    enableScreenShare,
+    enableAppInApp,
+    pushNotifications,
+  );
+
+  /// Create a copy of SettingsUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SettingsUpdateRequestImplCopyWith<_$SettingsUpdateRequestImpl>
+  get copyWith =>
+      __$$SettingsUpdateRequestImplCopyWithImpl<_$SettingsUpdateRequestImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SettingsUpdateRequestImplToJson(this);
+  }
+}
+
+abstract class _SettingsUpdateRequest implements SettingsUpdateRequest {
+  const factory _SettingsUpdateRequest({
+    @JsonKey(name: 'enable_screen_share') required final bool enableScreenShare,
+    @JsonKey(name: 'enable_app_in_app') required final bool enableAppInApp,
+    @JsonKey(name: 'push_notifications') required final bool pushNotifications,
+  }) = _$SettingsUpdateRequestImpl;
+
+  factory _SettingsUpdateRequest.fromJson(Map<String, dynamic> json) =
+      _$SettingsUpdateRequestImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'enable_screen_share')
+  bool get enableScreenShare;
+  @override
+  @JsonKey(name: 'enable_app_in_app')
+  bool get enableAppInApp;
+  @override
+  @JsonKey(name: 'push_notifications')
+  bool get pushNotifications;
+
+  /// Create a copy of SettingsUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SettingsUpdateRequestImplCopyWith<_$SettingsUpdateRequestImpl>
+  get copyWith => throw _privateConstructorUsedError;
 }

@@ -22,20 +22,31 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$UserEntity {
   int get id => throw _privateConstructorUsedError;
-  String get firstname => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  String get status => throw _privateConstructorUsedError;
+  String? get name =>
+      throw _privateConstructorUsedError; // Changed from firstname to name to match API
+  String? get email => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  bool? get isActive =>
+      throw _privateConstructorUsedError; // Changed from is_active to isActive for consistency
+  String? get createdAt =>
+      throw _privateConstructorUsedError; // Changed from created_at to createdAt
+  String? get lastSeen =>
+      throw _privateConstructorUsedError; // Changed from last_seen to lastSeen
+  // Keep additional fields for backward compatibility
+  String? get firstname => throw _privateConstructorUsedError;
   String? get lastname => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
+  String? get uid => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
-  DateTime? get lastLogin => throw _privateConstructorUsedError;
-  DateTime? get createdAt => throw _privateConstructorUsedError;
-  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  String? get role => throw _privateConstructorUsedError;
+  String? get ipAddress => throw _privateConstructorUsedError;
+  String? get deviceInfo => throw _privateConstructorUsedError;
+  String? get lastLoginAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
   String? get banReason => throw _privateConstructorUsedError;
   String? get banType => throw _privateConstructorUsedError;
-  DateTime? get bannedAt => throw _privateConstructorUsedError;
   String? get deactivationReason => throw _privateConstructorUsedError;
-  DateTime? get deactivatedAt => throw _privateConstructorUsedError;
+  bool? get isBanned => throw _privateConstructorUsedError;
 
   /// Serializes this UserEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -56,20 +67,26 @@ abstract class $UserEntityCopyWith<$Res> {
   @useResult
   $Res call({
     int id,
-    String firstname,
-    String email,
-    String status,
+    String? name,
+    String? email,
+    String? status,
+    bool? isActive,
+    String? createdAt,
+    String? lastSeen,
+    String? firstname,
     String? lastname,
     String? phone,
+    String? uid,
     String? avatar,
-    DateTime? lastLogin,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? role,
+    String? ipAddress,
+    String? deviceInfo,
+    String? lastLoginAt,
+    String? updatedAt,
     String? banReason,
     String? banType,
-    DateTime? bannedAt,
     String? deactivationReason,
-    DateTime? deactivatedAt,
+    bool? isBanned,
   });
 }
 
@@ -89,20 +106,26 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
   @override
   $Res call({
     Object? id = null,
-    Object? firstname = null,
-    Object? email = null,
-    Object? status = null,
+    Object? name = freezed,
+    Object? email = freezed,
+    Object? status = freezed,
+    Object? isActive = freezed,
+    Object? createdAt = freezed,
+    Object? lastSeen = freezed,
+    Object? firstname = freezed,
     Object? lastname = freezed,
     Object? phone = freezed,
+    Object? uid = freezed,
     Object? avatar = freezed,
-    Object? lastLogin = freezed,
-    Object? createdAt = freezed,
+    Object? role = freezed,
+    Object? ipAddress = freezed,
+    Object? deviceInfo = freezed,
+    Object? lastLoginAt = freezed,
     Object? updatedAt = freezed,
     Object? banReason = freezed,
     Object? banType = freezed,
-    Object? bannedAt = freezed,
     Object? deactivationReason = freezed,
-    Object? deactivatedAt = freezed,
+    Object? isBanned = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -110,18 +133,34 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
                       as int,
-            firstname: null == firstname
-                ? _value.firstname
-                : firstname // ignore: cast_nullable_to_non_nullable
-                      as String,
-            email: null == email
+            name: freezed == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            email: freezed == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            status: null == status
+                      as String?,
+            status: freezed == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as String?,
+            isActive: freezed == isActive
+                ? _value.isActive
+                : isActive // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            lastSeen: freezed == lastSeen
+                ? _value.lastSeen
+                : lastSeen // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            firstname: freezed == firstname
+                ? _value.firstname
+                : firstname // ignore: cast_nullable_to_non_nullable
+                      as String?,
             lastname: freezed == lastname
                 ? _value.lastname
                 : lastname // ignore: cast_nullable_to_non_nullable
@@ -130,22 +169,34 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
                 ? _value.phone
                 : phone // ignore: cast_nullable_to_non_nullable
                       as String?,
+            uid: freezed == uid
+                ? _value.uid
+                : uid // ignore: cast_nullable_to_non_nullable
+                      as String?,
             avatar: freezed == avatar
                 ? _value.avatar
                 : avatar // ignore: cast_nullable_to_non_nullable
                       as String?,
-            lastLogin: freezed == lastLogin
-                ? _value.lastLogin
-                : lastLogin // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            createdAt: freezed == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
+            role: freezed == role
+                ? _value.role
+                : role // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            ipAddress: freezed == ipAddress
+                ? _value.ipAddress
+                : ipAddress // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            deviceInfo: freezed == deviceInfo
+                ? _value.deviceInfo
+                : deviceInfo // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            lastLoginAt: freezed == lastLoginAt
+                ? _value.lastLoginAt
+                : lastLoginAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
             updatedAt: freezed == updatedAt
                 ? _value.updatedAt
                 : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
+                      as String?,
             banReason: freezed == banReason
                 ? _value.banReason
                 : banReason // ignore: cast_nullable_to_non_nullable
@@ -154,18 +205,14 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
                 ? _value.banType
                 : banType // ignore: cast_nullable_to_non_nullable
                       as String?,
-            bannedAt: freezed == bannedAt
-                ? _value.bannedAt
-                : bannedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
             deactivationReason: freezed == deactivationReason
                 ? _value.deactivationReason
                 : deactivationReason // ignore: cast_nullable_to_non_nullable
                       as String?,
-            deactivatedAt: freezed == deactivatedAt
-                ? _value.deactivatedAt
-                : deactivatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
+            isBanned: freezed == isBanned
+                ? _value.isBanned
+                : isBanned // ignore: cast_nullable_to_non_nullable
+                      as bool?,
           )
           as $Val,
     );
@@ -183,20 +230,26 @@ abstract class _$$UserEntityImplCopyWith<$Res>
   @useResult
   $Res call({
     int id,
-    String firstname,
-    String email,
-    String status,
+    String? name,
+    String? email,
+    String? status,
+    bool? isActive,
+    String? createdAt,
+    String? lastSeen,
+    String? firstname,
     String? lastname,
     String? phone,
+    String? uid,
     String? avatar,
-    DateTime? lastLogin,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? role,
+    String? ipAddress,
+    String? deviceInfo,
+    String? lastLoginAt,
+    String? updatedAt,
     String? banReason,
     String? banType,
-    DateTime? bannedAt,
     String? deactivationReason,
-    DateTime? deactivatedAt,
+    bool? isBanned,
   });
 }
 
@@ -215,20 +268,26 @@ class __$$UserEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? firstname = null,
-    Object? email = null,
-    Object? status = null,
+    Object? name = freezed,
+    Object? email = freezed,
+    Object? status = freezed,
+    Object? isActive = freezed,
+    Object? createdAt = freezed,
+    Object? lastSeen = freezed,
+    Object? firstname = freezed,
     Object? lastname = freezed,
     Object? phone = freezed,
+    Object? uid = freezed,
     Object? avatar = freezed,
-    Object? lastLogin = freezed,
-    Object? createdAt = freezed,
+    Object? role = freezed,
+    Object? ipAddress = freezed,
+    Object? deviceInfo = freezed,
+    Object? lastLoginAt = freezed,
     Object? updatedAt = freezed,
     Object? banReason = freezed,
     Object? banType = freezed,
-    Object? bannedAt = freezed,
     Object? deactivationReason = freezed,
-    Object? deactivatedAt = freezed,
+    Object? isBanned = freezed,
   }) {
     return _then(
       _$UserEntityImpl(
@@ -236,18 +295,34 @@ class __$$UserEntityImplCopyWithImpl<$Res>
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as int,
-        firstname: null == firstname
-            ? _value.firstname
-            : firstname // ignore: cast_nullable_to_non_nullable
-                  as String,
-        email: null == email
+        name: freezed == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        email: freezed == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        status: null == status
+                  as String?,
+        status: freezed == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as String?,
+        isActive: freezed == isActive
+            ? _value.isActive
+            : isActive // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastSeen: freezed == lastSeen
+            ? _value.lastSeen
+            : lastSeen // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        firstname: freezed == firstname
+            ? _value.firstname
+            : firstname // ignore: cast_nullable_to_non_nullable
+                  as String?,
         lastname: freezed == lastname
             ? _value.lastname
             : lastname // ignore: cast_nullable_to_non_nullable
@@ -256,22 +331,34 @@ class __$$UserEntityImplCopyWithImpl<$Res>
             ? _value.phone
             : phone // ignore: cast_nullable_to_non_nullable
                   as String?,
+        uid: freezed == uid
+            ? _value.uid
+            : uid // ignore: cast_nullable_to_non_nullable
+                  as String?,
         avatar: freezed == avatar
             ? _value.avatar
             : avatar // ignore: cast_nullable_to_non_nullable
                   as String?,
-        lastLogin: freezed == lastLogin
-            ? _value.lastLogin
-            : lastLogin // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        createdAt: freezed == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
+        role: freezed == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        ipAddress: freezed == ipAddress
+            ? _value.ipAddress
+            : ipAddress // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        deviceInfo: freezed == deviceInfo
+            ? _value.deviceInfo
+            : deviceInfo // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        lastLoginAt: freezed == lastLoginAt
+            ? _value.lastLoginAt
+            : lastLoginAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
         updatedAt: freezed == updatedAt
             ? _value.updatedAt
             : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
+                  as String?,
         banReason: freezed == banReason
             ? _value.banReason
             : banReason // ignore: cast_nullable_to_non_nullable
@@ -280,18 +367,14 @@ class __$$UserEntityImplCopyWithImpl<$Res>
             ? _value.banType
             : banType // ignore: cast_nullable_to_non_nullable
                   as String?,
-        bannedAt: freezed == bannedAt
-            ? _value.bannedAt
-            : bannedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
         deactivationReason: freezed == deactivationReason
             ? _value.deactivationReason
             : deactivationReason // ignore: cast_nullable_to_non_nullable
                   as String?,
-        deactivatedAt: freezed == deactivatedAt
-            ? _value.deactivatedAt
-            : deactivatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
+        isBanned: freezed == isBanned
+            ? _value.isBanned
+            : isBanned // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -302,20 +385,26 @@ class __$$UserEntityImplCopyWithImpl<$Res>
 class _$UserEntityImpl implements _UserEntity {
   const _$UserEntityImpl({
     required this.id,
-    required this.firstname,
-    required this.email,
-    required this.status,
+    this.name,
+    this.email,
+    this.status,
+    this.isActive,
+    this.createdAt,
+    this.lastSeen,
+    this.firstname,
     this.lastname,
     this.phone,
+    this.uid,
     this.avatar,
-    this.lastLogin,
-    this.createdAt,
+    this.role,
+    this.ipAddress,
+    this.deviceInfo,
+    this.lastLoginAt,
     this.updatedAt,
     this.banReason,
     this.banType,
-    this.bannedAt,
     this.deactivationReason,
-    this.deactivatedAt,
+    this.isBanned,
   });
 
   factory _$UserEntityImpl.fromJson(Map<String, dynamic> json) =>
@@ -324,37 +413,54 @@ class _$UserEntityImpl implements _UserEntity {
   @override
   final int id;
   @override
-  final String firstname;
+  final String? name;
+  // Changed from firstname to name to match API
   @override
-  final String email;
+  final String? email;
   @override
-  final String status;
+  final String? status;
+  @override
+  final bool? isActive;
+  // Changed from is_active to isActive for consistency
+  @override
+  final String? createdAt;
+  // Changed from created_at to createdAt
+  @override
+  final String? lastSeen;
+  // Changed from last_seen to lastSeen
+  // Keep additional fields for backward compatibility
+  @override
+  final String? firstname;
   @override
   final String? lastname;
   @override
   final String? phone;
   @override
+  final String? uid;
+  @override
   final String? avatar;
   @override
-  final DateTime? lastLogin;
+  final String? role;
   @override
-  final DateTime? createdAt;
+  final String? ipAddress;
   @override
-  final DateTime? updatedAt;
+  final String? deviceInfo;
+  @override
+  final String? lastLoginAt;
+  @override
+  final String? updatedAt;
   @override
   final String? banReason;
   @override
   final String? banType;
   @override
-  final DateTime? bannedAt;
-  @override
   final String? deactivationReason;
   @override
-  final DateTime? deactivatedAt;
+  final bool? isBanned;
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, firstname: $firstname, email: $email, status: $status, lastname: $lastname, phone: $phone, avatar: $avatar, lastLogin: $lastLogin, createdAt: $createdAt, updatedAt: $updatedAt, banReason: $banReason, banType: $banType, bannedAt: $bannedAt, deactivationReason: $deactivationReason, deactivatedAt: $deactivatedAt)';
+    return 'UserEntity(id: $id, name: $name, email: $email, status: $status, isActive: $isActive, createdAt: $createdAt, lastSeen: $lastSeen, firstname: $firstname, lastname: $lastname, phone: $phone, uid: $uid, avatar: $avatar, role: $role, ipAddress: $ipAddress, deviceInfo: $deviceInfo, lastLoginAt: $lastLoginAt, updatedAt: $updatedAt, banReason: $banReason, banType: $banType, deactivationReason: $deactivationReason, isBanned: $isBanned)';
   }
 
   @override
@@ -363,51 +469,66 @@ class _$UserEntityImpl implements _UserEntity {
         (other.runtimeType == runtimeType &&
             other is _$UserEntityImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.firstname, firstname) ||
-                other.firstname == firstname) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.lastSeen, lastSeen) ||
+                other.lastSeen == lastSeen) &&
+            (identical(other.firstname, firstname) ||
+                other.firstname == firstname) &&
             (identical(other.lastname, lastname) ||
                 other.lastname == lastname) &&
             (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
-            (identical(other.lastLogin, lastLogin) ||
-                other.lastLogin == lastLogin) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.ipAddress, ipAddress) ||
+                other.ipAddress == ipAddress) &&
+            (identical(other.deviceInfo, deviceInfo) ||
+                other.deviceInfo == deviceInfo) &&
+            (identical(other.lastLoginAt, lastLoginAt) ||
+                other.lastLoginAt == lastLoginAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.banReason, banReason) ||
                 other.banReason == banReason) &&
             (identical(other.banType, banType) || other.banType == banType) &&
-            (identical(other.bannedAt, bannedAt) ||
-                other.bannedAt == bannedAt) &&
             (identical(other.deactivationReason, deactivationReason) ||
                 other.deactivationReason == deactivationReason) &&
-            (identical(other.deactivatedAt, deactivatedAt) ||
-                other.deactivatedAt == deactivatedAt));
+            (identical(other.isBanned, isBanned) ||
+                other.isBanned == isBanned));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
-    firstname,
+    name,
     email,
     status,
+    isActive,
+    createdAt,
+    lastSeen,
+    firstname,
     lastname,
     phone,
+    uid,
     avatar,
-    lastLogin,
-    createdAt,
+    role,
+    ipAddress,
+    deviceInfo,
+    lastLoginAt,
     updatedAt,
     banReason,
     banType,
-    bannedAt,
     deactivationReason,
-    deactivatedAt,
-  );
+    isBanned,
+  ]);
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -426,20 +547,26 @@ class _$UserEntityImpl implements _UserEntity {
 abstract class _UserEntity implements UserEntity {
   const factory _UserEntity({
     required final int id,
-    required final String firstname,
-    required final String email,
-    required final String status,
+    final String? name,
+    final String? email,
+    final String? status,
+    final bool? isActive,
+    final String? createdAt,
+    final String? lastSeen,
+    final String? firstname,
     final String? lastname,
     final String? phone,
+    final String? uid,
     final String? avatar,
-    final DateTime? lastLogin,
-    final DateTime? createdAt,
-    final DateTime? updatedAt,
+    final String? role,
+    final String? ipAddress,
+    final String? deviceInfo,
+    final String? lastLoginAt,
+    final String? updatedAt,
     final String? banReason,
     final String? banType,
-    final DateTime? bannedAt,
     final String? deactivationReason,
-    final DateTime? deactivatedAt,
+    final bool? isBanned,
   }) = _$UserEntityImpl;
 
   factory _UserEntity.fromJson(Map<String, dynamic> json) =
@@ -448,33 +575,46 @@ abstract class _UserEntity implements UserEntity {
   @override
   int get id;
   @override
-  String get firstname;
+  String? get name; // Changed from firstname to name to match API
   @override
-  String get email;
+  String? get email;
   @override
-  String get status;
+  String? get status;
+  @override
+  bool? get isActive; // Changed from is_active to isActive for consistency
+  @override
+  String? get createdAt; // Changed from created_at to createdAt
+  @override
+  String? get lastSeen; // Changed from last_seen to lastSeen
+  // Keep additional fields for backward compatibility
+  @override
+  String? get firstname;
   @override
   String? get lastname;
   @override
   String? get phone;
   @override
+  String? get uid;
+  @override
   String? get avatar;
   @override
-  DateTime? get lastLogin;
+  String? get role;
   @override
-  DateTime? get createdAt;
+  String? get ipAddress;
   @override
-  DateTime? get updatedAt;
+  String? get deviceInfo;
+  @override
+  String? get lastLoginAt;
+  @override
+  String? get updatedAt;
   @override
   String? get banReason;
   @override
   String? get banType;
   @override
-  DateTime? get bannedAt;
-  @override
   String? get deactivationReason;
   @override
-  DateTime? get deactivatedAt;
+  bool? get isBanned;
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -484,48 +624,261 @@ abstract class _UserEntity implements UserEntity {
       throw _privateConstructorUsedError;
 }
 
-UserListEntity _$UserListEntityFromJson(Map<String, dynamic> json) {
-  return _UserListEntity.fromJson(json);
+UserListResponse _$UserListResponseFromJson(Map<String, dynamic> json) {
+  return _UserListResponse.fromJson(json);
 }
 
 /// @nodoc
-mixin _$UserListEntity {
-  List<UserEntity> get users => throw _privateConstructorUsedError;
-  UserPaginationEntity get pagination => throw _privateConstructorUsedError;
+mixin _$UserListResponse {
+  bool get success => throw _privateConstructorUsedError;
+  UserListData get data => throw _privateConstructorUsedError;
+  String? get message => throw _privateConstructorUsedError;
 
-  /// Serializes this UserListEntity to a JSON map.
+  /// Serializes this UserListResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $UserListEntityCopyWith<UserListEntity> get copyWith =>
+  $UserListResponseCopyWith<UserListResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $UserListEntityCopyWith<$Res> {
-  factory $UserListEntityCopyWith(
-    UserListEntity value,
-    $Res Function(UserListEntity) then,
-  ) = _$UserListEntityCopyWithImpl<$Res, UserListEntity>;
+abstract class $UserListResponseCopyWith<$Res> {
+  factory $UserListResponseCopyWith(
+    UserListResponse value,
+    $Res Function(UserListResponse) then,
+  ) = _$UserListResponseCopyWithImpl<$Res, UserListResponse>;
   @useResult
-  $Res call({List<UserEntity> users, UserPaginationEntity pagination});
+  $Res call({bool success, UserListData data, String? message});
 
-  $UserPaginationEntityCopyWith<$Res> get pagination;
+  $UserListDataCopyWith<$Res> get data;
 }
 
 /// @nodoc
-class _$UserListEntityCopyWithImpl<$Res, $Val extends UserListEntity>
-    implements $UserListEntityCopyWith<$Res> {
-  _$UserListEntityCopyWithImpl(this._value, this._then);
+class _$UserListResponseCopyWithImpl<$Res, $Val extends UserListResponse>
+    implements $UserListResponseCopyWith<$Res> {
+  _$UserListResponseCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? data = null,
+    Object? message = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            success: null == success
+                ? _value.success
+                : success // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            data: null == data
+                ? _value.data
+                : data // ignore: cast_nullable_to_non_nullable
+                      as UserListData,
+            message: freezed == message
+                ? _value.message
+                : message // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of UserListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserListDataCopyWith<$Res> get data {
+    return $UserListDataCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$UserListResponseImplCopyWith<$Res>
+    implements $UserListResponseCopyWith<$Res> {
+  factory _$$UserListResponseImplCopyWith(
+    _$UserListResponseImpl value,
+    $Res Function(_$UserListResponseImpl) then,
+  ) = __$$UserListResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool success, UserListData data, String? message});
+
+  @override
+  $UserListDataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class __$$UserListResponseImplCopyWithImpl<$Res>
+    extends _$UserListResponseCopyWithImpl<$Res, _$UserListResponseImpl>
+    implements _$$UserListResponseImplCopyWith<$Res> {
+  __$$UserListResponseImplCopyWithImpl(
+    _$UserListResponseImpl _value,
+    $Res Function(_$UserListResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of UserListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? data = null,
+    Object? message = freezed,
+  }) {
+    return _then(
+      _$UserListResponseImpl(
+        success: null == success
+            ? _value.success
+            : success // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        data: null == data
+            ? _value.data
+            : data // ignore: cast_nullable_to_non_nullable
+                  as UserListData,
+        message: freezed == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$UserListResponseImpl implements _UserListResponse {
+  const _$UserListResponseImpl({
+    required this.success,
+    required this.data,
+    this.message,
+  });
+
+  factory _$UserListResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserListResponseImplFromJson(json);
+
+  @override
+  final bool success;
+  @override
+  final UserListData data;
+  @override
+  final String? message;
+
+  @override
+  String toString() {
+    return 'UserListResponse(success: $success, data: $data, message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserListResponseImpl &&
+            (identical(other.success, success) || other.success == success) &&
+            (identical(other.data, data) || other.data == data) &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, success, data, message);
+
+  /// Create a copy of UserListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserListResponseImplCopyWith<_$UserListResponseImpl> get copyWith =>
+      __$$UserListResponseImplCopyWithImpl<_$UserListResponseImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UserListResponseImplToJson(this);
+  }
+}
+
+abstract class _UserListResponse implements UserListResponse {
+  const factory _UserListResponse({
+    required final bool success,
+    required final UserListData data,
+    final String? message,
+  }) = _$UserListResponseImpl;
+
+  factory _UserListResponse.fromJson(Map<String, dynamic> json) =
+      _$UserListResponseImpl.fromJson;
+
+  @override
+  bool get success;
+  @override
+  UserListData get data;
+  @override
+  String? get message;
+
+  /// Create a copy of UserListResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UserListResponseImplCopyWith<_$UserListResponseImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+UserListData _$UserListDataFromJson(Map<String, dynamic> json) {
+  return _UserListData.fromJson(json);
+}
+
+/// @nodoc
+mixin _$UserListData {
+  List<UserEntity> get users => throw _privateConstructorUsedError;
+  UserPagination get pagination => throw _privateConstructorUsedError;
+
+  /// Serializes this UserListData to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of UserListData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UserListDataCopyWith<UserListData> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserListDataCopyWith<$Res> {
+  factory $UserListDataCopyWith(
+    UserListData value,
+    $Res Function(UserListData) then,
+  ) = _$UserListDataCopyWithImpl<$Res, UserListData>;
+  @useResult
+  $Res call({List<UserEntity> users, UserPagination pagination});
+
+  $UserPaginationCopyWith<$Res> get pagination;
+}
+
+/// @nodoc
+class _$UserListDataCopyWithImpl<$Res, $Val extends UserListData>
+    implements $UserListDataCopyWith<$Res> {
+  _$UserListDataCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of UserListData
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -539,54 +892,54 @@ class _$UserListEntityCopyWithImpl<$Res, $Val extends UserListEntity>
             pagination: null == pagination
                 ? _value.pagination
                 : pagination // ignore: cast_nullable_to_non_nullable
-                      as UserPaginationEntity,
+                      as UserPagination,
           )
           as $Val,
     );
   }
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListData
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserPaginationEntityCopyWith<$Res> get pagination {
-    return $UserPaginationEntityCopyWith<$Res>(_value.pagination, (value) {
+  $UserPaginationCopyWith<$Res> get pagination {
+    return $UserPaginationCopyWith<$Res>(_value.pagination, (value) {
       return _then(_value.copyWith(pagination: value) as $Val);
     });
   }
 }
 
 /// @nodoc
-abstract class _$$UserListEntityImplCopyWith<$Res>
-    implements $UserListEntityCopyWith<$Res> {
-  factory _$$UserListEntityImplCopyWith(
-    _$UserListEntityImpl value,
-    $Res Function(_$UserListEntityImpl) then,
-  ) = __$$UserListEntityImplCopyWithImpl<$Res>;
+abstract class _$$UserListDataImplCopyWith<$Res>
+    implements $UserListDataCopyWith<$Res> {
+  factory _$$UserListDataImplCopyWith(
+    _$UserListDataImpl value,
+    $Res Function(_$UserListDataImpl) then,
+  ) = __$$UserListDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<UserEntity> users, UserPaginationEntity pagination});
+  $Res call({List<UserEntity> users, UserPagination pagination});
 
   @override
-  $UserPaginationEntityCopyWith<$Res> get pagination;
+  $UserPaginationCopyWith<$Res> get pagination;
 }
 
 /// @nodoc
-class __$$UserListEntityImplCopyWithImpl<$Res>
-    extends _$UserListEntityCopyWithImpl<$Res, _$UserListEntityImpl>
-    implements _$$UserListEntityImplCopyWith<$Res> {
-  __$$UserListEntityImplCopyWithImpl(
-    _$UserListEntityImpl _value,
-    $Res Function(_$UserListEntityImpl) _then,
+class __$$UserListDataImplCopyWithImpl<$Res>
+    extends _$UserListDataCopyWithImpl<$Res, _$UserListDataImpl>
+    implements _$$UserListDataImplCopyWith<$Res> {
+  __$$UserListDataImplCopyWithImpl(
+    _$UserListDataImpl _value,
+    $Res Function(_$UserListDataImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListData
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? users = null, Object? pagination = null}) {
     return _then(
-      _$UserListEntityImpl(
+      _$UserListDataImpl(
         users: null == users
             ? _value._users
             : users // ignore: cast_nullable_to_non_nullable
@@ -594,7 +947,7 @@ class __$$UserListEntityImplCopyWithImpl<$Res>
         pagination: null == pagination
             ? _value.pagination
             : pagination // ignore: cast_nullable_to_non_nullable
-                  as UserPaginationEntity,
+                  as UserPagination,
       ),
     );
   }
@@ -602,14 +955,14 @@ class __$$UserListEntityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UserListEntityImpl implements _UserListEntity {
-  const _$UserListEntityImpl({
+class _$UserListDataImpl implements _UserListData {
+  const _$UserListDataImpl({
     required final List<UserEntity> users,
     required this.pagination,
   }) : _users = users;
 
-  factory _$UserListEntityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UserListEntityImplFromJson(json);
+  factory _$UserListDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserListDataImplFromJson(json);
 
   final List<UserEntity> _users;
   @override
@@ -620,18 +973,18 @@ class _$UserListEntityImpl implements _UserListEntity {
   }
 
   @override
-  final UserPaginationEntity pagination;
+  final UserPagination pagination;
 
   @override
   String toString() {
-    return 'UserListEntity(users: $users, pagination: $pagination)';
+    return 'UserListData(users: $users, pagination: $pagination)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UserListEntityImpl &&
+            other is _$UserListDataImpl &&
             const DeepCollectionEquality().equals(other._users, _users) &&
             (identical(other.pagination, pagination) ||
                 other.pagination == pagination));
@@ -645,90 +998,84 @@ class _$UserListEntityImpl implements _UserListEntity {
     pagination,
   );
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListData
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$UserListEntityImplCopyWith<_$UserListEntityImpl> get copyWith =>
-      __$$UserListEntityImplCopyWithImpl<_$UserListEntityImpl>(
-        this,
-        _$identity,
-      );
+  _$$UserListDataImplCopyWith<_$UserListDataImpl> get copyWith =>
+      __$$UserListDataImplCopyWithImpl<_$UserListDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UserListEntityImplToJson(this);
+    return _$$UserListDataImplToJson(this);
   }
 }
 
-abstract class _UserListEntity implements UserListEntity {
-  const factory _UserListEntity({
+abstract class _UserListData implements UserListData {
+  const factory _UserListData({
     required final List<UserEntity> users,
-    required final UserPaginationEntity pagination,
-  }) = _$UserListEntityImpl;
+    required final UserPagination pagination,
+  }) = _$UserListDataImpl;
 
-  factory _UserListEntity.fromJson(Map<String, dynamic> json) =
-      _$UserListEntityImpl.fromJson;
+  factory _UserListData.fromJson(Map<String, dynamic> json) =
+      _$UserListDataImpl.fromJson;
 
   @override
   List<UserEntity> get users;
   @override
-  UserPaginationEntity get pagination;
+  UserPagination get pagination;
 
-  /// Create a copy of UserListEntity
+  /// Create a copy of UserListData
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UserListEntityImplCopyWith<_$UserListEntityImpl> get copyWith =>
+  _$$UserListDataImplCopyWith<_$UserListDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-UserPaginationEntity _$UserPaginationEntityFromJson(Map<String, dynamic> json) {
-  return _UserPaginationEntity.fromJson(json);
+UserPagination _$UserPaginationFromJson(Map<String, dynamic> json) {
+  return _UserPagination.fromJson(json);
 }
 
 /// @nodoc
-mixin _$UserPaginationEntity {
+mixin _$UserPagination {
   int get total => throw _privateConstructorUsedError;
   int get page => throw _privateConstructorUsedError;
   int get pages => throw _privateConstructorUsedError;
   int get limit => throw _privateConstructorUsedError;
 
-  /// Serializes this UserPaginationEntity to a JSON map.
+  /// Serializes this UserPagination to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of UserPaginationEntity
+  /// Create a copy of UserPagination
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $UserPaginationEntityCopyWith<UserPaginationEntity> get copyWith =>
+  $UserPaginationCopyWith<UserPagination> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $UserPaginationEntityCopyWith<$Res> {
-  factory $UserPaginationEntityCopyWith(
-    UserPaginationEntity value,
-    $Res Function(UserPaginationEntity) then,
-  ) = _$UserPaginationEntityCopyWithImpl<$Res, UserPaginationEntity>;
+abstract class $UserPaginationCopyWith<$Res> {
+  factory $UserPaginationCopyWith(
+    UserPagination value,
+    $Res Function(UserPagination) then,
+  ) = _$UserPaginationCopyWithImpl<$Res, UserPagination>;
   @useResult
   $Res call({int total, int page, int pages, int limit});
 }
 
 /// @nodoc
-class _$UserPaginationEntityCopyWithImpl<
-  $Res,
-  $Val extends UserPaginationEntity
->
-    implements $UserPaginationEntityCopyWith<$Res> {
-  _$UserPaginationEntityCopyWithImpl(this._value, this._then);
+class _$UserPaginationCopyWithImpl<$Res, $Val extends UserPagination>
+    implements $UserPaginationCopyWith<$Res> {
+  _$UserPaginationCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of UserPaginationEntity
+  /// Create a copy of UserPagination
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -763,27 +1110,27 @@ class _$UserPaginationEntityCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$UserPaginationEntityImplCopyWith<$Res>
-    implements $UserPaginationEntityCopyWith<$Res> {
-  factory _$$UserPaginationEntityImplCopyWith(
-    _$UserPaginationEntityImpl value,
-    $Res Function(_$UserPaginationEntityImpl) then,
-  ) = __$$UserPaginationEntityImplCopyWithImpl<$Res>;
+abstract class _$$UserPaginationImplCopyWith<$Res>
+    implements $UserPaginationCopyWith<$Res> {
+  factory _$$UserPaginationImplCopyWith(
+    _$UserPaginationImpl value,
+    $Res Function(_$UserPaginationImpl) then,
+  ) = __$$UserPaginationImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int total, int page, int pages, int limit});
 }
 
 /// @nodoc
-class __$$UserPaginationEntityImplCopyWithImpl<$Res>
-    extends _$UserPaginationEntityCopyWithImpl<$Res, _$UserPaginationEntityImpl>
-    implements _$$UserPaginationEntityImplCopyWith<$Res> {
-  __$$UserPaginationEntityImplCopyWithImpl(
-    _$UserPaginationEntityImpl _value,
-    $Res Function(_$UserPaginationEntityImpl) _then,
+class __$$UserPaginationImplCopyWithImpl<$Res>
+    extends _$UserPaginationCopyWithImpl<$Res, _$UserPaginationImpl>
+    implements _$$UserPaginationImplCopyWith<$Res> {
+  __$$UserPaginationImplCopyWithImpl(
+    _$UserPaginationImpl _value,
+    $Res Function(_$UserPaginationImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of UserPaginationEntity
+  /// Create a copy of UserPagination
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -794,7 +1141,7 @@ class __$$UserPaginationEntityImplCopyWithImpl<$Res>
     Object? limit = null,
   }) {
     return _then(
-      _$UserPaginationEntityImpl(
+      _$UserPaginationImpl(
         total: null == total
             ? _value.total
             : total // ignore: cast_nullable_to_non_nullable
@@ -818,16 +1165,16 @@ class __$$UserPaginationEntityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UserPaginationEntityImpl implements _UserPaginationEntity {
-  const _$UserPaginationEntityImpl({
+class _$UserPaginationImpl implements _UserPagination {
+  const _$UserPaginationImpl({
     required this.total,
     required this.page,
     required this.pages,
     required this.limit,
   });
 
-  factory _$UserPaginationEntityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UserPaginationEntityImplFromJson(json);
+  factory _$UserPaginationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserPaginationImplFromJson(json);
 
   @override
   final int total;
@@ -840,14 +1187,14 @@ class _$UserPaginationEntityImpl implements _UserPaginationEntity {
 
   @override
   String toString() {
-    return 'UserPaginationEntity(total: $total, page: $page, pages: $pages, limit: $limit)';
+    return 'UserPagination(total: $total, page: $page, pages: $pages, limit: $limit)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UserPaginationEntityImpl &&
+            other is _$UserPaginationImpl &&
             (identical(other.total, total) || other.total == total) &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.pages, pages) || other.pages == pages) &&
@@ -858,34 +1205,33 @@ class _$UserPaginationEntityImpl implements _UserPaginationEntity {
   @override
   int get hashCode => Object.hash(runtimeType, total, page, pages, limit);
 
-  /// Create a copy of UserPaginationEntity
+  /// Create a copy of UserPagination
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$UserPaginationEntityImplCopyWith<_$UserPaginationEntityImpl>
-  get copyWith =>
-      __$$UserPaginationEntityImplCopyWithImpl<_$UserPaginationEntityImpl>(
+  _$$UserPaginationImplCopyWith<_$UserPaginationImpl> get copyWith =>
+      __$$UserPaginationImplCopyWithImpl<_$UserPaginationImpl>(
         this,
         _$identity,
       );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UserPaginationEntityImplToJson(this);
+    return _$$UserPaginationImplToJson(this);
   }
 }
 
-abstract class _UserPaginationEntity implements UserPaginationEntity {
-  const factory _UserPaginationEntity({
+abstract class _UserPagination implements UserPagination {
+  const factory _UserPagination({
     required final int total,
     required final int page,
     required final int pages,
     required final int limit,
-  }) = _$UserPaginationEntityImpl;
+  }) = _$UserPaginationImpl;
 
-  factory _UserPaginationEntity.fromJson(Map<String, dynamic> json) =
-      _$UserPaginationEntityImpl.fromJson;
+  factory _UserPagination.fromJson(Map<String, dynamic> json) =
+      _$UserPaginationImpl.fromJson;
 
   @override
   int get total;
@@ -896,612 +1242,469 @@ abstract class _UserPaginationEntity implements UserPaginationEntity {
   @override
   int get limit;
 
-  /// Create a copy of UserPaginationEntity
+  /// Create a copy of UserPagination
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UserPaginationEntityImplCopyWith<_$UserPaginationEntityImpl>
+  _$$UserPaginationImplCopyWith<_$UserPaginationImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+UserActionResponse _$UserActionResponseFromJson(Map<String, dynamic> json) {
+  return _UserActionResponse.fromJson(json);
+}
+
+/// @nodoc
+mixin _$UserActionResponse {
+  bool get success => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+  UserEntity? get data => throw _privateConstructorUsedError;
+
+  /// Serializes this UserActionResponse to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UserActionResponseCopyWith<UserActionResponse> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserActionResponseCopyWith<$Res> {
+  factory $UserActionResponseCopyWith(
+    UserActionResponse value,
+    $Res Function(UserActionResponse) then,
+  ) = _$UserActionResponseCopyWithImpl<$Res, UserActionResponse>;
+  @useResult
+  $Res call({bool success, String message, UserEntity? data});
+
+  $UserEntityCopyWith<$Res>? get data;
+}
+
+/// @nodoc
+class _$UserActionResponseCopyWithImpl<$Res, $Val extends UserActionResponse>
+    implements $UserActionResponseCopyWith<$Res> {
+  _$UserActionResponseCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            success: null == success
+                ? _value.success
+                : success // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            message: null == message
+                ? _value.message
+                : message // ignore: cast_nullable_to_non_nullable
+                      as String,
+            data: freezed == data
+                ? _value.data
+                : data // ignore: cast_nullable_to_non_nullable
+                      as UserEntity?,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserEntityCopyWith<$Res>? get data {
+    if (_value.data == null) {
+      return null;
+    }
+
+    return $UserEntityCopyWith<$Res>(_value.data!, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$UserActionResponseImplCopyWith<$Res>
+    implements $UserActionResponseCopyWith<$Res> {
+  factory _$$UserActionResponseImplCopyWith(
+    _$UserActionResponseImpl value,
+    $Res Function(_$UserActionResponseImpl) then,
+  ) = __$$UserActionResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool success, String message, UserEntity? data});
+
+  @override
+  $UserEntityCopyWith<$Res>? get data;
+}
+
+/// @nodoc
+class __$$UserActionResponseImplCopyWithImpl<$Res>
+    extends _$UserActionResponseCopyWithImpl<$Res, _$UserActionResponseImpl>
+    implements _$$UserActionResponseImplCopyWith<$Res> {
+  __$$UserActionResponseImplCopyWithImpl(
+    _$UserActionResponseImpl _value,
+    $Res Function(_$UserActionResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(
+      _$UserActionResponseImpl(
+        success: null == success
+            ? _value.success
+            : success // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+        data: freezed == data
+            ? _value.data
+            : data // ignore: cast_nullable_to_non_nullable
+                  as UserEntity?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$UserActionResponseImpl implements _UserActionResponse {
+  const _$UserActionResponseImpl({
+    required this.success,
+    required this.message,
+    this.data,
+  });
+
+  factory _$UserActionResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserActionResponseImplFromJson(json);
+
+  @override
+  final bool success;
+  @override
+  final String message;
+  @override
+  final UserEntity? data;
+
+  @override
+  String toString() {
+    return 'UserActionResponse(success: $success, message: $message, data: $data)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserActionResponseImpl &&
+            (identical(other.success, success) || other.success == success) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, success, message, data);
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserActionResponseImplCopyWith<_$UserActionResponseImpl> get copyWith =>
+      __$$UserActionResponseImplCopyWithImpl<_$UserActionResponseImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UserActionResponseImplToJson(this);
+  }
+}
+
+abstract class _UserActionResponse implements UserActionResponse {
+  const factory _UserActionResponse({
+    required final bool success,
+    required final String message,
+    final UserEntity? data,
+  }) = _$UserActionResponseImpl;
+
+  factory _UserActionResponse.fromJson(Map<String, dynamic> json) =
+      _$UserActionResponseImpl.fromJson;
+
+  @override
+  bool get success;
+  @override
+  String get message;
+  @override
+  UserEntity? get data;
+
+  /// Create a copy of UserActionResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UserActionResponseImplCopyWith<_$UserActionResponseImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+UserStatusUpdateRequest _$UserStatusUpdateRequestFromJson(
+  Map<String, dynamic> json,
+) {
+  return _UserStatusUpdateRequest.fromJson(json);
+}
+
+/// @nodoc
+mixin _$UserStatusUpdateRequest {
+  String get action => throw _privateConstructorUsedError;
+  UserStatusData get data => throw _privateConstructorUsedError;
+
+  /// Serializes this UserStatusUpdateRequest to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UserStatusUpdateRequestCopyWith<UserStatusUpdateRequest> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserStatusUpdateRequestCopyWith<$Res> {
+  factory $UserStatusUpdateRequestCopyWith(
+    UserStatusUpdateRequest value,
+    $Res Function(UserStatusUpdateRequest) then,
+  ) = _$UserStatusUpdateRequestCopyWithImpl<$Res, UserStatusUpdateRequest>;
+  @useResult
+  $Res call({String action, UserStatusData data});
+
+  $UserStatusDataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class _$UserStatusUpdateRequestCopyWithImpl<
+  $Res,
+  $Val extends UserStatusUpdateRequest
+>
+    implements $UserStatusUpdateRequestCopyWith<$Res> {
+  _$UserStatusUpdateRequestCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? action = null, Object? data = null}) {
+    return _then(
+      _value.copyWith(
+            action: null == action
+                ? _value.action
+                : action // ignore: cast_nullable_to_non_nullable
+                      as String,
+            data: null == data
+                ? _value.data
+                : data // ignore: cast_nullable_to_non_nullable
+                      as UserStatusData,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserStatusDataCopyWith<$Res> get data {
+    return $UserStatusDataCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$UserStatusUpdateRequestImplCopyWith<$Res>
+    implements $UserStatusUpdateRequestCopyWith<$Res> {
+  factory _$$UserStatusUpdateRequestImplCopyWith(
+    _$UserStatusUpdateRequestImpl value,
+    $Res Function(_$UserStatusUpdateRequestImpl) then,
+  ) = __$$UserStatusUpdateRequestImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String action, UserStatusData data});
+
+  @override
+  $UserStatusDataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class __$$UserStatusUpdateRequestImplCopyWithImpl<$Res>
+    extends
+        _$UserStatusUpdateRequestCopyWithImpl<
+          $Res,
+          _$UserStatusUpdateRequestImpl
+        >
+    implements _$$UserStatusUpdateRequestImplCopyWith<$Res> {
+  __$$UserStatusUpdateRequestImplCopyWithImpl(
+    _$UserStatusUpdateRequestImpl _value,
+    $Res Function(_$UserStatusUpdateRequestImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? action = null, Object? data = null}) {
+    return _then(
+      _$UserStatusUpdateRequestImpl(
+        action: null == action
+            ? _value.action
+            : action // ignore: cast_nullable_to_non_nullable
+                  as String,
+        data: null == data
+            ? _value.data
+            : data // ignore: cast_nullable_to_non_nullable
+                  as UserStatusData,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$UserStatusUpdateRequestImpl implements _UserStatusUpdateRequest {
+  const _$UserStatusUpdateRequestImpl({
+    required this.action,
+    required this.data,
+  });
+
+  factory _$UserStatusUpdateRequestImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserStatusUpdateRequestImplFromJson(json);
+
+  @override
+  final String action;
+  @override
+  final UserStatusData data;
+
+  @override
+  String toString() {
+    return 'UserStatusUpdateRequest(action: $action, data: $data)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserStatusUpdateRequestImpl &&
+            (identical(other.action, action) || other.action == action) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, action, data);
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserStatusUpdateRequestImplCopyWith<_$UserStatusUpdateRequestImpl>
+  get copyWith =>
+      __$$UserStatusUpdateRequestImplCopyWithImpl<
+        _$UserStatusUpdateRequestImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UserStatusUpdateRequestImplToJson(this);
+  }
+}
+
+abstract class _UserStatusUpdateRequest implements UserStatusUpdateRequest {
+  const factory _UserStatusUpdateRequest({
+    required final String action,
+    required final UserStatusData data,
+  }) = _$UserStatusUpdateRequestImpl;
+
+  factory _UserStatusUpdateRequest.fromJson(Map<String, dynamic> json) =
+      _$UserStatusUpdateRequestImpl.fromJson;
+
+  @override
+  String get action;
+  @override
+  UserStatusData get data;
+
+  /// Create a copy of UserStatusUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UserStatusUpdateRequestImplCopyWith<_$UserStatusUpdateRequestImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 
-CreateUserRequest _$CreateUserRequestFromJson(Map<String, dynamic> json) {
-  return _CreateUserRequest.fromJson(json);
+UserStatusData _$UserStatusDataFromJson(Map<String, dynamic> json) {
+  return _UserStatusData.fromJson(json);
 }
 
 /// @nodoc
-mixin _$CreateUserRequest {
-  String get firstname => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  String? get lastname => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  String? get password => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-
-  /// Serializes this CreateUserRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of CreateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CreateUserRequestCopyWith<CreateUserRequest> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CreateUserRequestCopyWith<$Res> {
-  factory $CreateUserRequestCopyWith(
-    CreateUserRequest value,
-    $Res Function(CreateUserRequest) then,
-  ) = _$CreateUserRequestCopyWithImpl<$Res, CreateUserRequest>;
-  @useResult
-  $Res call({
-    String firstname,
-    String email,
-    String? lastname,
-    String? phone,
-    String? password,
-    String? status,
-  });
-}
-
-/// @nodoc
-class _$CreateUserRequestCopyWithImpl<$Res, $Val extends CreateUserRequest>
-    implements $CreateUserRequestCopyWith<$Res> {
-  _$CreateUserRequestCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CreateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? firstname = null,
-    Object? email = null,
-    Object? lastname = freezed,
-    Object? phone = freezed,
-    Object? password = freezed,
-    Object? status = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            firstname: null == firstname
-                ? _value.firstname
-                : firstname // ignore: cast_nullable_to_non_nullable
-                      as String,
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastname: freezed == lastname
-                ? _value.lastname
-                : lastname // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            phone: freezed == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            password: freezed == password
-                ? _value.password
-                : password // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            status: freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
-}
-
-/// @nodoc
-abstract class _$$CreateUserRequestImplCopyWith<$Res>
-    implements $CreateUserRequestCopyWith<$Res> {
-  factory _$$CreateUserRequestImplCopyWith(
-    _$CreateUserRequestImpl value,
-    $Res Function(_$CreateUserRequestImpl) then,
-  ) = __$$CreateUserRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String firstname,
-    String email,
-    String? lastname,
-    String? phone,
-    String? password,
-    String? status,
-  });
-}
-
-/// @nodoc
-class __$$CreateUserRequestImplCopyWithImpl<$Res>
-    extends _$CreateUserRequestCopyWithImpl<$Res, _$CreateUserRequestImpl>
-    implements _$$CreateUserRequestImplCopyWith<$Res> {
-  __$$CreateUserRequestImplCopyWithImpl(
-    _$CreateUserRequestImpl _value,
-    $Res Function(_$CreateUserRequestImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of CreateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? firstname = null,
-    Object? email = null,
-    Object? lastname = freezed,
-    Object? phone = freezed,
-    Object? password = freezed,
-    Object? status = freezed,
-  }) {
-    return _then(
-      _$CreateUserRequestImpl(
-        firstname: null == firstname
-            ? _value.firstname
-            : firstname // ignore: cast_nullable_to_non_nullable
-                  as String,
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastname: freezed == lastname
-            ? _value.lastname
-            : lastname // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        phone: freezed == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        password: freezed == password
-            ? _value.password
-            : password // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        status: freezed == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$CreateUserRequestImpl implements _CreateUserRequest {
-  const _$CreateUserRequestImpl({
-    required this.firstname,
-    required this.email,
-    this.lastname,
-    this.phone,
-    this.password,
-    this.status,
-  });
-
-  factory _$CreateUserRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CreateUserRequestImplFromJson(json);
-
-  @override
-  final String firstname;
-  @override
-  final String email;
-  @override
-  final String? lastname;
-  @override
-  final String? phone;
-  @override
-  final String? password;
-  @override
-  final String? status;
-
-  @override
-  String toString() {
-    return 'CreateUserRequest(firstname: $firstname, email: $email, lastname: $lastname, phone: $phone, password: $password, status: $status)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CreateUserRequestImpl &&
-            (identical(other.firstname, firstname) ||
-                other.firstname == firstname) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.lastname, lastname) ||
-                other.lastname == lastname) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
-            (identical(other.status, status) || other.status == status));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    firstname,
-    email,
-    lastname,
-    phone,
-    password,
-    status,
-  );
-
-  /// Create a copy of CreateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CreateUserRequestImplCopyWith<_$CreateUserRequestImpl> get copyWith =>
-      __$$CreateUserRequestImplCopyWithImpl<_$CreateUserRequestImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CreateUserRequestImplToJson(this);
-  }
-}
-
-abstract class _CreateUserRequest implements CreateUserRequest {
-  const factory _CreateUserRequest({
-    required final String firstname,
-    required final String email,
-    final String? lastname,
-    final String? phone,
-    final String? password,
-    final String? status,
-  }) = _$CreateUserRequestImpl;
-
-  factory _CreateUserRequest.fromJson(Map<String, dynamic> json) =
-      _$CreateUserRequestImpl.fromJson;
-
-  @override
-  String get firstname;
-  @override
-  String get email;
-  @override
-  String? get lastname;
-  @override
-  String? get phone;
-  @override
-  String? get password;
-  @override
-  String? get status;
-
-  /// Create a copy of CreateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CreateUserRequestImplCopyWith<_$CreateUserRequestImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-UpdateUserRequest _$UpdateUserRequestFromJson(Map<String, dynamic> json) {
-  return _UpdateUserRequest.fromJson(json);
-}
-
-/// @nodoc
-mixin _$UpdateUserRequest {
-  int get userId => throw _privateConstructorUsedError;
-  String? get firstname => throw _privateConstructorUsedError;
-  String? get lastname => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-
-  /// Serializes this UpdateUserRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of UpdateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $UpdateUserRequestCopyWith<UpdateUserRequest> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $UpdateUserRequestCopyWith<$Res> {
-  factory $UpdateUserRequestCopyWith(
-    UpdateUserRequest value,
-    $Res Function(UpdateUserRequest) then,
-  ) = _$UpdateUserRequestCopyWithImpl<$Res, UpdateUserRequest>;
-  @useResult
-  $Res call({
-    int userId,
-    String? firstname,
-    String? lastname,
-    String? email,
-    String? phone,
-    String? status,
-  });
-}
-
-/// @nodoc
-class _$UpdateUserRequestCopyWithImpl<$Res, $Val extends UpdateUserRequest>
-    implements $UpdateUserRequestCopyWith<$Res> {
-  _$UpdateUserRequestCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of UpdateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? firstname = freezed,
-    Object? lastname = freezed,
-    Object? email = freezed,
-    Object? phone = freezed,
-    Object? status = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as int,
-            firstname: freezed == firstname
-                ? _value.firstname
-                : firstname // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            lastname: freezed == lastname
-                ? _value.lastname
-                : lastname // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            email: freezed == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            phone: freezed == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            status: freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
-}
-
-/// @nodoc
-abstract class _$$UpdateUserRequestImplCopyWith<$Res>
-    implements $UpdateUserRequestCopyWith<$Res> {
-  factory _$$UpdateUserRequestImplCopyWith(
-    _$UpdateUserRequestImpl value,
-    $Res Function(_$UpdateUserRequestImpl) then,
-  ) = __$$UpdateUserRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    int userId,
-    String? firstname,
-    String? lastname,
-    String? email,
-    String? phone,
-    String? status,
-  });
-}
-
-/// @nodoc
-class __$$UpdateUserRequestImplCopyWithImpl<$Res>
-    extends _$UpdateUserRequestCopyWithImpl<$Res, _$UpdateUserRequestImpl>
-    implements _$$UpdateUserRequestImplCopyWith<$Res> {
-  __$$UpdateUserRequestImplCopyWithImpl(
-    _$UpdateUserRequestImpl _value,
-    $Res Function(_$UpdateUserRequestImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of UpdateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? firstname = freezed,
-    Object? lastname = freezed,
-    Object? email = freezed,
-    Object? phone = freezed,
-    Object? status = freezed,
-  }) {
-    return _then(
-      _$UpdateUserRequestImpl(
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as int,
-        firstname: freezed == firstname
-            ? _value.firstname
-            : firstname // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        lastname: freezed == lastname
-            ? _value.lastname
-            : lastname // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        email: freezed == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        phone: freezed == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        status: freezed == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$UpdateUserRequestImpl implements _UpdateUserRequest {
-  const _$UpdateUserRequestImpl({
-    required this.userId,
-    this.firstname,
-    this.lastname,
-    this.email,
-    this.phone,
-    this.status,
-  });
-
-  factory _$UpdateUserRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UpdateUserRequestImplFromJson(json);
-
-  @override
-  final int userId;
-  @override
-  final String? firstname;
-  @override
-  final String? lastname;
-  @override
-  final String? email;
-  @override
-  final String? phone;
-  @override
-  final String? status;
-
-  @override
-  String toString() {
-    return 'UpdateUserRequest(userId: $userId, firstname: $firstname, lastname: $lastname, email: $email, phone: $phone, status: $status)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UpdateUserRequestImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.firstname, firstname) ||
-                other.firstname == firstname) &&
-            (identical(other.lastname, lastname) ||
-                other.lastname == lastname) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.status, status) || other.status == status));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    userId,
-    firstname,
-    lastname,
-    email,
-    phone,
-    status,
-  );
-
-  /// Create a copy of UpdateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$UpdateUserRequestImplCopyWith<_$UpdateUserRequestImpl> get copyWith =>
-      __$$UpdateUserRequestImplCopyWithImpl<_$UpdateUserRequestImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$UpdateUserRequestImplToJson(this);
-  }
-}
-
-abstract class _UpdateUserRequest implements UpdateUserRequest {
-  const factory _UpdateUserRequest({
-    required final int userId,
-    final String? firstname,
-    final String? lastname,
-    final String? email,
-    final String? phone,
-    final String? status,
-  }) = _$UpdateUserRequestImpl;
-
-  factory _UpdateUserRequest.fromJson(Map<String, dynamic> json) =
-      _$UpdateUserRequestImpl.fromJson;
-
-  @override
-  int get userId;
-  @override
-  String? get firstname;
-  @override
-  String? get lastname;
-  @override
-  String? get email;
-  @override
-  String? get phone;
-  @override
-  String? get status;
-
-  /// Create a copy of UpdateUserRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UpdateUserRequestImplCopyWith<_$UpdateUserRequestImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-UpdateUserStatusRequest _$UpdateUserStatusRequestFromJson(
-  Map<String, dynamic> json,
-) {
-  return _UpdateUserStatusRequest.fromJson(json);
-}
-
-/// @nodoc
-mixin _$UpdateUserStatusRequest {
+mixin _$UserStatusData {
   int get userId => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
 
-  /// Serializes this UpdateUserStatusRequest to a JSON map.
+  /// Serializes this UserStatusData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of UpdateUserStatusRequest
+  /// Create a copy of UserStatusData
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $UpdateUserStatusRequestCopyWith<UpdateUserStatusRequest> get copyWith =>
+  $UserStatusDataCopyWith<UserStatusData> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $UpdateUserStatusRequestCopyWith<$Res> {
-  factory $UpdateUserStatusRequestCopyWith(
-    UpdateUserStatusRequest value,
-    $Res Function(UpdateUserStatusRequest) then,
-  ) = _$UpdateUserStatusRequestCopyWithImpl<$Res, UpdateUserStatusRequest>;
+abstract class $UserStatusDataCopyWith<$Res> {
+  factory $UserStatusDataCopyWith(
+    UserStatusData value,
+    $Res Function(UserStatusData) then,
+  ) = _$UserStatusDataCopyWithImpl<$Res, UserStatusData>;
   @useResult
   $Res call({int userId, String status});
 }
 
 /// @nodoc
-class _$UpdateUserStatusRequestCopyWithImpl<
-  $Res,
-  $Val extends UpdateUserStatusRequest
->
-    implements $UpdateUserStatusRequestCopyWith<$Res> {
-  _$UpdateUserStatusRequestCopyWithImpl(this._value, this._then);
+class _$UserStatusDataCopyWithImpl<$Res, $Val extends UserStatusData>
+    implements $UserStatusDataCopyWith<$Res> {
+  _$UserStatusDataCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of UpdateUserStatusRequest
+  /// Create a copy of UserStatusData
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1523,37 +1726,33 @@ class _$UpdateUserStatusRequestCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$UpdateUserStatusRequestImplCopyWith<$Res>
-    implements $UpdateUserStatusRequestCopyWith<$Res> {
-  factory _$$UpdateUserStatusRequestImplCopyWith(
-    _$UpdateUserStatusRequestImpl value,
-    $Res Function(_$UpdateUserStatusRequestImpl) then,
-  ) = __$$UpdateUserStatusRequestImplCopyWithImpl<$Res>;
+abstract class _$$UserStatusDataImplCopyWith<$Res>
+    implements $UserStatusDataCopyWith<$Res> {
+  factory _$$UserStatusDataImplCopyWith(
+    _$UserStatusDataImpl value,
+    $Res Function(_$UserStatusDataImpl) then,
+  ) = __$$UserStatusDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int userId, String status});
 }
 
 /// @nodoc
-class __$$UpdateUserStatusRequestImplCopyWithImpl<$Res>
-    extends
-        _$UpdateUserStatusRequestCopyWithImpl<
-          $Res,
-          _$UpdateUserStatusRequestImpl
-        >
-    implements _$$UpdateUserStatusRequestImplCopyWith<$Res> {
-  __$$UpdateUserStatusRequestImplCopyWithImpl(
-    _$UpdateUserStatusRequestImpl _value,
-    $Res Function(_$UpdateUserStatusRequestImpl) _then,
+class __$$UserStatusDataImplCopyWithImpl<$Res>
+    extends _$UserStatusDataCopyWithImpl<$Res, _$UserStatusDataImpl>
+    implements _$$UserStatusDataImplCopyWith<$Res> {
+  __$$UserStatusDataImplCopyWithImpl(
+    _$UserStatusDataImpl _value,
+    $Res Function(_$UserStatusDataImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of UpdateUserStatusRequest
+  /// Create a copy of UserStatusData
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? userId = null, Object? status = null}) {
     return _then(
-      _$UpdateUserStatusRequestImpl(
+      _$UserStatusDataImpl(
         userId: null == userId
             ? _value.userId
             : userId // ignore: cast_nullable_to_non_nullable
@@ -1569,14 +1768,11 @@ class __$$UpdateUserStatusRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UpdateUserStatusRequestImpl implements _UpdateUserStatusRequest {
-  const _$UpdateUserStatusRequestImpl({
-    required this.userId,
-    required this.status,
-  });
+class _$UserStatusDataImpl implements _UserStatusData {
+  const _$UserStatusDataImpl({required this.userId, required this.status});
 
-  factory _$UpdateUserStatusRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UpdateUserStatusRequestImplFromJson(json);
+  factory _$UserStatusDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserStatusDataImplFromJson(json);
 
   @override
   final int userId;
@@ -1585,14 +1781,14 @@ class _$UpdateUserStatusRequestImpl implements _UpdateUserStatusRequest {
 
   @override
   String toString() {
-    return 'UpdateUserStatusRequest(userId: $userId, status: $status)';
+    return 'UserStatusData(userId: $userId, status: $status)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UpdateUserStatusRequestImpl &&
+            other is _$UserStatusDataImpl &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.status, status) || other.status == status));
   }
@@ -1601,85 +1797,85 @@ class _$UpdateUserStatusRequestImpl implements _UpdateUserStatusRequest {
   @override
   int get hashCode => Object.hash(runtimeType, userId, status);
 
-  /// Create a copy of UpdateUserStatusRequest
+  /// Create a copy of UserStatusData
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$UpdateUserStatusRequestImplCopyWith<_$UpdateUserStatusRequestImpl>
-  get copyWith =>
-      __$$UpdateUserStatusRequestImplCopyWithImpl<
-        _$UpdateUserStatusRequestImpl
-      >(this, _$identity);
+  _$$UserStatusDataImplCopyWith<_$UserStatusDataImpl> get copyWith =>
+      __$$UserStatusDataImplCopyWithImpl<_$UserStatusDataImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UpdateUserStatusRequestImplToJson(this);
+    return _$$UserStatusDataImplToJson(this);
   }
 }
 
-abstract class _UpdateUserStatusRequest implements UpdateUserStatusRequest {
-  const factory _UpdateUserStatusRequest({
+abstract class _UserStatusData implements UserStatusData {
+  const factory _UserStatusData({
     required final int userId,
     required final String status,
-  }) = _$UpdateUserStatusRequestImpl;
+  }) = _$UserStatusDataImpl;
 
-  factory _UpdateUserStatusRequest.fromJson(Map<String, dynamic> json) =
-      _$UpdateUserStatusRequestImpl.fromJson;
+  factory _UserStatusData.fromJson(Map<String, dynamic> json) =
+      _$UserStatusDataImpl.fromJson;
 
   @override
   int get userId;
   @override
   String get status;
 
-  /// Create a copy of UpdateUserStatusRequest
+  /// Create a copy of UserStatusData
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UpdateUserStatusRequestImplCopyWith<_$UpdateUserStatusRequestImpl>
-  get copyWith => throw _privateConstructorUsedError;
+  _$$UserStatusDataImplCopyWith<_$UserStatusDataImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
-BanUserRequest _$BanUserRequestFromJson(Map<String, dynamic> json) {
-  return _BanUserRequest.fromJson(json);
+UserBanRequest _$UserBanRequestFromJson(Map<String, dynamic> json) {
+  return _UserBanRequest.fromJson(json);
 }
 
 /// @nodoc
-mixin _$BanUserRequest {
+mixin _$UserBanRequest {
   String get reason => throw _privateConstructorUsedError;
   String get banType => throw _privateConstructorUsedError;
 
-  /// Serializes this BanUserRequest to a JSON map.
+  /// Serializes this UserBanRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of BanUserRequest
+  /// Create a copy of UserBanRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $BanUserRequestCopyWith<BanUserRequest> get copyWith =>
+  $UserBanRequestCopyWith<UserBanRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $BanUserRequestCopyWith<$Res> {
-  factory $BanUserRequestCopyWith(
-    BanUserRequest value,
-    $Res Function(BanUserRequest) then,
-  ) = _$BanUserRequestCopyWithImpl<$Res, BanUserRequest>;
+abstract class $UserBanRequestCopyWith<$Res> {
+  factory $UserBanRequestCopyWith(
+    UserBanRequest value,
+    $Res Function(UserBanRequest) then,
+  ) = _$UserBanRequestCopyWithImpl<$Res, UserBanRequest>;
   @useResult
   $Res call({String reason, String banType});
 }
 
 /// @nodoc
-class _$BanUserRequestCopyWithImpl<$Res, $Val extends BanUserRequest>
-    implements $BanUserRequestCopyWith<$Res> {
-  _$BanUserRequestCopyWithImpl(this._value, this._then);
+class _$UserBanRequestCopyWithImpl<$Res, $Val extends UserBanRequest>
+    implements $UserBanRequestCopyWith<$Res> {
+  _$UserBanRequestCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of BanUserRequest
+  /// Create a copy of UserBanRequest
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1701,33 +1897,33 @@ class _$BanUserRequestCopyWithImpl<$Res, $Val extends BanUserRequest>
 }
 
 /// @nodoc
-abstract class _$$BanUserRequestImplCopyWith<$Res>
-    implements $BanUserRequestCopyWith<$Res> {
-  factory _$$BanUserRequestImplCopyWith(
-    _$BanUserRequestImpl value,
-    $Res Function(_$BanUserRequestImpl) then,
-  ) = __$$BanUserRequestImplCopyWithImpl<$Res>;
+abstract class _$$UserBanRequestImplCopyWith<$Res>
+    implements $UserBanRequestCopyWith<$Res> {
+  factory _$$UserBanRequestImplCopyWith(
+    _$UserBanRequestImpl value,
+    $Res Function(_$UserBanRequestImpl) then,
+  ) = __$$UserBanRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String reason, String banType});
 }
 
 /// @nodoc
-class __$$BanUserRequestImplCopyWithImpl<$Res>
-    extends _$BanUserRequestCopyWithImpl<$Res, _$BanUserRequestImpl>
-    implements _$$BanUserRequestImplCopyWith<$Res> {
-  __$$BanUserRequestImplCopyWithImpl(
-    _$BanUserRequestImpl _value,
-    $Res Function(_$BanUserRequestImpl) _then,
+class __$$UserBanRequestImplCopyWithImpl<$Res>
+    extends _$UserBanRequestCopyWithImpl<$Res, _$UserBanRequestImpl>
+    implements _$$UserBanRequestImplCopyWith<$Res> {
+  __$$UserBanRequestImplCopyWithImpl(
+    _$UserBanRequestImpl _value,
+    $Res Function(_$UserBanRequestImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of BanUserRequest
+  /// Create a copy of UserBanRequest
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? reason = null, Object? banType = null}) {
     return _then(
-      _$BanUserRequestImpl(
+      _$UserBanRequestImpl(
         reason: null == reason
             ? _value.reason
             : reason // ignore: cast_nullable_to_non_nullable
@@ -1743,11 +1939,11 @@ class __$$BanUserRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$BanUserRequestImpl implements _BanUserRequest {
-  const _$BanUserRequestImpl({required this.reason, required this.banType});
+class _$UserBanRequestImpl implements _UserBanRequest {
+  const _$UserBanRequestImpl({required this.reason, required this.banType});
 
-  factory _$BanUserRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$BanUserRequestImplFromJson(json);
+  factory _$UserBanRequestImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserBanRequestImplFromJson(json);
 
   @override
   final String reason;
@@ -1756,14 +1952,14 @@ class _$BanUserRequestImpl implements _BanUserRequest {
 
   @override
   String toString() {
-    return 'BanUserRequest(reason: $reason, banType: $banType)';
+    return 'UserBanRequest(reason: $reason, banType: $banType)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BanUserRequestImpl &&
+            other is _$UserBanRequestImpl &&
             (identical(other.reason, reason) || other.reason == reason) &&
             (identical(other.banType, banType) || other.banType == banType));
   }
@@ -1772,89 +1968,89 @@ class _$BanUserRequestImpl implements _BanUserRequest {
   @override
   int get hashCode => Object.hash(runtimeType, reason, banType);
 
-  /// Create a copy of BanUserRequest
+  /// Create a copy of UserBanRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$BanUserRequestImplCopyWith<_$BanUserRequestImpl> get copyWith =>
-      __$$BanUserRequestImplCopyWithImpl<_$BanUserRequestImpl>(
+  _$$UserBanRequestImplCopyWith<_$UserBanRequestImpl> get copyWith =>
+      __$$UserBanRequestImplCopyWithImpl<_$UserBanRequestImpl>(
         this,
         _$identity,
       );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$BanUserRequestImplToJson(this);
+    return _$$UserBanRequestImplToJson(this);
   }
 }
 
-abstract class _BanUserRequest implements BanUserRequest {
-  const factory _BanUserRequest({
+abstract class _UserBanRequest implements UserBanRequest {
+  const factory _UserBanRequest({
     required final String reason,
     required final String banType,
-  }) = _$BanUserRequestImpl;
+  }) = _$UserBanRequestImpl;
 
-  factory _BanUserRequest.fromJson(Map<String, dynamic> json) =
-      _$BanUserRequestImpl.fromJson;
+  factory _UserBanRequest.fromJson(Map<String, dynamic> json) =
+      _$UserBanRequestImpl.fromJson;
 
   @override
   String get reason;
   @override
   String get banType;
 
-  /// Create a copy of BanUserRequest
+  /// Create a copy of UserBanRequest
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BanUserRequestImplCopyWith<_$BanUserRequestImpl> get copyWith =>
+  _$$UserBanRequestImplCopyWith<_$UserBanRequestImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-DeactivateUserRequest _$DeactivateUserRequestFromJson(
+UserDeactivationRequest _$UserDeactivationRequestFromJson(
   Map<String, dynamic> json,
 ) {
-  return _DeactivateUserRequest.fromJson(json);
+  return _UserDeactivationRequest.fromJson(json);
 }
 
 /// @nodoc
-mixin _$DeactivateUserRequest {
+mixin _$UserDeactivationRequest {
   String get reason => throw _privateConstructorUsedError;
 
-  /// Serializes this DeactivateUserRequest to a JSON map.
+  /// Serializes this UserDeactivationRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of DeactivateUserRequest
+  /// Create a copy of UserDeactivationRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $DeactivateUserRequestCopyWith<DeactivateUserRequest> get copyWith =>
+  $UserDeactivationRequestCopyWith<UserDeactivationRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $DeactivateUserRequestCopyWith<$Res> {
-  factory $DeactivateUserRequestCopyWith(
-    DeactivateUserRequest value,
-    $Res Function(DeactivateUserRequest) then,
-  ) = _$DeactivateUserRequestCopyWithImpl<$Res, DeactivateUserRequest>;
+abstract class $UserDeactivationRequestCopyWith<$Res> {
+  factory $UserDeactivationRequestCopyWith(
+    UserDeactivationRequest value,
+    $Res Function(UserDeactivationRequest) then,
+  ) = _$UserDeactivationRequestCopyWithImpl<$Res, UserDeactivationRequest>;
   @useResult
   $Res call({String reason});
 }
 
 /// @nodoc
-class _$DeactivateUserRequestCopyWithImpl<
+class _$UserDeactivationRequestCopyWithImpl<
   $Res,
-  $Val extends DeactivateUserRequest
+  $Val extends UserDeactivationRequest
 >
-    implements $DeactivateUserRequestCopyWith<$Res> {
-  _$DeactivateUserRequestCopyWithImpl(this._value, this._then);
+    implements $UserDeactivationRequestCopyWith<$Res> {
+  _$UserDeactivationRequestCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of DeactivateUserRequest
+  /// Create a copy of UserDeactivationRequest
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1872,34 +2068,37 @@ class _$DeactivateUserRequestCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$DeactivateUserRequestImplCopyWith<$Res>
-    implements $DeactivateUserRequestCopyWith<$Res> {
-  factory _$$DeactivateUserRequestImplCopyWith(
-    _$DeactivateUserRequestImpl value,
-    $Res Function(_$DeactivateUserRequestImpl) then,
-  ) = __$$DeactivateUserRequestImplCopyWithImpl<$Res>;
+abstract class _$$UserDeactivationRequestImplCopyWith<$Res>
+    implements $UserDeactivationRequestCopyWith<$Res> {
+  factory _$$UserDeactivationRequestImplCopyWith(
+    _$UserDeactivationRequestImpl value,
+    $Res Function(_$UserDeactivationRequestImpl) then,
+  ) = __$$UserDeactivationRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String reason});
 }
 
 /// @nodoc
-class __$$DeactivateUserRequestImplCopyWithImpl<$Res>
+class __$$UserDeactivationRequestImplCopyWithImpl<$Res>
     extends
-        _$DeactivateUserRequestCopyWithImpl<$Res, _$DeactivateUserRequestImpl>
-    implements _$$DeactivateUserRequestImplCopyWith<$Res> {
-  __$$DeactivateUserRequestImplCopyWithImpl(
-    _$DeactivateUserRequestImpl _value,
-    $Res Function(_$DeactivateUserRequestImpl) _then,
+        _$UserDeactivationRequestCopyWithImpl<
+          $Res,
+          _$UserDeactivationRequestImpl
+        >
+    implements _$$UserDeactivationRequestImplCopyWith<$Res> {
+  __$$UserDeactivationRequestImplCopyWithImpl(
+    _$UserDeactivationRequestImpl _value,
+    $Res Function(_$UserDeactivationRequestImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of DeactivateUserRequest
+  /// Create a copy of UserDeactivationRequest
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? reason = null}) {
     return _then(
-      _$DeactivateUserRequestImpl(
+      _$UserDeactivationRequestImpl(
         reason: null == reason
             ? _value.reason
             : reason // ignore: cast_nullable_to_non_nullable
@@ -1911,25 +2110,25 @@ class __$$DeactivateUserRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$DeactivateUserRequestImpl implements _DeactivateUserRequest {
-  const _$DeactivateUserRequestImpl({required this.reason});
+class _$UserDeactivationRequestImpl implements _UserDeactivationRequest {
+  const _$UserDeactivationRequestImpl({required this.reason});
 
-  factory _$DeactivateUserRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DeactivateUserRequestImplFromJson(json);
+  factory _$UserDeactivationRequestImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserDeactivationRequestImplFromJson(json);
 
   @override
   final String reason;
 
   @override
   String toString() {
-    return 'DeactivateUserRequest(reason: $reason)';
+    return 'UserDeactivationRequest(reason: $reason)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DeactivateUserRequestImpl &&
+            other is _$UserDeactivationRequestImpl &&
             (identical(other.reason, reason) || other.reason == reason));
   }
 
@@ -1937,254 +2136,37 @@ class _$DeactivateUserRequestImpl implements _DeactivateUserRequest {
   @override
   int get hashCode => Object.hash(runtimeType, reason);
 
-  /// Create a copy of DeactivateUserRequest
+  /// Create a copy of UserDeactivationRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$DeactivateUserRequestImplCopyWith<_$DeactivateUserRequestImpl>
+  _$$UserDeactivationRequestImplCopyWith<_$UserDeactivationRequestImpl>
   get copyWith =>
-      __$$DeactivateUserRequestImplCopyWithImpl<_$DeactivateUserRequestImpl>(
-        this,
-        _$identity,
-      );
+      __$$UserDeactivationRequestImplCopyWithImpl<
+        _$UserDeactivationRequestImpl
+      >(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$DeactivateUserRequestImplToJson(this);
+    return _$$UserDeactivationRequestImplToJson(this);
   }
 }
 
-abstract class _DeactivateUserRequest implements DeactivateUserRequest {
-  const factory _DeactivateUserRequest({required final String reason}) =
-      _$DeactivateUserRequestImpl;
+abstract class _UserDeactivationRequest implements UserDeactivationRequest {
+  const factory _UserDeactivationRequest({required final String reason}) =
+      _$UserDeactivationRequestImpl;
 
-  factory _DeactivateUserRequest.fromJson(Map<String, dynamic> json) =
-      _$DeactivateUserRequestImpl.fromJson;
+  factory _UserDeactivationRequest.fromJson(Map<String, dynamic> json) =
+      _$UserDeactivationRequestImpl.fromJson;
 
   @override
   String get reason;
 
-  /// Create a copy of DeactivateUserRequest
+  /// Create a copy of UserDeactivationRequest
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DeactivateUserRequestImplCopyWith<_$DeactivateUserRequestImpl>
+  _$$UserDeactivationRequestImplCopyWith<_$UserDeactivationRequestImpl>
   get copyWith => throw _privateConstructorUsedError;
-}
-
-UserSearchParams _$UserSearchParamsFromJson(Map<String, dynamic> json) {
-  return _UserSearchParams.fromJson(json);
-}
-
-/// @nodoc
-mixin _$UserSearchParams {
-  String? get search => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-  int? get page => throw _privateConstructorUsedError;
-  int? get limit => throw _privateConstructorUsedError;
-
-  /// Serializes this UserSearchParams to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of UserSearchParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $UserSearchParamsCopyWith<UserSearchParams> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $UserSearchParamsCopyWith<$Res> {
-  factory $UserSearchParamsCopyWith(
-    UserSearchParams value,
-    $Res Function(UserSearchParams) then,
-  ) = _$UserSearchParamsCopyWithImpl<$Res, UserSearchParams>;
-  @useResult
-  $Res call({String? search, String? status, int? page, int? limit});
-}
-
-/// @nodoc
-class _$UserSearchParamsCopyWithImpl<$Res, $Val extends UserSearchParams>
-    implements $UserSearchParamsCopyWith<$Res> {
-  _$UserSearchParamsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of UserSearchParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? search = freezed,
-    Object? status = freezed,
-    Object? page = freezed,
-    Object? limit = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            search: freezed == search
-                ? _value.search
-                : search // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            status: freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            page: freezed == page
-                ? _value.page
-                : page // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            limit: freezed == limit
-                ? _value.limit
-                : limit // ignore: cast_nullable_to_non_nullable
-                      as int?,
-          )
-          as $Val,
-    );
-  }
-}
-
-/// @nodoc
-abstract class _$$UserSearchParamsImplCopyWith<$Res>
-    implements $UserSearchParamsCopyWith<$Res> {
-  factory _$$UserSearchParamsImplCopyWith(
-    _$UserSearchParamsImpl value,
-    $Res Function(_$UserSearchParamsImpl) then,
-  ) = __$$UserSearchParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String? search, String? status, int? page, int? limit});
-}
-
-/// @nodoc
-class __$$UserSearchParamsImplCopyWithImpl<$Res>
-    extends _$UserSearchParamsCopyWithImpl<$Res, _$UserSearchParamsImpl>
-    implements _$$UserSearchParamsImplCopyWith<$Res> {
-  __$$UserSearchParamsImplCopyWithImpl(
-    _$UserSearchParamsImpl _value,
-    $Res Function(_$UserSearchParamsImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of UserSearchParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? search = freezed,
-    Object? status = freezed,
-    Object? page = freezed,
-    Object? limit = freezed,
-  }) {
-    return _then(
-      _$UserSearchParamsImpl(
-        search: freezed == search
-            ? _value.search
-            : search // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        status: freezed == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        page: freezed == page
-            ? _value.page
-            : page // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        limit: freezed == limit
-            ? _value.limit
-            : limit // ignore: cast_nullable_to_non_nullable
-                  as int?,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$UserSearchParamsImpl implements _UserSearchParams {
-  const _$UserSearchParamsImpl({
-    this.search,
-    this.status,
-    this.page,
-    this.limit,
-  });
-
-  factory _$UserSearchParamsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UserSearchParamsImplFromJson(json);
-
-  @override
-  final String? search;
-  @override
-  final String? status;
-  @override
-  final int? page;
-  @override
-  final int? limit;
-
-  @override
-  String toString() {
-    return 'UserSearchParams(search: $search, status: $status, page: $page, limit: $limit)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UserSearchParamsImpl &&
-            (identical(other.search, search) || other.search == search) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.page, page) || other.page == page) &&
-            (identical(other.limit, limit) || other.limit == limit));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, search, status, page, limit);
-
-  /// Create a copy of UserSearchParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$UserSearchParamsImplCopyWith<_$UserSearchParamsImpl> get copyWith =>
-      __$$UserSearchParamsImplCopyWithImpl<_$UserSearchParamsImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$UserSearchParamsImplToJson(this);
-  }
-}
-
-abstract class _UserSearchParams implements UserSearchParams {
-  const factory _UserSearchParams({
-    final String? search,
-    final String? status,
-    final int? page,
-    final int? limit,
-  }) = _$UserSearchParamsImpl;
-
-  factory _UserSearchParams.fromJson(Map<String, dynamic> json) =
-      _$UserSearchParamsImpl.fromJson;
-
-  @override
-  String? get search;
-  @override
-  String? get status;
-  @override
-  int? get page;
-  @override
-  int? get limit;
-
-  /// Create a copy of UserSearchParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UserSearchParamsImplCopyWith<_$UserSearchParamsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }

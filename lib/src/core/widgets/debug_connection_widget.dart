@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:y_chat_admin/src/core/utils/connection_test_utils.dart';
 import 'package:y_chat_admin/src/core/utils/debug_api_utils.dart';
-import 'package:y_chat_admin/src/core/utils/responsive_utils.dart';
+import 'package:y_chat_admin/src/core/utils/responsive.dart';
 
 /// Debug widget to test backend connection
 class DebugConnectionWidget extends StatefulWidget {

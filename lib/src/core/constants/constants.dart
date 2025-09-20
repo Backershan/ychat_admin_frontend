@@ -66,6 +66,11 @@ class Breakpoints {
   static const double tablet = 900;
   static const double desktop = 1200;
   static const double largeDesktop = 1600;
+  
+  // Additional breakpoints for consistency
+  static const double smallMobile = 480;
+  static const double largeTablet = 1024;
+  static const double extraLargeDesktop = 1920;
 }
 
 /// App colors following the design system
@@ -93,8 +98,19 @@ class AppColors {
   static const Color onPrimary = Color(0xffffffff);
   static const Color onSecondary = Color(0xffffffff);
   
+  // Additional text colors for better naming
+  static const Color textPrimary = Color(0xff212121);
+  static const Color textSecondary = Color(0xff757575);
+  
   // Border colors
   static const Color outline = Color(0xffe0e0e0);
+  static const Color border = Color(0xffe0e0e0);
+  
+  // Card colors
+  static const Color cardBackground = Color(0xffffffff);
+  
+  // Shadow colors
+  static const Color shadow = Color(0x1a000000);
   
   // Status colors
   static const Color success = Color(0xff4caf50);

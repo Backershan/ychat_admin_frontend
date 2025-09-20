@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 
 part 'ticket_event.freezed.dart';
 
@@ -9,6 +10,9 @@ class TicketEvent with _$TicketEvent {
     String? category,
     String? status,
     String? priority,
+    String? search,
+    String? sortBy,
+    String? sortOrder,
     int? page,
     int? limit,
   }) = GetTicketsEvent;
@@ -23,18 +27,14 @@ class TicketEvent with _$TicketEvent {
     List<TicketAttachmentEntity>? attachments,
   }) = CreateTicketEvent;
 
-  const factory TicketEvent.updateTicketStatus({
+  const factory TicketEvent.updateTicket({
     required int id,
-    required String status,
-    int? assignedTo,
-    String? adminNotes,
-  }) = UpdateTicketStatusEvent;
+    required TicketUpdateRequest request,
+  }) = UpdateTicketEvent;
 
   const factory TicketEvent.addReplyToTicket({
     required int id,
-    required String text,
-    String? image,
-    required String from,
+    required TicketReplyRequest request,
   }) = AddReplyToTicketEvent;
 
   const factory TicketEvent.getTicketStats() = GetTicketStatsEvent;

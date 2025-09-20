@@ -1,21 +1,51 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../entities/user_entity.dart';
+import 'package:y_chat_admin/src/features/user_management/domain/entities/user_entity.dart';
+import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 abstract class UserRepository {
-  Future<Either<Failure, UserListEntity>> getUsers({
+  Future<Either<Failure, UserListResponse>> getUsers({
     String? search,
     String? status,
-    int? page,
-    int? limit,
+    int page = 1,
+    int limit = 20,
   });
   
-  Future<Either<Failure, UserEntity>> createUser(CreateUserRequest request);
-  Future<Either<Failure, UserEntity>> updateUser(UpdateUserRequest request);
-  Future<Either<Failure, void>> deleteUser(int userId);
-  Future<Either<Failure, void>> updateUserStatus(UpdateUserStatusRequest request);
-  Future<Either<Failure, void>> banUser(int userId, BanUserRequest request);
-  Future<Either<Failure, void>> unbanUser(int userId);
-  Future<Either<Failure, void>> activateUser(int userId);
-  Future<Either<Failure, void>> deactivateUser(int userId, DeactivateUserRequest request);
+  Future<Either<Failure, UserActionResponse>> createUser({
+    required String firstname,
+    required String email,
+    String? lastname,
+    String? phone,
+    String? role,
+  });
+  
+  Future<Either<Failure, UserActionResponse>> updateUser({
+    required int userId,
+    String? firstname,
+    String? lastname,
+    String? email,
+    String? phone,
+    String? role,
+  });
+  
+  Future<Either<Failure, UserActionResponse>> deleteUser(int userId);
+  
+  Future<Either<Failure, UserActionResponse>> updateUserStatus({
+    required int userId,
+    required String status,
+  });
+  
+  Future<Either<Failure, UserActionResponse>> banUser({
+    required int userId,
+    required String reason,
+    required String banType,
+  });
+  
+  Future<Either<Failure, UserActionResponse>> unbanUser(int userId);
+  
+  Future<Either<Failure, UserActionResponse>> activateUser(int userId);
+  
+  Future<Either<Failure, UserActionResponse>> deactivateUser({
+    required int userId,
+    required String reason,
+  });
 }

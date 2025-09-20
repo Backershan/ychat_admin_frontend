@@ -4,6 +4,7 @@ import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entit
 part 'ticket_model.freezed.dart';
 part 'ticket_model.g.dart';
 
+
 @freezed
 class TicketModel with _$TicketModel {
   const factory TicketModel({

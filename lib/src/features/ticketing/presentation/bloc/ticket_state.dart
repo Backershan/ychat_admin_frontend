@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:y_chat_admin/src/features/ticketing/domain/entities/ticket_entity.dart';
+import 'package:y_chat_admin/src/features/ticketing/data/models/ticket_api_models.dart';
 import 'package:y_chat_admin/src/shared/models/failure.dart';
 
 part 'ticket_state.freezed.dart';
@@ -11,8 +12,8 @@ class TicketState with _$TicketState {
   const factory TicketState.loading() = TicketLoadingState;
 
   const factory TicketState.loaded({
-    required TicketListEntity tickets,
-    TicketStatsEntity? stats,
+    required TicketListResponse tickets,
+    TicketStatsResponse? stats,
   }) = TicketLoadedState;
 
   const factory TicketState.ticketDetailLoaded({
@@ -30,7 +31,7 @@ class TicketState with _$TicketState {
   const factory TicketState.ticketDeleted() = TicketDeletedState;
 
   const factory TicketState.statsLoaded({
-    required TicketStatsEntity stats,
+    required TicketStatsResponse stats,
   }) = TicketStatsLoadedState;
 
   const factory TicketState.error({
